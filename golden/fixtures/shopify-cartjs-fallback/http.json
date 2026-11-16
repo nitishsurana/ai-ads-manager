@@ -1,0 +1,26 @@
+{
+  "GET https://custom.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8"
+    },
+    "location": null,
+    "body": "bodies/dec673f4d19b2c57f2b381c2e56173a7f6c18d7c0585d6b7a06a989c323d18fc"
+  },
+  "GET https://custom.example/cart.js": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/fd9d2277e626375acc06ab933d42f7f0821b12589d3848c3e9b45d5f6c456b89"
+  },
+  "GET https://custom.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/7be69f09d43abc5020420f0fb84c794d536ea0ec01ff143ca08e4c07d6615534"
+  }
+}

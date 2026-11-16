@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:push": "node scripts/db-push.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:golden": "tsx golden/run-step1.ts",
+    "golden:record": "tsx golden/record.ts"
   },
   "dependencies": {
     "@fal-ai/client": "^1.11.0",
@@ -46,6 +48,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "supabase": "^3.2.0",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

@@ -1,0 +1,103 @@
+{
+  "G23": {
+    "message": "Failure: We couldn't find that product."
+  },
+  "G30": {
+    "message": "Failure: Only Shopify product pages are supported for now."
+  },
+  "G31": {
+    "message": "Failure: Paste a link to a single product page."
+  },
+  "G32": {
+    "message": "Failure: Paste a link to a single product page."
+  },
+  "G33": {
+    "message": "Failure: This store is password-protected, so we can't read it."
+  },
+  "G34": {
+    "message": "Failure: That doesn't look like a valid link. Check it and try again."
+  },
+  "G35": {
+    "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "G36": {
+    "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "bare-domain": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://mugs.example/products/blue-mug",
+    "market": "US"
+  },
+  "variant-utm": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://www.mugs.example/products/blue-mug?variant=4455&utm_source=newsletter&utm_medium=email",
+    "market": "US"
+  },
+  "collections-prefix": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://mugs.example/collections/summer/products/blue-mug",
+    "market": "US"
+  },
+  "trailing-slash": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://mugs.example/products/blue-mug/",
+    "market": "US"
+  },
+  "locale-prefix": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://mugs.example/en-ca/products/blue-mug",
+    "market": "CA"
+  },
+  "renamed-handle": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://mugs.example/products/blue-mug",
+    "market": "US"
+  },
+  "existing-workspace": {
+    "message": null,
+    "existingWorkspaceId": "ws-existing",
+    "existingWorkspaces": {
+      "mugs.example/products/blue-mug": "ws-existing"
+    }
+  },
+  "existing-after-redirect": {
+    "message": null,
+    "existingWorkspaceId": "ws-renamed",
+    "existingWorkspaces": {
+      "mugs.example/products/blue-mug": "ws-renamed"
+    }
+  },
+  "non-shopify": {
+    "message": "Failure: Only Shopify product pages are supported for now."
+  },
+  "shopify-cartjs-fallback": {
+    "message": null,
+    "productKey": "custom.example/products/blue-mug",
+    "finalUrl": "https://custom.example/products/blue-mug",
+    "market": "US"
+  },
+  "ssrf-private": {
+    "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "ssrf-mapped": {
+    "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "ssrf-redirect": {
+    "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "collection-named-products": {
+    "message": null,
+    "productKey": "mugs.example/products/blue-mug",
+    "finalUrl": "https://mugs.example/collections/products/products/blue-mug",
+    "market": "US"
+  },
+  "marketplace-trailing-dot": {
+    "message": "Failure: Only Shopify product pages are supported for now."
+  }
+}

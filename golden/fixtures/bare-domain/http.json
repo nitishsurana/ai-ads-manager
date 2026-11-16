@@ -1,0 +1,19 @@
+{
+  "GET https://mugs.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "powered-by": "Shopify",
+      "content-type": "text/html; charset=utf-8"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b"
+  },
+  "GET https://mugs.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/7be69f09d43abc5020420f0fb84c794d536ea0ec01ff143ca08e4c07d6615534"
+  }
+}

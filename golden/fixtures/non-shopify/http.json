@@ -1,0 +1,18 @@
+{
+  "GET https://plain.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8"
+    },
+    "location": null,
+    "body": "bodies/567a1218edfef2f8443a6dbd2b830620662a56858d7b45a94fb4bb52f458f810"
+  },
+  "GET https://plain.example/cart.js": {
+    "status": 404,
+    "headers": {
+      "content-type": "text/html; charset=utf-8"
+    },
+    "location": null,
+    "body": "bodies/907ba78b4545338d3539683e63ecb51cf51c10adc9dabd86e92bd52339f298b9"
+  }
+}
