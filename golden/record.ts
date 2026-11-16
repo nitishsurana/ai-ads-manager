@@ -1,9 +1,12 @@
 import { join } from "node:path";
 import { runIntake } from "@/lib/intake";
+import { createRealFirecrawl } from "@/lib/providers/firecrawl";
 import { createRealDns } from "@/lib/providers/dns";
 import { createRealHttp } from "@/lib/providers/http";
 import { readCsv } from "./csv";
 import { createRecorder } from "./recorder";
+
+process.loadEnvFile(".env.local");
 
 const ids = process.argv.slice(2);
 if (ids.length === 0) {
@@ -27,7 +30,11 @@ async function main() {
     const http = recorder.http(createRealHttp({ dns }));
     const outcome = await runIntake(
       { url },
-      { http, findWorkspace: async () => null },
+      {
+        http,
+        firecrawl: recorder.firecrawl(createRealFirecrawl()),
+        findWorkspace: async () => null,
+      },
     );
 
     const market = "result" in outcome ? outcome.result.market : "US";

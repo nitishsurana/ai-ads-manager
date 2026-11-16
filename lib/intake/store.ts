@@ -46,6 +46,11 @@ async function cartAnswers(origin: string, deps: Pick<IntakeDeps, "http">) {
 
 const PASSWORD_PATH = /^(\/[a-z]{2,3}(-[a-z0-9]{2,4}){0,2})?\/password\/?$/i;
 
+// Bot protection answers 401, 403 or 429 to direct page requests while a live /cart.js still proves the store is Shopify.
+function isBotRefusal(status: number) {
+  return status === 401 || status === 403 || status === 429;
+}
+
 function refusesRequest(status: number) {
   return status === 401 || status === 403 || status === 429 || status >= 500;
 }
@@ -90,7 +95,9 @@ export async function checkStore(
       code: (await liveCart()) ? notFound : "store_unreachable",
     };
   }
-  if (status < 200 || status >= 300) {
+  // On this path the key comes from the URL as given, so a renamed handle is not followed: an accepted limitation.
+  const unreadable = isBotRefusal(status) && (await liveCart());
+  if (!unreadable && (status < 200 || status >= 300)) {
     return { ok: false, code: "store_unreachable" };
   }
 

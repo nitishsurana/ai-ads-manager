@@ -25,4 +25,13 @@ export const httpSnapshotSchema = z.record(
   z.union([recordedResponse, recordedFailure]),
 );
 
+export const firecrawlSnapshotSchema = z.record(
+  z.string(),
+  z.object({
+    status: z.number().int(),
+    html: z.string(),
+    location: z.string(),
+  }),
+);
+
 export type CaseSnapshot = z.infer<typeof caseSchema>;

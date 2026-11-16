@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs";
+import { isDeepStrictEqual } from "node:util";
 import { join } from "node:path";
 import { createIntakeDeps, runIntake, type IntakeOutcome } from "@/lib/intake";
 import { messages } from "@/lib/messages";
@@ -15,34 +16,60 @@ function snapshotDirOf(name: string) {
   );
 }
 
-function observe(outcome: IntakeOutcome) {
+function observe(outcome: IntakeOutcome): Record<string, unknown> {
   if (!outcome.ok) {
     return { message: `Failure: ${messages[outcome.code]}` };
   }
   if ("existingWorkspaceId" in outcome) {
     return { message: null, existingWorkspaceId: outcome.existingWorkspaceId };
   }
-  const { productKey, finalUrl, market } = outcome.result;
-  return { message: null, productKey, finalUrl, market };
+  const { productKey, finalUrl, market, page, warnings } = outcome.result;
+  return {
+    message: null,
+    productKey,
+    finalUrl,
+    market,
+    price: page.price,
+    wasPrice: page.wasPrice,
+    currency: page.currency,
+    purchase: page.purchase,
+    needsVariantChoice: page.needsVariantChoice,
+    buyableVariants: page.variants.filter((v) => v.availability === "buyable")
+      .length,
+    rating: page.rating,
+    warnings: warnings.map((code) => `Warning: ${messages[code]}`),
+  };
 }
 
+const comparable = (value: unknown): unknown => {
+  if (typeof value === "string") return normalise(value);
+  if (Array.isArray(value)) return value.map(comparable);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, comparable(v)]),
+    );
+  }
+  return value;
+};
+
 function mismatches(expected: Expectation, outcome: IntakeOutcome) {
-  const actual: Record<string, string | null | undefined> = observe(outcome);
-  const checked = {
-    message: expected.message,
-    existingWorkspaceId: expected.existingWorkspaceId,
-    productKey: expected.productKey,
-    finalUrl: expected.finalUrl,
-    market: expected.market,
+  const actual = observe(outcome);
+  const ingested = outcome.ok && "result" in outcome;
+  // Acceptance rule: no ingesting row may ask the tester to pick a variant unless it says so.
+  const checked: Record<string, unknown> = {
+    ...expected,
+    ...(ingested && {
+      needsVariantChoice: expected.needsVariantChoice ?? false,
+    }),
   };
+  delete checked.existingWorkspaces;
+  delete checked.note;
   return Object.entries(checked)
-    .filter(([field, want]) => {
-      if (want === undefined) return false;
-      const got = actual[field];
-      return typeof want === "string" && typeof got === "string"
-        ? normalise(want) !== normalise(got)
-        : want !== got;
-    })
+    .filter(
+      ([field, want]) =>
+        want !== undefined &&
+        !isDeepStrictEqual(comparable(want), comparable(actual[field])),
+    )
     .map(
       ([field, want]) =>
         `${field}: expected ${JSON.stringify(want)}, got ${JSON.stringify(actual[field])}`,

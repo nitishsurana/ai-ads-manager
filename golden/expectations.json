@@ -1,6 +1,165 @@
 {
+  "G02": {
+    "message": null,
+    "price": "$20.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.5,
+      "count": 16733,
+      "show": true
+    },
+    "warnings": [],
+    "note": "CSV says 16,731 reviews and $20; the live page says 16,733 and $20.00."
+  },
+  "G06": {
+    "message": null,
+    "price": "$70",
+    "wasPrice": "$100",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.6,
+      "count": 9951,
+      "show": true
+    },
+    "warnings": [],
+    "buyableVariants": 1
+  },
+  "G07": {
+    "message": null,
+    "price": "$94.50",
+    "wasPrice": "$135",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.8,
+      "count": 29,
+      "show": true
+    },
+    "warnings": [],
+    "note": "CSV says 28 reviews; the live widget now says 29 (aria-label 'Rated 4.8 out of 5 stars 29 reviews'). The stale structured data 4.5 (4) is still overruled."
+  },
+  "G08": {
+    "message": null,
+    "price": "$398",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ]
+  },
+  "G09": {
+    "message": null,
+    "price": "$150",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.8,
+      "count": 53089,
+      "show": true
+    },
+    "warnings": [],
+    "note": "CSV says 53,082 reviews; the live count is 53,089. The title widget shows only the count; the numeric value 4.8 comes from the product's own Okendo widget in its reviews section (data-oke-reviews-product-id matches the product id). The page is bot-protected: product JSON and page come through Firecrawl."
+  },
+  "G11": {
+    "message": null,
+    "price": "$18.99",
+    "wasPrice": "$32.99",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "note": "The carousel's '117 reviews' trap is gone from the live page; the product's own Judge.me badge is hidden, so no rating either way."
+  },
+  "G12": {
+    "message": "Failure: Only products with a price above $0 are supported."
+  },
+  "G13": {
+    "message": null,
+    "price": "$89",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": {
+      "value": 5.0,
+      "count": 3,
+      "show": false
+    },
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ],
+    "note": "CSV says the button reads 'Notify me'. The live page shows a disabled 'Sold out' submit button plus a 'Notify Me When Available' link; both are the can't-buy group."
+  },
+  "G14": {
+    "message": null,
+    "price": "CA$59.99",
+    "wasPrice": null,
+    "currency": "CAD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "note": "CSV says CA$59.99 as the page prints it; the live page now prints a bare $59.99 and the CA$ comes from the CAD currency signal (og:price:currency)."
+  },
+  "G15": {
+    "message": "Failure: This product is only sold in stores, so we can't make ads for it."
+  },
+  "G16": {
+    "message": null,
+    "price": "$86.19",
+    "wasPrice": "$169",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "G19": {
+    "message": null,
+    "price": "$9.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "G21": {
+    "message": null,
+    "price": "$36",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.4,
+      "count": 148,
+      "show": true
+    },
+    "warnings": [],
+    "note": "CSV says 'no rating found'. The live page's JSON-LD now carries 4.4 from 148 on a ProductGroup for this URL, and the widget's count (148) agrees, so the rating counts."
+  },
+  "G22": {
+    "message": null,
+    "price": "$29.99",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
   "G23": {
     "message": "Failure: We couldn't find that product."
+  },
+  "G24": {
+    "message": null,
+    "price": "$22.50",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
   },
   "G30": {
     "message": "Failure: Only Shopify product pages are supported for now."
@@ -22,6 +181,9 @@
   },
   "G36": {
     "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "G37": {
+    "message": "Failure: This product has no photos to build ads from."
   },
   "bare-domain": {
     "message": null,
@@ -99,5 +261,267 @@
   },
   "marketplace-trailing-dot": {
     "message": "Failure: Only Shopify product pages are supported for now."
+  },
+  "pre-order-button": {
+    "message": "Failure: Pre-order products aren't supported yet. Try a product that's available now."
+  },
+  "request-a-quote": {
+    "message": "Failure: This product can't be bought online, so we can't make ads for it."
+  },
+  "unlisted-label-enabled": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "unlisted-label-disabled": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ]
+  },
+  "rating-4-0-20": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.0,
+      "count": 20,
+      "show": true
+    },
+    "warnings": []
+  },
+  "failure-order-price-first": {
+    "message": "Failure: Only products with a price above $0 are supported."
+  },
+  "failure-order-store-before-photos": {
+    "message": "Failure: This product is only sold in stores, so we can't make ads for it."
+  },
+  "subscription-one-time": {
+    "message": null,
+    "price": "$30.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "subscription-only": {
+    "message": null,
+    "price": "$24.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "choose-option-one-buyable": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "buyableVariants": 1
+  },
+  "choose-option-inconclusive": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "needsVariantChoice": true
+  },
+  "price-after-variant-choice": {
+    "message": null,
+    "price": "$24.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "buyableVariants": 1
+  },
+  "currency-bare-dollar": {
+    "message": null,
+    "price": "CA$59.99",
+    "wasPrice": "CA$79.99",
+    "currency": "CAD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "unlisted-label-no-form": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ]
+  },
+  "quick-checkout-disabled": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ]
+  },
+  "quick-checkout-enabled": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "contact-link-before-add": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-empty-stars": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-zero-first": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-widget-own-section": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.6,
+      "count": 48,
+      "show": true
+    },
+    "warnings": []
+  },
+  "rating-widget-other-product": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-rail-tied-wrong-badge": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-banner-in-tied-wrapper": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "pre-order-type-button": {
+    "message": "Failure: Pre-order products aren't supported yet. Try a product that's available now."
+  },
+  "attached-submit-button": {
+    "message": "Failure: Pre-order products aren't supported yet. Try a product that's available now."
+  },
+  "bot-protected-ingests": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "bot-protected-json-404": {
+    "message": "Failure: We couldn't find that product."
+  },
+  "bot-refused-dead-cart": {
+    "message": "Failure: We couldn't reach this store. Try another product."
+  },
+  "bot-refused-not-a-product": {
+    "message": "Failure: Paste a link to a single product page."
+  },
+  "rating-widget-noise-child": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-widget-other-product-child": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "rating-widget-zero-first": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "variant-pill-pre-order": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ]
   }
 }

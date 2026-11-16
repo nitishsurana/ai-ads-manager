@@ -1,0 +1,19 @@
+{
+  "GET https://shop.example/collections/all": {
+    "status": 403,
+    "headers": {
+      "server": "cloudflare",
+      "content-type": "text/html"
+    },
+    "location": null,
+    "body": "bodies/ab0c27e320a2a17e9a74fe9afbefd959c009c2a627d4f4044ff6a4874a3efdf3"
+  },
+  "GET https://shop.example/cart.js": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/b3d3187b2e9ba92e4334b758d915be8afc6eddd261eccf12b77d5ecacab068b3"
+  }
+}
