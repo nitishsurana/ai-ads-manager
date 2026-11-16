@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Light theme only: keeps shadcn's dark: classes inert */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans:
+    var(--font-geist-sans), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-cormorant-garamond), Georgia, serif;
+}
+
+/* Ad Studio tokens: shadcn/ui naming */
+@theme {
+  --color-background: #fafafa;
+  --color-foreground: #18181b;
+  --color-card: #ffffff;
+  --color-card-foreground: #18181b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #5f5f68;
+  --color-accent: #f4f4f5;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #2f4fd8;
+  --color-stage: #f1f1f3;
+
+  --color-primary: #2f4fd8;
+  --color-primary-foreground: #ffffff;
+  --color-primary-subtle: #eef1fd;
+  --color-primary-text: #2a45c0;
+
+  --color-warning: #fffbeb;
+  --color-warning-border: #f5c451;
+  --color-warning-foreground: #874009;
+
+  --color-destructive: #b42318;
+  --color-destructive-subtle: #fef2f2;
+  --color-destructive-border: #f7a8a8;
+
+  --color-success: #05704d;
+  --color-success-subtle: #ecfdf5;
+  --color-success-border: #86ddb5;
+
+  /* shadcn tokens the handoff lacks, mapped to existing handoff values */
+  --color-popover: #ffffff;
+  --color-popover-foreground: #18181b;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #18181b;
+  --color-accent-foreground: #18181b;
+  --color-destructive-foreground: #ffffff;
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
