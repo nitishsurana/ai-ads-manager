@@ -1,0 +1,12 @@
+{
+  "photo_check:ad9a996f:4c47a6e32f2961d598c47fd126a1f46b95dd55716e5c5b85e45223049154c804": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  }
+}

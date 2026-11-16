@@ -11,7 +11,12 @@
       "show": true
     },
     "warnings": [],
-    "note": "CSV says 16,731 reviews and $20; the live page says 16,733 and $20.00."
+    "lowResWarning": true,
+    "textWarning": false,
+    "note": "CSV says 16,731 reviews and $20; the live page says 16,733 and $20.00.",
+    "uniquePhotos": 6,
+    "shownPhotos": 6,
+    "droppedPositions": []
   },
   "G06": {
     "message": null,
@@ -25,7 +30,13 @@
       "show": true
     },
     "warnings": [],
-    "buyableVariants": 1
+    "buyableVariants": 1,
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 4,
+    "shownPhotos": 4,
+    "droppedPositions": [],
+    "note": "Photo counts: the CSV gives none for G06, G13, G21, G22 and G24; they are the live product's image counts with no drops expected."
   },
   "G07": {
     "message": null,
@@ -39,7 +50,12 @@
       "show": true
     },
     "warnings": [],
-    "note": "CSV says 28 reviews; the live widget now says 29 (aria-label 'Rated 4.8 out of 5 stars 29 reviews'). The stale structured data 4.5 (4) is still overruled."
+    "lowResWarning": true,
+    "textWarning": false,
+    "note": "CSV says 28 reviews; the live widget now says 29 (aria-label 'Rated 4.8 out of 5 stars 29 reviews'). The stale structured data 4.5 (4) is still overruled.",
+    "uniquePhotos": 9,
+    "shownPhotos": 9,
+    "droppedPositions": []
   },
   "G08": {
     "message": null,
@@ -50,7 +66,12 @@
     "rating": null,
     "warnings": [
       "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ]
+    ],
+    "lowResWarning": true,
+    "textWarning": false,
+    "uniquePhotos": 9,
+    "shownPhotos": 9,
+    "droppedPositions": []
   },
   "G09": {
     "message": null,
@@ -64,7 +85,17 @@
       "show": true
     },
     "warnings": [],
-    "note": "CSV says 53,082 reviews; the live count is 53,089. The title widget shows only the count; the numeric value 4.8 comes from the product's own Okendo widget in its reviews section (data-oke-reviews-product-id matches the product id). The page is bot-protected: product JSON and page come through Firecrawl."
+    "uniquePhotos": 12,
+    "shownPhotos": 7,
+    "droppedPositions": [7, 9, 10, 11, 12],
+    "lowResWarning": false,
+    "textWarning": true,
+    "note": "CSV says 53,082 reviews; the live count is 53,089. The title widget shows only the count; the numeric value 4.8 comes from the product's own Okendo widget in its reviews section (data-oke-reviews-product-id matches the product id). The page is bot-protected: product JSON and page come through Firecrawl.",
+    "triage": "photo 6 shows three wallets on a plain backdrop with callouts, so the >1-product drop rule applies and the model looks right; photo 12 is a collage (a scene), so keeping it looks right; photos 5 (dark textured backdrop, two wallets) and 8 (card stack slightly cut) are borderline.",
+    "triageActual": {
+      "shownPhotos": 5,
+      "droppedPositions": [5, 6, 7, 8, 9, 10, 11]
+    }
   },
   "G11": {
     "message": null,
@@ -74,7 +105,15 @@
     "purchase": "purchasable",
     "rating": null,
     "warnings": [],
-    "note": "The carousel's '117 reviews' trap is gone from the live page; the product's own Judge.me badge is hidden, so no rating either way."
+    "uniquePhotos": 8,
+    "shownPhotos": 7,
+    "droppedPositions": [5],
+    "dropReasons": {
+      "5": "text_over_product"
+    },
+    "lowResWarning": true,
+    "textWarning": true,
+    "note": "The carousel's '117 reviews' trap is gone from the live page; the product's own Judge.me badge is hidden, so no rating either way. The live product now has 8 images (CSV: 7, '6 of 7' shown); photo 5 is dropped as the CSV says, photos 1 and 6 carry the low-res warning."
   },
   "G12": {
     "message": "Failure: Only products with a price above $0 are supported."
@@ -93,7 +132,12 @@
     "warnings": [
       "Warning: Shoppers can't buy this online right now. Continue anyway?"
     ],
-    "note": "CSV says the button reads 'Notify me'. The live page shows a disabled 'Sold out' submit button plus a 'Notify Me When Available' link; both are the can't-buy group."
+    "lowResWarning": false,
+    "textWarning": false,
+    "note": "CSV says the button reads 'Notify me'. The live page shows a disabled 'Sold out' submit button plus a 'Notify Me When Available' link; both are the can't-buy group.",
+    "uniquePhotos": 14,
+    "shownPhotos": 14,
+    "droppedPositions": []
   },
   "G14": {
     "message": null,
@@ -103,6 +147,14 @@
     "purchase": "purchasable",
     "rating": null,
     "warnings": [],
+    "uniquePhotos": 3,
+    "shownPhotos": 2,
+    "droppedPositions": [3],
+    "dropReasons": {
+      "3": "text_card"
+    },
+    "lowResWarning": false,
+    "textWarning": false,
     "note": "CSV says CA$59.99 as the page prints it; the live page now prints a bare $59.99 and the CA$ comes from the CAD currency signal (og:price:currency)."
   },
   "G15": {
@@ -115,7 +167,16 @@
     "currency": "USD",
     "purchase": "purchasable",
     "rating": null,
-    "warnings": []
+    "warnings": [],
+    "uniquePhotos": 76,
+    "shownPhotos": 76,
+    "droppedPositions": [],
+    "duplicatePositions": [
+      25, 26, 27, 28, 45, 61, 62, 64, 65, 66, 67, 68, 70, 73, 74, 75
+    ],
+    "lowResWarning": false,
+    "textWarning": false,
+    "note": "CSV expects 77 unique (15 repeats, listing no photo 61). Photo 61 is byte-identical to photo 1 (same sha256), so it is a 16th exact repeat and 76 are unique."
   },
   "G19": {
     "message": null,
@@ -124,7 +185,12 @@
     "currency": "USD",
     "purchase": "purchasable",
     "rating": null,
-    "warnings": []
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": []
   },
   "G21": {
     "message": null,
@@ -138,7 +204,12 @@
       "show": true
     },
     "warnings": [],
-    "note": "CSV says 'no rating found'. The live page's JSON-LD now carries 4.4 from 148 on a ProductGroup for this URL, and the widget's count (148) agrees, so the rating counts."
+    "lowResWarning": false,
+    "textWarning": false,
+    "note": "CSV says 'no rating found'. The live page's JSON-LD now carries 4.4 from 148 on a ProductGroup for this URL, and the widget's count (148) agrees, so the rating counts.",
+    "uniquePhotos": 18,
+    "shownPhotos": 18,
+    "droppedPositions": []
   },
   "G22": {
     "message": null,
@@ -147,7 +218,12 @@
     "currency": "USD",
     "purchase": "purchasable",
     "rating": null,
-    "warnings": []
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 44,
+    "shownPhotos": 44,
+    "droppedPositions": []
   },
   "G23": {
     "message": "Failure: We couldn't find that product."
@@ -159,7 +235,12 @@
     "currency": "USD",
     "purchase": "purchasable",
     "rating": null,
-    "warnings": []
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 6,
+    "shownPhotos": 6,
+    "droppedPositions": []
   },
   "G30": {
     "message": "Failure: Only Shopify product pages are supported for now."
@@ -523,5 +604,224 @@
     "warnings": [
       "Warning: Shoppers can't buy this online right now. Continue anyway?"
     ]
+  },
+  "G01": {
+    "message": null,
+    "price": "$11.99",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.6,
+      "count": 14,
+      "show": false
+    },
+    "warnings": [],
+    "uniquePhotos": 3,
+    "shownPhotos": 1,
+    "droppedPositions": [2, 3],
+    "dropReasons": {
+      "2": "text_card",
+      "3": "text_card"
+    },
+    "lowResWarning": false,
+    "textWarning": true
+  },
+  "G10": {
+    "message": null,
+    "price": "$63.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 13,
+    "shownPhotos": 12,
+    "droppedPositions": [4],
+    "dropReasons": {
+      "4": "product_cropped"
+    },
+    "duplicatePositions": [
+      6, 9, 11, 12, 14, 16, 17, 18, 20, 21, 23, 24, 26, 27, 28
+    ],
+    "lowResWarning": false,
+    "textWarning": true,
+    "note": "CSV says $63; the page prints $63.00."
+  },
+  "G29": {
+    "message": null,
+    "price": "$7.79",
+    "wasPrice": "$13.90",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 12,
+    "shownPhotos": 8,
+    "droppedPositions": [1, 2, 3, 4],
+    "lowResWarning": true,
+    "textWarning": true,
+    "note": "Low-res warnings on 5, 6, 7 and 8 match the CSV.",
+    "triage": "photos 3 and 4 are white-background composites with several items and added text; the model called them scenes, and the CSV's drop looks right, so the scene-vs-plain wording needs tuning.",
+    "triageActual": {
+      "shownPhotos": 10,
+      "droppedPositions": [1, 2]
+    }
+  },
+  "G38": {
+    "message": null,
+    "price": "$276.28",
+    "wasPrice": "$414.42",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "duplicatePositions": [2],
+    "lowResWarning": false,
+    "textWarning": true,
+    "note": "text_overlaps_product varied between calls on the same photo (the dimension lines): it came back true in one recording, which dropped the only photo, and false in the others. The recorded call says false. A flakiness risk for later tuning."
+  },
+  "photos-duplicates": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 3,
+    "shownPhotos": 3,
+    "droppedPositions": [],
+    "duplicatePositions": [2, 3, 5],
+    "lowResWarning": false,
+    "textWarning": false
+  },
+  "photos-drop-rules": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 8,
+    "shownPhotos": 2,
+    "droppedPositions": [2, 3, 4, 5, 6, 7],
+    "dropReasons": {
+      "2": "text_card",
+      "3": "text_card",
+      "4": "multiple_products",
+      "5": "text_over_product",
+      "6": "product_cropped",
+      "7": "mask_not_one_shape"
+    },
+    "lowResWarning": false,
+    "textWarning": true
+  },
+  "photos-low-res": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "lowResWarning": true,
+    "textWarning": false
+  },
+  "photos-heic": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "lowResWarning": false,
+    "textWarning": false
+  },
+  "photos-all-dropped": {
+    "message": "Failure: This product has no photos to build ads from."
+  },
+  "photos-low-confidence": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "escalatedPositions": [1],
+    "lowResWarning": false,
+    "textWarning": true
+  },
+  "photos-skipped": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "skippedPositions": [2, 3, 4, 5, 6]
+  },
+  "photos-check-failed": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "skippedPositions": [2, 4],
+    "escalatedPositions": [3],
+    "lowResWarning": false,
+    "textWarning": false
+  },
+  "photos-reencoded-duplicate": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "duplicatePositions": [2]
+  },
+  "photos-checks-down": {
+    "throws": "photo checks are failing",
+    "message": null
+  },
+  "photos-unreachable": {
+    "throws": "photos could not be read",
+    "message": null
+  },
+  "photos-gone": {
+    "message": "Failure: This product has no photos to build ads from."
+  },
+  "photos-checks-breaker": {
+    "throws": "photo checks are failing",
+    "message": null
   }
 }

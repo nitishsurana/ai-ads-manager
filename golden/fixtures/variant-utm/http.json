@@ -15,5 +15,21 @@
     },
     "location": null,
     "body": "bodies/7be69f09d43abc5020420f0fb84c794d536ea0ec01ff143ca08e4c07d6615534"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mug-front.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mug-side.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/ab882d3da5de35d638e1895109c0305f4c3113e23fbd8f1ab4f8c3194d699416"
   }
 }

@@ -34,4 +34,16 @@ export const firecrawlSnapshotSchema = z.record(
   }),
 );
 
+// Structured model outputs, keyed "<task>:<settings hash>:<sha256 of input>" (see aiSnapshotKey); each is validated against the caller's schema on replay.
+export const aiSnapshotSchema = z.record(z.string(), z.unknown());
+
+// A recorded provider failure replays as a thrown error.
+export const recordedErrorSchema = z.strictObject({ error: z.string() });
+
+// Mask image bodies keyed by the sha256 of the photo they were made from.
+export const falSnapshotSchema = z.record(
+  z.string(),
+  z.union([z.string(), recordedErrorSchema]),
+);
+
 export type CaseSnapshot = z.infer<typeof caseSchema>;

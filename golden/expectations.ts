@@ -9,6 +9,15 @@ const ratingSchema = z.strictObject({
 
 const expectationSchema = z.strictObject({
   note: z.string().optional(),
+  // A photo judgement the model and the CSV disagree on: the expected values stay the CSV's, a mismatch on the judgement fields is reported as TRIAGE while the output equals triageActual, and anything else fails.
+  triage: z.string().optional(),
+  triageActual: z
+    .strictObject({
+      shownPhotos: z.number().int().optional(),
+      droppedPositions: z.array(z.number().int()).optional(),
+      dropReasons: z.record(z.string(), z.string()).optional(),
+    })
+    .optional(),
   message: z.string().nullable(),
   existingWorkspaceId: z.string().optional(),
   existingWorkspaces: z.record(z.string(), z.string()).optional(),
@@ -23,6 +32,17 @@ const expectationSchema = z.strictObject({
   buyableVariants: z.number().int().optional(),
   rating: ratingSchema.nullable().optional(),
   warnings: z.array(z.string()).optional(),
+  uniquePhotos: z.number().int().optional(),
+  shownPhotos: z.number().int().optional(),
+  droppedPositions: z.array(z.number().int()).optional(),
+  dropReasons: z.record(z.string(), z.string()).optional(),
+  duplicatePositions: z.array(z.number().int()).optional(),
+  // The intake is expected to throw (the tester sees the generic retry message) with this text in the error.
+  throws: z.string().optional(),
+  skippedPositions: z.array(z.number().int()).optional(),
+  escalatedPositions: z.array(z.number().int()).optional(),
+  lowResWarning: z.boolean().optional(),
+  textWarning: z.boolean().optional(),
 });
 
 export type Expectation = z.infer<typeof expectationSchema>;

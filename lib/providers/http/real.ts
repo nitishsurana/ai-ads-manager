@@ -125,7 +125,7 @@ export function createRealHttp({ dns }: { dns: Dns }): Http {
       const resolved = await resolvePublic(url, dns);
       if (!resolved.ok) return resolved;
 
-      const signal = AbortSignal.timeout(TIMEOUT_MS);
+      const signal = AbortSignal.timeout(options.timeoutMs ?? TIMEOUT_MS);
       try {
         const response = await requestOnce(
           url,

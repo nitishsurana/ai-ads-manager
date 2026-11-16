@@ -1,0 +1,35 @@
+{
+  "GET https://shop.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b"
+  },
+  "GET https://shop.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/da4c3887736d5f61cf4c2466ee366edbc651626da31355a2074db4bf44b65405"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/photo.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/4c47a6e32f2961d598c47fd126a1f46b95dd55716e5c5b85e45223049154c804"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/photo-small.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/004bd144cf1fcbb3d363decde73994bd6d96adb4f5e7fa76d0d3f41ff6a4a8d3"
+  }
+}

@@ -1,5 +1,6 @@
 export type HttpGetOptions = {
   maxBytes?: number;
+  timeoutMs?: number;
 };
 
 export type HttpResponse = {

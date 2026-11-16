@@ -1,0 +1,22 @@
+{
+  "photo_check:ad9a996f:bf50fbcbac27225c6d43571023d7671f7d730836b0859018effe37f18474d0dc": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "low"
+  },
+  "photo_check_escalated:8c2a031b:bf50fbcbac27225c6d43571023d7671f7d730836b0859018effe37f18474d0dc": {
+    "added_text": true,
+    "background": "scene",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  }
+}

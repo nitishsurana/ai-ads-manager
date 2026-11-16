@@ -1,0 +1,51 @@
+{
+  "GET https://shop.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b"
+  },
+  "GET https://shop.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/3fa03cf6e5a5ba8a6b0f067c4a2a5115c5e93f6f19ad6b802756048d4094d1cd"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/ok.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/both-fail.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/591badce6920a7166de37411fb4b83d24a7f0196afd1b43b613473035e6c43ae"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/haiku-fails.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/bf50fbcbac27225c6d43571023d7671f7d730836b0859018effe37f18474d0dc"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mask-fails.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/fc39f9f8e9fa1ebcb2d73b41cd455a5ebceece620397fea82d4ef3113593fc2d"
+  }
+}

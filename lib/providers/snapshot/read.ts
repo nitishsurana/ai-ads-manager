@@ -3,6 +3,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { z } from "zod";
 
+// A replay or recording problem (nothing recorded, a bad entry, a failed live call while recording); callers must not treat it as a provider failure.
+export class SnapshotError extends Error {}
+
 export function sha256(data: Uint8Array) {
   return createHash("sha256").update(data).digest("hex");
 }

@@ -1,8 +1,14 @@
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runIntake } from "@/lib/intake";
+import { marketOf } from "@/lib/intake/product-key";
+import { createRealAi } from "@/lib/providers/ai";
+import { createRealFal } from "@/lib/providers/fal";
 import { createRealFirecrawl } from "@/lib/providers/firecrawl";
 import { createRealDns } from "@/lib/providers/dns";
 import { createRealHttp } from "@/lib/providers/http";
+import { createLocalStorage } from "@/lib/providers/storage";
 import { readCsv } from "./csv";
 import { createRecorder } from "./recorder";
 
@@ -15,6 +21,9 @@ if (ids.length === 0) {
 }
 
 async function main() {
+  const storage = createLocalStorage(
+    mkdtempSync(join(tmpdir(), "golden-record-")),
+  );
   const rows = readCsv("golden-set-expected-behaviour.csv");
 
   for (const id of ids) {
@@ -26,16 +35,31 @@ async function main() {
     }
 
     const recorder = createRecorder(join(".golden", id));
-    const dns = recorder.dns(createRealDns());
+    const realDns = createRealDns();
+    const dns = recorder.dns(realDns);
     const http = recorder.http(createRealHttp({ dns }));
-    const outcome = await runIntake(
-      { url },
-      {
-        http,
-        firecrawl: recorder.firecrawl(createRealFirecrawl()),
-        findWorkspace: async () => null,
-      },
-    );
+    let outcome;
+    try {
+      outcome = await runIntake(
+        { url, intakeId: id },
+        {
+          http,
+          firecrawl: recorder.firecrawl(createRealFirecrawl()),
+          ai: recorder.ai(createRealAi()),
+          fal: recorder.fal(
+            createRealFal({ http: createRealHttp({ dns: realDns }) }),
+          ),
+          storage,
+          progress: () => {},
+          findWorkspace: async () => null,
+        },
+      );
+    } catch (error) {
+      // Keep the answers already paid for; the failed call itself was never recorded.
+      recorder.save({ url, location: marketOf(new URL(url)) });
+      console.error(`${id}: failed, partial recording saved`);
+      throw error;
+    }
 
     const market = "result" in outcome ? outcome.result.market : "US";
     recorder.save({ url, location: market });

@@ -24,5 +24,13 @@
     },
     "location": null,
     "body": "bodies/ab0c27e320a2a17e9a74fe9afbefd959c009c2a627d4f4044ff6a4874a3efdf3"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mug-front.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237"
   }
 }

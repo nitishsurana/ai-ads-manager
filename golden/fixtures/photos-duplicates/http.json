@@ -1,0 +1,67 @@
+{
+  "GET https://shop.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b"
+  },
+  "GET https://shop.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/276b52a3577e7a8c574cedb2906f4e2e7cf7d938e77a44301d2a313651bc056f"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/blue.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/blue-copy.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/blue-small.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/3822b0434d21f0d2c628222134afb4f33904b002f6898be20e2a9ac2944b66f1"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/red.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/591badce6920a7166de37411fb4b83d24a7f0196afd1b43b613473035e6c43ae"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/red-small.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/cd70b40627ee6b5e3d2b7559dd57aa6390e4c8f407a89f98ed6efcd0207aa244"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/green.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/bf50fbcbac27225c6d43571023d7671f7d730836b0859018effe37f18474d0dc"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "GET https://shop.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b"
+  },
+  "GET https://shop.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/336187a9f04976403bf9357da7613d1786dda55feae9e3489a638d74874d1010"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/product.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/cdbed8c8d2bbe295e19b05385295d2bde4507e1b28c8342f898814fdb8457a43"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/text-card.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/text-card-scene.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/c82194e8703b40b4d9643d12a0923a4ecb697437f8353a4468b526bd1902c5f6"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/two-products.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/74d292f9f85d22ed23d9020cee123abf17f4a75e98de2705083c23e279730209"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/text-over-product.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/369b19c8585b617b2fd1edcab729a47fc6fc613216c1ba918e0bdaa23d8d0d31"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/cropped.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/f84a1493ae9bc7f5a54be43e41eed72378d81ee2910a6cff7048722e61ce0021"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mask-two-shapes.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/56a72531d8d7e04665c8ae288039e199a7c2c60664b3208b89573cc603a10057"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mask-one-shape.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/fc39f9f8e9fa1ebcb2d73b41cd455a5ebceece620397fea82d4ef3113593fc2d"
+  }
+}

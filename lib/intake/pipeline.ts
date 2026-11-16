@@ -1,4 +1,5 @@
 import { pageFailure, readProductPage } from "./page";
+import { PhotosStageError, runPhotos } from "./photos";
 import { fetchProduct } from "./product";
 import { marketOf, productKeyOf } from "./product-key";
 import { checkStore } from "./store";
@@ -6,7 +7,7 @@ import type { IntakeDeps, IntakeOutcome } from "./types";
 import { checkUrl } from "./url";
 
 export async function runIntake(
-  input: { url: string },
+  input: { url: string; intakeId: string },
   deps: IntakeDeps,
 ): Promise<IntakeOutcome> {
   const checked = checkUrl(input.url);
@@ -53,6 +54,22 @@ export async function runIntake(
   if (failure) return { ok: false, code: failure };
   if (product.images.length === 0) return { ok: false, code: "no_photos" };
 
+  const photos = await runPhotos(
+    { intakeId: input.intakeId, images: product.images },
+    deps,
+  );
+  if (!photos.photos.some((photo) => photo.selected)) {
+    // no_photos is for photos that were really dropped, gone or unreadable; a transient fetch or provider failure is retryable.
+    const transient = ["fetch_failed", "check_failed"];
+    if (photos.skipped.some((s) => transient.includes(s.reason))) {
+      throw new PhotosStageError(
+        "photos could not be read: fetches or checks failed",
+        photos.costs,
+      );
+    }
+    return { ok: false, code: "no_photos" };
+  }
+
   return {
     ok: true,
     result: {
@@ -62,6 +79,7 @@ export async function runIntake(
       market,
       product,
       page,
+      photos,
       warnings: page.purchase === "not_purchasable" ? ["not_purchasable"] : [],
     },
   };
