@@ -15,5 +15,8 @@ export function createLocalStorage(root: string): Storage {
         paths.map((path) => rm(join(root, bucket, path), { force: true })),
       );
     },
+    async removePrefix(bucket, prefix) {
+      await rm(join(root, bucket, prefix), { recursive: true, force: true });
+    },
   };
 }

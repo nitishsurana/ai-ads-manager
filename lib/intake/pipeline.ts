@@ -5,7 +5,13 @@ import { type CostEntry, PhotosStageError, runPhotos } from "./photos";
 import { fetchProduct } from "./product";
 import { marketOf, productKeyOf } from "./product-key";
 import { checkStore } from "./store";
-import type { IntakeDeps, IntakeOutcome, UntilBrandOutcome } from "./types";
+import type {
+  IntakeDeps,
+  IntakeOutcome,
+  IntakeResult,
+  UntilBrandOutcome,
+  UntilBrandReady,
+} from "./types";
 import { checkUrl } from "./url";
 
 type Input = { url: string; intakeId: string };
@@ -102,8 +108,14 @@ export async function runIntake(
 ): Promise<IntakeOutcome> {
   const outcome = await runIntakeUntilBrand(input, deps);
   if (!outcome.ok || !("result" in outcome)) return outcome;
-  const { result, productPage } = outcome;
+  return { ok: true, result: await runIntakeBrand(input, outcome, deps) };
+}
 
+export async function runIntakeBrand(
+  input: Input,
+  { result, productPage }: UntilBrandReady,
+  deps: IntakeDeps,
+): Promise<IntakeResult> {
   const brandCosts: CostEntry[] = [];
   const brand = await runBrand(
     {
@@ -126,5 +138,5 @@ export async function runIntake(
       { cause: error },
     );
   });
-  return { ok: true, result: { ...result, brand } };
+  return { ...result, brand };
 }

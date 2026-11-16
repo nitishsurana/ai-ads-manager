@@ -7,3 +7,4 @@ app/.well-known/workflow
 test-results
 playwright-report
 .golden
+lib/db/database.types.ts

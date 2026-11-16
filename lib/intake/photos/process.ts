@@ -18,7 +18,7 @@ import type {
 const MIN_LONG_SIDE = 800;
 const PHOTOS_BUCKET = "photos";
 const CUTOUTS_BUCKET = "cutouts";
-const MASK_MODEL = "fal-ai/birefnet/v2";
+export const MASK_MODEL = "fal-ai/birefnet/v2";
 
 // A provider failure skips the photo; a replay or recording problem must still fail loudly.
 async function attempt<T>(

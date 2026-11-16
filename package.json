@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:push": "node scripts/db-push.mjs",
+    "db:types": "node scripts/db-types.mjs",
     "test:e2e": "playwright test",
     "test:golden": "tsx golden/run-step1.ts",
     "golden:record": "tsx golden/record.ts"

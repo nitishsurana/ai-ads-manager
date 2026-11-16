@@ -7,4 +7,6 @@ export type Storage = {
     contentType: string,
   ): Promise<void>;
   remove(bucket: string, paths: string[]): Promise<void>;
+  // Deletes every object directly under "<prefix>/".
+  removePrefix(bucket: string, prefix: string): Promise<void>;
 };

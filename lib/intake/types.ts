@@ -45,12 +45,12 @@ export type IntakeOutcome =
   | { ok: true; existingWorkspaceId: string }
   | { ok: true; result: IntakeResult };
 
+export type UntilBrandReady = {
+  ok: true;
+  result: Omit<IntakeResult, "brand">;
+  // The rendered product page, which the brand stage reads colours, fonts and the header logo from.
+  productPage: { url: string; html: string; styles: PageStyles | null };
+};
+
 export type UntilBrandOutcome =
-  | IntakeFailure
-  | { ok: true; existingWorkspaceId: string }
-  | {
-      ok: true;
-      result: Omit<IntakeResult, "brand">;
-      // The rendered product page, which the brand stage reads colours, fonts and the header logo from.
-      productPage: { url: string; html: string; styles: PageStyles | null };
-    };
+  IntakeFailure | { ok: true; existingWorkspaceId: string } | UntilBrandReady;
