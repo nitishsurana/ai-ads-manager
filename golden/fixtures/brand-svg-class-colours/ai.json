@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:86716eed:54c8029335d906c2b8d8577ed6753d1f51417ef227a2c66b825af3dcbed59804": {
+    "has_brand_name": true,
+    "text_read": "Class Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:2320b473:31f37fefdf7d0ba50e6453df314b1ac9d24119ad43d8140f1e76430c05b093ce": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

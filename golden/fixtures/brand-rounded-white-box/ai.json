@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:9c3cde55:5002ee2ada57f6ea58bdbb626b4867939b02ba4b00bd5f62eb0dc8cd5e2e5f71": {
+    "has_brand_name": true,
+    "text_read": "Round Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:8dfd1972:e8db92813a68dfb39034c3c4eccfaa08e30f1db69f58d187e83601ee973f8bfb": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

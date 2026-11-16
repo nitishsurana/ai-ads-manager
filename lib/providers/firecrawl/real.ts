@@ -1,4 +1,5 @@
-import { scrapeResponseSchema } from "./schemas";
+import { captureStylesScript } from "./capture-styles";
+import { pageStylesSchema, scrapeResponseSchema } from "./schemas";
 import type { Firecrawl } from "./types";
 
 const ENDPOINT = "https://api.firecrawl.dev/v2/scrape";
@@ -10,7 +11,7 @@ const REQUEST_TIMEOUT_MS = SCRAPE_TIMEOUT_MS + 15_000;
 
 export function createRealFirecrawl(): Firecrawl {
   return {
-    async scrapePage(url, { country, waitForWidgets }) {
+    async scrapePage(url, { country, waitForWidgets, captureStyles }) {
       const apiKey = process.env.FIRECRAWL_API_KEY;
       if (!apiKey) throw new Error("firecrawl: FIRECRAWL_API_KEY is not set");
 
@@ -27,8 +28,18 @@ export function createRealFirecrawl(): Firecrawl {
           maxAge: CACHE_MAX_AGE_MS,
           timeout: SCRAPE_TIMEOUT_MS,
           location: { country },
-          ...(waitForWidgets && {
-            actions: [{ type: "wait", milliseconds: WIDGET_WAIT_MS }],
+          ...((waitForWidgets || captureStyles) && {
+            actions: [
+              { type: "wait", milliseconds: WIDGET_WAIT_MS },
+              ...(captureStyles
+                ? [
+                    {
+                      type: "executeJavascript",
+                      script: captureStylesScript(captureStyles.variantIds),
+                    },
+                  ]
+                : []),
+            ],
           }),
         }),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
@@ -44,7 +55,22 @@ export function createRealFirecrawl(): Firecrawl {
         status: data.metadata.statusCode,
         html: data.rawHtml,
         location: country,
+        styles: captureStyles ? parseStyles(url, data.actions) : null,
       };
     },
   };
+}
+
+// A failed capture costs the page its computed styles, not the intake: the brand stage falls back to the inline CSS.
+function parseStyles(
+  url: string,
+  actions: { javascriptReturns?: { value: unknown }[] } | undefined,
+) {
+  const value = actions?.javascriptReturns?.[0]?.value;
+  try {
+    return pageStylesSchema.parse(JSON.parse(String(value)));
+  } catch (error) {
+    console.error(`firecrawl: style capture for ${url} unusable`, error);
+    return null;
+  }
 }

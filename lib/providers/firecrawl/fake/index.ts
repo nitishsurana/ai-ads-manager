@@ -2,6 +2,7 @@ import {
   firecrawlSnapshotSchema,
   readSnapshotBody,
   readSnapshotJson,
+  SnapshotError,
 } from "@/lib/providers/snapshot";
 import type { Firecrawl } from "../types";
 
@@ -15,9 +16,9 @@ export function createReplayFirecrawl(snapshotDir: string): Firecrawl {
     async scrapePage(url, { country }) {
       snapshot ??= load();
       const entry = snapshot[url];
-      if (!entry) throw new Error(`firecrawl: ${url} was not recorded`);
+      if (!entry) throw new SnapshotError(`firecrawl: ${url} was not recorded`);
       if (entry.location !== country) {
-        throw new Error(
+        throw new SnapshotError(
           `firecrawl: ${url} was recorded for ${entry.location}, asked for ${country}`,
         );
       }
@@ -25,6 +26,7 @@ export function createReplayFirecrawl(snapshotDir: string): Firecrawl {
         status: entry.status,
         html: readSnapshotBody(snapshotDir, entry.html).toString("utf8"),
         location: entry.location,
+        styles: entry.styles ?? null,
       };
     },
   };

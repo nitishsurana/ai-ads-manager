@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:5326a705:2775f664b9d89df6498f863fc8e1b2119d07c6491e299bc37537571c221b0f28": {
+    "has_brand_name": true,
+    "text_read": "PayPal",
+    "is_store_brand": false
+  },
+  "brand_copy:84ac68b8:9ad9dd0e6e603284dfece894821b8a8909e2508a1626be5e54d5b7bd8ed1bc7d": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

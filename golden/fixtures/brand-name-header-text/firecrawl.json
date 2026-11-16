@@ -1,0 +1,12 @@
+{
+  "https://shopabc.myshopify.com/products/blue-mug": {
+    "status": 200,
+    "html": "bodies/2a9089128a5015b192917fd12ff27402c99637a7568e2da54f2aa7886517112f",
+    "location": "US"
+  },
+  "https://shopabc.myshopify.com/": {
+    "status": 200,
+    "html": "bodies/58121eeed1aba64330d2148853302174ca5de3f6ff8b09e3db3fae34e7c48b86",
+    "location": "US"
+  }
+}

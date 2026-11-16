@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:67ac4e1a:ade4206625a9ffb7eb851525c655b8528a88855f2403812ecced283fc8e369ad": {
+    "has_brand_name": true,
+    "text_read": "Boxed Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:c7eaa67a:2a80887385157a811dda278321eef8ffa5df05f3609808f390f8a7b527882ee2": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

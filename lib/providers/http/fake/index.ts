@@ -3,6 +3,7 @@ import {
   httpSnapshotSchema,
   readSnapshotBody,
   readSnapshotJson,
+  SnapshotError,
 } from "@/lib/providers/snapshot";
 import { resolvePublic } from "../guard";
 import type { Http } from "../types";
@@ -29,7 +30,8 @@ export function createReplayHttp({
       if (!resolved.ok) return resolved;
 
       const entry = snapshot[`GET ${rawUrl}`];
-      if (!entry) throw new Error(`http: GET ${rawUrl} was not recorded`);
+      if (!entry)
+        throw new SnapshotError(`http: GET ${rawUrl} was not recorded`);
       if ("failure" in entry) return { ok: false, reason: entry.failure };
 
       return {

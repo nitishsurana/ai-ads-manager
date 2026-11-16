@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:67aa6c53:52166ce12ab28182e09efeaed56e8dc6adb40f3903eb392a573d1188ea9f4299": {
+    "has_brand_name": true,
+    "text_read": "Tiny Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:b89980fa:b74f213eaaae119fe1ade735d6ebbeb430a17dafd8d4002900f179fb824d2253": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

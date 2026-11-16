@@ -5,6 +5,7 @@ export {
   falSnapshotSchema,
   firecrawlSnapshotSchema,
   httpSnapshotSchema,
+  pageStylesSchema,
   recordedErrorSchema,
 } from "./schemas";
 export type { CaseSnapshot } from "./schemas";

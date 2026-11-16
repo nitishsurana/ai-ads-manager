@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:410587c6:5157bab2444dceff06cffeaa7f911ae2bb810a09bc9dc97ca23444ac23bc59c6": {
+    "has_brand_name": true,
+    "text_read": "Lookalike Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:086c4109:0f37f49fc7711cff89b8ed24f1c08549dfb9699677aa95510b13c8f7fcccc921": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

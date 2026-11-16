@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:c3db844a:52f5f2bda6e1f0dd76b80165f91e646076837b7d0ea8ad296a508a11156520ac": {
+    "has_brand_name": true,
+    "text_read": "Dot Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:db8327bc:df587fea03bd6e5a4c0cec426192c97eae4c262d97c61db108c63711f62f3c21": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:f48b661c:c91950bed5f0f56d55811a0afacc4f1bccdb1a0cac05bfef7ebeb80788552a2c": {
+    "has_brand_name": true,
+    "text_read": "Wrapped Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:94d4f20e:4037f8335e8015ede194f56068382d53c1c1d8fe0732adc509f0bab4b4592909": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

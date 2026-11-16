@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:d24ea337:5d7083147f81ec430a6402f05aadaab4823f3eb96b404087d2bb9b2de403466e": {
+    "has_brand_name": true,
+    "text_read": "Ring Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:17ce5b57:ca9e5584c8531403ed67b8783259f84c3b16d21817823c68f7506f342d7a84ef": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

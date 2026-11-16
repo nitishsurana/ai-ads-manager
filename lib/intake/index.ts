@@ -1,5 +1,14 @@
 export { createIntakeDeps } from "./deps";
-export { runIntake } from "./pipeline";
+export { runIntake, runIntakeUntilBrand } from "./pipeline";
+export { BrandStageError } from "./brand";
+export type {
+  BrandKit,
+  BrandResult,
+  Logo,
+  LogoColourClass,
+  LogoSource,
+  Palette,
+} from "./brand";
 export type { PageFacts, PageRating, PageVariant, PurchaseState } from "./page";
 export type {
   CostEntry,
@@ -19,4 +28,5 @@ export type {
   IntakeResult,
   IntakeWarning,
   Market,
+  UntilBrandOutcome,
 } from "./types";

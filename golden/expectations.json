@@ -36,7 +36,13 @@
     "uniquePhotos": 4,
     "shownPhotos": 4,
     "droppedPositions": [],
-    "note": "Photo counts: the CSV gives none for G06, G13, G21, G22 and G24; they are the live product's image counts with no drops expected."
+    "note": "Photo counts: the CSV gives none for G06, G13, G21, G22 and G24; they are the live product's image counts with no drops expected.",
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "storeName": "Allbirds",
+    "needsBrandName": false,
+    "kitReady": true
   },
   "G07": {
     "message": null,
@@ -55,7 +61,15 @@
     "note": "CSV says 28 reviews; the live widget now says 29 (aria-label 'Rated 4.8 out of 5 stars 29 reviews'). The stale structured data 4.5 (4) is still overruled.",
     "uniquePhotos": 9,
     "shownPhotos": 9,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "logoColourClass": "current_colour",
+    "logoTransparent": true,
+    "storeName": "Taylor Stitch",
+    "needsBrandName": false,
+    "kitReady": true,
+    "headerBackground": "#171717"
   },
   "G08": {
     "message": null,
@@ -137,7 +151,16 @@
     "note": "CSV says the button reads 'Notify me'. The live page shows a disabled 'Sold out' submit button plus a 'Notify Me When Available' link; both are the can't-buy group.",
     "uniquePhotos": 14,
     "shownPhotos": 14,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "logoColourClass": "one_colour",
+    "logoTransparent": true,
+    "headerBackground": "#000000",
+    "storeName": "Midnight Hour",
+    "needsBrandName": false,
+    "headingFont": "Cardo",
+    "kitReady": true
   },
   "G14": {
     "message": null,
@@ -190,7 +213,15 @@
     "textWarning": false,
     "uniquePhotos": 1,
     "shownPhotos": 1,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "logoSource": "storefront",
+    "logoTransparent": true,
+    "storeName": "Small Batch Jam Co",
+    "needsBrandName": false,
+    "headingFont": "EB Garamond",
+    "kitReady": true,
+    "note": "The CSV describes the opaque header JPG. The Storefront emblem is transparent and its ring text carries the store name, so the spec's replacement rule picks it over the opaque header logo; white-box removal on this JPG is covered by the brand-white-box fixture."
   },
   "G21": {
     "message": null,
@@ -209,7 +240,12 @@
     "note": "CSV says 'no rating found'. The live page's JSON-LD now carries 4.4 from 148 on a ProductGroup for this URL, and the widget's count (148) agrees, so the rating counts.",
     "uniquePhotos": 18,
     "shownPhotos": 18,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "storeName": "Kylie Cosmetics",
+    "needsBrandName": false,
+    "kitReady": true
   },
   "G22": {
     "message": null,
@@ -240,7 +276,14 @@
     "textWarning": false,
     "uniquePhotos": 6,
     "shownPhotos": 6,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "storeName": "Boston General Store",
+    "needsBrandName": false,
+    "headingFont": "Libre Baskerville",
+    "kitReady": true
   },
   "G30": {
     "message": "Failure: Only Shopify product pages are supported for now."
@@ -625,7 +668,15 @@
       "3": "text_card"
     },
     "lowResWarning": false,
-    "textWarning": true
+    "textWarning": true,
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "storeName": "Death Wish Coffee",
+    "needsBrandName": false,
+    "headingFont": "DM Sans",
+    "paletteBackground": "#000000",
+    "kitReady": true
   },
   "G10": {
     "message": null,
@@ -666,7 +717,13 @@
     "triageActual": {
       "shownPhotos": 10,
       "droppedPositions": [1, 2]
-    }
+    },
+    "brandPages": ["homepage"],
+    "logoSource": null,
+    "storeName": null,
+    "needsBrandName": true,
+    "paletteBackground": "#efecec",
+    "kitReady": true
   },
   "G38": {
     "message": null,
@@ -823,5 +880,331 @@
   "photos-checks-breaker": {
     "throws": "photo checks are failing",
     "message": null
+  },
+  "G20": {
+    "message": null,
+    "brandPages": ["homepage", "about"],
+    "logoSource": "wordmark",
+    "storeName": "Goertzen Pottery",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "G25": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "storefront",
+    "logoTransparent": true,
+    "storeName": "The Epicurean Trader",
+    "needsBrandName": false,
+    "kitReady": true,
+    "lowResWarning": true,
+    "note": "The CSV describes the opaque header PNG badge (shown at 64x64). The Storefront logo is a transparent 512x512 badge that passes the same logo check, so the spec's replacement rule picks it over the opaque header logo."
+  },
+  "G27": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "SparkCalm Candles and Body Works",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "G28": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": null,
+    "storeName": null,
+    "needsBrandName": true,
+    "kitReady": true,
+    "lowResWarning": true
+  },
+  "brand-header-lazy-suffix": {
+    "message": null,
+    "brandPages": ["homepage", "about"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoTransparent": true,
+    "storeName": "Lazy Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-header-use-symbol": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "current_colour",
+    "logoTransparent": true,
+    "storeName": "Symbol Goods",
+    "needsBrandName": false,
+    "kitReady": true,
+    "storedLogoFiles": ["logo.png"]
+  },
+  "brand-header-script-held": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "one_colour",
+    "logoTransparent": true,
+    "storeName": "Script Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-header-svg-raster": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoTransparent": true,
+    "storeName": "Wrapped Goods",
+    "needsBrandName": false,
+    "kitReady": true,
+    "storedLogoFiles": ["logo.png"]
+  },
+  "brand-icon-only-to-storefront": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "storefront",
+    "logoTransparent": true,
+    "storeName": "Icon Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-storefront-replaces-opaque": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "storefront",
+    "logoTransparent": true,
+    "storeName": "Boxed Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-white-box-keeps-interior": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "logoProbe": {
+      "corner": "clear",
+      "interior": "white"
+    },
+    "storeName": "Boxed Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-storefront-icon-only-skipped": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "storeName": "Boxed Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-structured-data-logo": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "structured_data",
+    "logoTransparent": true,
+    "storeName": "Org Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-og-image-logo": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "og_image",
+    "logoTransparent": true,
+    "storeName": "Share Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-og-photo-wordmark": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Photo Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-payment-badge": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Badge Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-name-site-name": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Real Brand",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-name-header-text": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Header Brand",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-name-missing": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": null,
+    "storeName": null,
+    "needsBrandName": true,
+    "kitReady": true
+  },
+  "brand-name-from-alt": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "storeName": "Alt Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-header-width-placeholder": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoTransparent": true,
+    "storeName": "Width Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-svg-background-replaced": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "storefront",
+    "logoTransparent": true,
+    "storeName": "Backed Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-one-ink-counters": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "one_colour",
+    "logoTransparent": true,
+    "logoProbe": {
+      "corner": "clear",
+      "interior": "clear"
+    },
+    "storeName": "Ring Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-rounded-white-box": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "logoProbe": {
+      "corner": "opaque",
+      "interior": "dark"
+    },
+    "storeName": "Round Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-svg-hostile": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "one_colour",
+    "logoTransparent": true,
+    "storeName": "Hostile Goods",
+    "needsBrandName": false,
+    "kitReady": true,
+    "storedLogoFiles": ["logo.png"],
+    "logoProbe": {
+      "corner": "opaque",
+      "interior": "dark"
+    }
+  },
+  "brand-name-announcement-bar": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": null,
+    "storeName": null,
+    "needsBrandName": true,
+    "kitReady": true
+  },
+  "brand-logo-with-default-name": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoTransparent": true,
+    "storeName": null,
+    "needsBrandName": true,
+    "kitReady": true
+  },
+  "brand-header-svg-raster-url": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoTransparent": true,
+    "storeName": "Framed Goods",
+    "needsBrandName": false,
+    "kitReady": true,
+    "storedLogoFiles": ["logo.png"]
+  },
+  "brand-one-ink-accent": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "one_colour",
+    "logoTransparent": true,
+    "logoProbe": {
+      "corner": "clear",
+      "interior": "clear",
+      "centre": "red"
+    },
+    "storeName": "Dot Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-svg-colour-lookalikes": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoTransparent": true,
+    "storeName": "Lookalike Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-svg-class-colours": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoColours": ["#e11111", "#1111ee"],
+    "logoTransparent": true,
+    "logoProbe": {
+      "corner": "opaque",
+      "interior": "dark",
+      "centre": "red"
+    },
+    "storeName": "Class Goods",
+    "needsBrandName": false,
+    "kitReady": true
+  },
+  "brand-svg-tiny-viewbox": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "one_colour",
+    "logoTransparent": true,
+    "logoSize": [1200, 500],
+    "storeName": "Tiny Goods",
+    "needsBrandName": false,
+    "kitReady": true
   }
 }

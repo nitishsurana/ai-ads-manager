@@ -4,6 +4,8 @@ import type { Fal } from "@/lib/providers/fal";
 import type { Firecrawl } from "@/lib/providers/firecrawl";
 import type { Http } from "@/lib/providers/http";
 import type { Storage } from "@/lib/providers/storage";
+import type { PageStyles } from "@/lib/providers/firecrawl";
+import type { BrandResult } from "./brand";
 import type { PageFacts } from "./page";
 import type { PhotosProgress, PhotosResult } from "./photos";
 import type { ShopifyProduct } from "./product";
@@ -34,6 +36,7 @@ export type IntakeResult = {
   product: ShopifyProduct;
   page: PageFacts;
   photos: PhotosResult;
+  brand: BrandResult;
   warnings: IntakeWarning[];
 };
 
@@ -41,3 +44,13 @@ export type IntakeOutcome =
   | IntakeFailure
   | { ok: true; existingWorkspaceId: string }
   | { ok: true; result: IntakeResult };
+
+export type UntilBrandOutcome =
+  | IntakeFailure
+  | { ok: true; existingWorkspaceId: string }
+  | {
+      ok: true;
+      result: Omit<IntakeResult, "brand">;
+      // The rendered product page, which the brand stage reads colours, fonts and the header logo from.
+      productPage: { url: string; html: string; styles: PageStyles | null };
+    };

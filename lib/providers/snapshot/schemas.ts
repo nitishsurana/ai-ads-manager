@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+const text = z.string().nullable();
+
+// What capture-styles.ts returns: computed CSS strings (rgb(...) colours, font-family stacks), null where the page has no such element.
+export const pageStylesSchema = z.object({
+  button: z
+    .object({ background: text, color: text, fontFamily: text })
+    .nullable(),
+  header: z.object({ background: text }).nullable(),
+  title: z.object({ color: text, fontFamily: text }).nullable(),
+  body: z.object({ color: text, fontFamily: text, background: text }),
+  link: z.object({ color: text }).nullable(),
+});
+
 export const caseSchema = z.object({
   url: z.string(),
   location: z.string(),
@@ -31,6 +44,8 @@ export const firecrawlSnapshotSchema = z.record(
     status: z.number().int(),
     html: z.string(),
     location: z.string(),
+    // Computed styles captured with the page; absent on pages recorded before the capture.
+    styles: pageStylesSchema.nullable().optional(),
   }),
 );
 

@@ -1,4 +1,8 @@
-import { dnsSnapshotSchema, readSnapshotJson } from "@/lib/providers/snapshot";
+import {
+  dnsSnapshotSchema,
+  readSnapshotJson,
+  SnapshotError,
+} from "@/lib/providers/snapshot";
 import type { Dns } from "../types";
 
 export function createReplayDns(snapshotDir: string): Dns {
@@ -7,7 +11,8 @@ export function createReplayDns(snapshotDir: string): Dns {
   return {
     async lookup(host) {
       const entry = snapshot[host];
-      if (entry === undefined) throw new Error(`dns: ${host} was not recorded`);
+      if (entry === undefined)
+        throw new SnapshotError(`dns: ${host} was not recorded`);
       return entry === "ENOTFOUND"
         ? { found: false }
         : { found: true, addresses: entry };

@@ -1,15 +1,20 @@
+import { SnapshotError } from "@/lib/providers/snapshot";
+import { BrandStageError, runBrand } from "./brand";
 import { pageFailure, readProductPage } from "./page";
-import { PhotosStageError, runPhotos } from "./photos";
+import { type CostEntry, PhotosStageError, runPhotos } from "./photos";
 import { fetchProduct } from "./product";
 import { marketOf, productKeyOf } from "./product-key";
 import { checkStore } from "./store";
-import type { IntakeDeps, IntakeOutcome } from "./types";
+import type { IntakeDeps, IntakeOutcome, UntilBrandOutcome } from "./types";
 import { checkUrl } from "./url";
 
-export async function runIntake(
-  input: { url: string; intakeId: string },
+type Input = { url: string; intakeId: string };
+
+// Everything through photos. The golden runner uses it alone for rows recorded before the brand stage, which have no homepage to replay.
+export async function runIntakeUntilBrand(
+  input: Input,
   deps: IntakeDeps,
-): Promise<IntakeOutcome> {
+): Promise<UntilBrandOutcome> {
   const checked = checkUrl(input.url);
   if (!checked.ok) return checked;
 
@@ -42,6 +47,7 @@ export async function runIntake(
   const rendered = await deps.firecrawl.scrapePage(renderUrl.href, {
     country: market,
     waitForWidgets: true,
+    captureStyles: { variantIds: product.variants.map((v) => String(v.id)) },
   });
   if (rendered.status >= 400) {
     throw new Error(
@@ -82,5 +88,43 @@ export async function runIntake(
       photos,
       warnings: page.purchase === "not_purchasable" ? ["not_purchasable"] : [],
     },
+    productPage: {
+      url: renderUrl.href,
+      html: rendered.html,
+      styles: rendered.styles,
+    },
   };
+}
+
+export async function runIntake(
+  input: Input,
+  deps: IntakeDeps,
+): Promise<IntakeOutcome> {
+  const outcome = await runIntakeUntilBrand(input, deps);
+  if (!outcome.ok || !("result" in outcome)) return outcome;
+  const { result, productPage } = outcome;
+
+  const brandCosts: CostEntry[] = [];
+  const brand = await runBrand(
+    {
+      intakeId: input.intakeId,
+      productUrl: productPage.url,
+      productHtml: productPage.html,
+      productTitle: result.product.title,
+      styles: productPage.styles,
+      market: result.market,
+    },
+    deps,
+    brandCosts,
+  ).catch((error: unknown) => {
+    if (error instanceof SnapshotError) throw error;
+    // The photos' spend is already incurred, so it travels with the brand stage's.
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new BrandStageError(
+      `brand stage failed: ${reason}`,
+      [...result.photos.costs, ...brandCosts],
+      { cause: error },
+    );
+  });
+  return { ok: true, result: { ...result, brand } };
 }

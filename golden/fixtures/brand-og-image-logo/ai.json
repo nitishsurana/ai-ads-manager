@@ -1,0 +1,27 @@
+{
+  "photo_check:ad9a996f:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "logo_check:128f051c:f167c17d8855ce33544ea3e0b45406e081fdb30557ce2fb26939af8f9f7f9045": {
+    "has_brand_name": true,
+    "text_read": "Share Goods",
+    "is_store_brand": true
+  },
+  "brand_copy:ec14d4c0:b5edfda892a13717e6f029106e5dc3ba0982b91b2e3ac93559f31d15f9278f38": {
+    "tone": ["warm", "plain", "honest"],
+    "audience": "Home cooks who want simple, well-made things.",
+    "value_propositions": [
+      "Made in small batches",
+      "Fair prices",
+      "Quick shipping"
+    ],
+    "proof_points": ["Family owned since 2009"]
+  }
+}

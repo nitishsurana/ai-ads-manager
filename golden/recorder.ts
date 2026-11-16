@@ -148,6 +148,7 @@ export function createRecorder(dir: string) {
             return {
               ...kept,
               html: readBody(kept.html).toString("utf8"),
+              styles: kept.styles ?? null,
             };
           }
           const page = await real.scrapePage(url, options);
@@ -157,6 +158,7 @@ export function createRecorder(dir: string) {
             status: page.status,
             html,
             location: page.location,
+            ...(page.styles && { styles: page.styles }),
           };
           return page;
         },

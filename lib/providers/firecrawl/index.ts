@@ -2,7 +2,13 @@ import { createReplayFirecrawl } from "./fake";
 import { createRealFirecrawl } from "./real";
 import type { Firecrawl } from "./types";
 
-export type { Firecrawl, FirecrawlPage, ScrapeOptions } from "./types";
+export type {
+  Firecrawl,
+  FirecrawlPage,
+  PageStyles,
+  ScrapeOptions,
+} from "./types";
+export { pageStylesSchema } from "./schemas";
 export { createRealFirecrawl };
 
 export function createFirecrawl(
