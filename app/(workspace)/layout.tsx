@@ -1,10 +1,13 @@
 import { ChatPane } from "@/components/chat/chat-pane";
 import { TopBar } from "@/components/layout/top-bar";
+import { requireTester } from "@/lib/auth";
 
-export default function WorkspaceLayout({ children }: LayoutProps<"/">) {
+export default async function WorkspaceLayout({ children }: LayoutProps<"/">) {
+  const { name } = await requireTester();
+
   return (
     <div className="flex min-h-screen flex-col">
-      <TopBar tester="Tester" />
+      <TopBar tester={name} />
       <div className="flex flex-1 items-stretch">
         <aside
           aria-label="Chat"

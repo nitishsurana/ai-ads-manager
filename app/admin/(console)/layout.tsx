@@ -1,6 +1,9 @@
 import { TopBar } from "@/components/layout/top-bar";
+import { requireAdmin } from "@/lib/auth";
 
-export default function AdminLayout({ children }: LayoutProps<"/admin">) {
+export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
+  await requireAdmin();
+
   return (
     <div className="flex min-h-screen flex-col">
       <TopBar tester="Admin" admin />

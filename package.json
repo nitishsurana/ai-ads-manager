@@ -9,7 +9,9 @@
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:push": "node scripts/db-push.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fal-ai/client": "^1.11.0",
@@ -33,6 +35,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^24.19.2",
     "@types/react": "^19",
@@ -41,6 +44,7 @@
     "eslint-config-next": "16.4.6",
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "supabase": "^3.2.0",
     "tailwindcss": "4.3.3",
     "typescript": "^5"
   }

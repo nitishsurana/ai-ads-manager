@@ -32,3 +32,6 @@ next-env.d.ts
 # workflow (generated)
 /app/.well-known/workflow/
 .workflow-data/
+supabase/.temp/
+test-results/
+playwright-report/
