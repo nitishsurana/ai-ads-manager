@@ -26,6 +26,8 @@ export const messages = {
     "A round is still running. Wait for it to finish, then save your changes.",
   save_failed: "We couldn't save that. Try again.",
   cannot_generate: "Finish the items at the top before generating.",
+  spend_cap:
+    "Today's spend limit for the test has been reached. Try again tomorrow.",
 
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
   low_resolution: "This photo is low resolution and may look soft.",

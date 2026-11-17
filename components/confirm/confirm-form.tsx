@@ -113,7 +113,14 @@ export function ConfirmForm({ screen, mode, header }: ConfirmFormProps) {
   const selected = state.photos.filter((photo) => photo.selected).length;
   const confirmedFacts = facts.filter((fact) => fact.status === "confirmed");
   const pendingFacts = facts.length - confirmedFacts.length;
-  const note = generateNote(state, { switching, pendingFacts, edit });
+  // The spend cap blocks starting a round, not saving changes.
+  const spendCapped = !edit && screen.spendCapped;
+  const note = generateNote(state, {
+    switching,
+    pendingFacts,
+    edit,
+    spendCapped,
+  });
   const summary = [
     `${selected} ${plural(selected, "photo", "photos")}`,
     `price ${confirmedPrices(state).price ? "on" : "off"}`,
@@ -195,7 +202,12 @@ export function ConfirmForm({ screen, mode, header }: ConfirmFormProps) {
           summary={summary}
           note={note.text}
           tone={note.tone}
-          disabled={!canGenerate(state) || switching !== null || screen.locked}
+          disabled={
+            !canGenerate(state) ||
+            switching !== null ||
+            screen.locked ||
+            spendCapped
+          }
           pending={submitting}
           label={edit ? "Save changes" : "Generate creatives"}
           pendingLabel={edit ? "Saving…" : "Generating…"}

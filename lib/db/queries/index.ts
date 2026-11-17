@@ -7,7 +7,7 @@ export {
 export type { NewMessage } from "./messages";
 export { completeIntakeWithWorkspace } from "./complete";
 export type { CompletedIntake, NewPhoto } from "./complete";
-export { insertCosts, replaceIntakeCosts } from "./costs";
+export { getSpendTodayUsd, insertCosts, replaceIntakeCosts } from "./costs";
 export type { NewCost } from "./costs";
 export {
   completeIntake,

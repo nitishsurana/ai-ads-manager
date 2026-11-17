@@ -9,6 +9,8 @@ export function failureMessage(failure: Failure) {
       return messages.confirm_locked;
     case "cannot_generate":
       return messages.cannot_generate;
+    case "spend_cap":
+      return messages.spend_cap;
     default:
       return messages.save_failed;
   }

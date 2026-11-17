@@ -210,6 +210,9 @@ isOneToOne: false
             "complete_intake":
 { Args: { "p_intake_id": string,"p_photos": Json,"p_summary": Json,"p_user_id": string,"p_workspace": Json }; Returns: Json
                            }
+            "spend_today_usd":
+{ Args: never; Returns: number
+                           }
           }
           Enums: {
             [_ in never]: never

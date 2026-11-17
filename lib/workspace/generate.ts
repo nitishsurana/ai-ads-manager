@@ -1,5 +1,6 @@
 import "server-only";
 import type { ConfirmState } from "@/lib/confirm";
+import { spendCapReached } from "@/lib/limits";
 import type { Result } from "./result";
 import { commitConfirmed } from "./save";
 
@@ -19,6 +20,7 @@ export async function generateCreatives(
   userId: string,
   workspaceId: string,
 ): Promise<Result> {
+  if (await spendCapReached()) return { ok: false, code: "spend_cap" };
   const committed = await commitConfirmed(userId, workspaceId);
   if (!committed.ok) return committed;
   return startRound(userId, workspaceId, committed);
