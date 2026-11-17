@@ -8,3 +8,5 @@ export { rateCreative } from "./feedback";
 export { loadRoundView } from "./view";
 export type { CreativeView, RoundView } from "./view";
 export type { RoundScreenData } from "./screen";
+export { judgeRecordSchema } from "./judge";
+export type { JudgeRecord } from "./judge";

@@ -1,3 +1,5 @@
+export { listAdminData } from "./admin";
+export type { AdminData } from "./admin";
 export {
   insertMessage,
   listMessages,
