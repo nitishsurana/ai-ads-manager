@@ -118,3 +118,40 @@ export async function getWorkspacePhase(userId: string, id: string) {
   check(error, "get workspace phase");
   return data?.phase === "rounds" ? "rounds" : data ? "confirm" : null;
 }
+
+export type WorkspaceListItem = Pick<
+  WorkspaceRow,
+  "id" | "sourceUrl" | "product" | "logo" | "updatedAt"
+>;
+
+export async function listWorkspaces(
+  userId: string,
+): Promise<WorkspaceListItem[]> {
+  const { data, error } = await createSecretClient()
+    .from("workspaces")
+    .select("id, source_url, product, logo, updated_at")
+    .eq("user_id", userId)
+    .is("deleted_at", null)
+    .order("updated_at", { ascending: false });
+  check(error, "list workspaces");
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    sourceUrl: row.source_url,
+    product: row.product,
+    logo: row.logo,
+    updatedAt: row.updated_at,
+  }));
+}
+
+// Soft delete: the row and everything under it stay for the admin. False when this user has no live workspace with that id.
+export async function softDeleteWorkspace(userId: string, id: string) {
+  const { data, error } = await createSecretClient()
+    .from("workspaces")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("user_id", userId)
+    .is("deleted_at", null)
+    .select("id");
+  check(error, "soft delete workspace");
+  return Boolean(data?.length);
+}

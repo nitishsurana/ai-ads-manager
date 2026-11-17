@@ -2,6 +2,8 @@ export { campaignEditSchema, saveCampaign } from "./campaign";
 export { mergeFinishedIntake, mergeIntoExisting } from "./existing";
 export { deleteFact, rewriteFact, setFactConfirmed } from "./facts";
 export { generateCreatives, saveChanges } from "./generate";
+export { deleteWorkspace, loadHistory } from "./history";
+export type { HistoryItem } from "./history";
 export { loadConfirmScreen, loadWorkspaceState } from "./load";
 export type { ConfirmScreenData } from "./load";
 export { saveAnswers } from "./save";
