@@ -60,6 +60,7 @@ const pageFactsSchema = z.object({
     "not_sold_online",
     "pre_order",
   ]),
+  orderFlow: z.enum(["direct", "personalize"]).default("direct"),
   needsVariantChoice: z.boolean(),
   variants: z.array(
     z.object({

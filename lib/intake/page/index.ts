@@ -10,10 +10,11 @@ import { displayedPrice } from "./price";
 import { readPurchase } from "./purchase";
 import { readRating } from "./rating";
 import { mainSection } from "./section";
-import type { PageFacts, PurchaseState } from "./types";
+import type { OrderFlow, PageFacts, PurchaseState } from "./types";
 import { variantAvailability } from "./variants";
 
 export type {
+  OrderFlow,
   PageFacts,
   PageRating,
   PageVariant,
@@ -50,6 +51,9 @@ export function readProductPage(input: {
     else state = "not_purchasable";
   }
 
+  const orderFlow: OrderFlow =
+    purchase.personalize && state === "purchasable" ? "personalize" : "direct";
+
   const shown = displayedPrice($, section);
   const currency = detectCurrency(shown?.price ?? null, signal, market);
 
@@ -74,6 +78,7 @@ export function readProductPage(input: {
     wasPrice: shown?.wasPrice ? localiseDollar(shown.wasPrice, currency) : null,
     currency,
     purchase: state,
+    orderFlow,
     needsVariantChoice,
     variants,
     rating: readRating($, section, structuredRating, product.id),

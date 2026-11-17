@@ -7,9 +7,18 @@ import {
   missingGlyphs,
   renderCreative,
   underText,
+  type Box,
   type FontSet,
 } from "@/lib/render";
-import { cropPhoto, productCutout, type PreparedPhoto } from "../background";
+import {
+  cropPhoto,
+  photoPlacement,
+  productCutout,
+  isCutOff,
+  scaledPhoto,
+  type PhotoPlacement,
+  type PreparedPhoto,
+} from "../background";
 import type { Logo } from "../compose";
 import type { StageDeps } from "../stages/types";
 import type { Candidate, RoundContext } from "../types";
@@ -24,7 +33,9 @@ import {
 import { readbackProblems } from "./readback";
 
 export { normalise, readbackProblems } from "./readback";
-export { layoutProblems } from "./layout";
+export { COVERS_PRODUCT, layoutProblems } from "./layout";
+
+export const CUT_OFF = "product: cut off by the canvas edge";
 
 export type CheckContext = {
   input: RoundContext;
@@ -34,25 +45,37 @@ export type CheckContext = {
   prepared: (photoId: string) => Promise<PreparedPhoto>;
 };
 
+const pixelsOf = (image: Buffer, from: Box) =>
+  sharp(image)
+    .extract({ left: from.x, top: from.y, width: from.w, height: from.h })
+    .ensureAlpha()
+    .raw()
+    .toBuffer();
+
+// The product's pixels and box as the plan puts them. A product in a placed photo is pasted back untouched, so its pixels come from the scaled photo.
 async function expectedProduct(
   candidate: Candidate,
   photo: PreparedPhoto,
+  placement: PhotoPlacement | null,
 ): Promise<Expected> {
-  if (candidate.background.method === "photo") {
+  const { background } = candidate;
+  if (background.method === "photo") {
+    if (placement && !placement.cover) {
+      const { product, left, top } = placement;
+      const scaled = await scaledPhoto(photo.work, placement);
+      return {
+        rgba: await pixelsOf(scaled, {
+          ...product,
+          x: product.x - left,
+          y: product.y - top,
+        }),
+        box: product,
+      };
+    }
     const { bytes, product } = await cropPhoto(photo.work, photo.bbox);
-    const rgba = await sharp(bytes)
-      .extract({
-        left: product.x,
-        top: product.y,
-        width: product.w,
-        height: product.h,
-      })
-      .ensureAlpha()
-      .raw()
-      .toBuffer();
-    return { rgba, box: product };
+    return { rgba: await pixelsOf(bytes, product), box: product };
   }
-  const { png, box } = await productCutout(photo);
+  const { png, box } = await productCutout(photo, background.size);
   return { rgba: await sharp(png).ensureAlpha().raw().toBuffer(), box };
 }
 
@@ -92,15 +115,19 @@ export async function checkCandidate(
     fonts,
     logo: ctx.logo?.png ?? null,
   });
+  const photo = await ctx.prepared(candidate.photoId);
+  const placement =
+    candidate.background.method === "photo" &&
+    candidate.background.placement === 2
+      ? await photoPlacement(photo)
+      : null;
   const [meta, backgroundMeta, backgroundPixels, basePixels, expected] =
     await Promise.all([
       sharp(png).metadata(),
       sharp(background).metadata(),
       decodePixels(background),
       underText(background, layout).then(decodePixels),
-      ctx
-        .prepared(candidate.photoId)
-        .then((photo) => expectedProduct(candidate, photo)),
+      expectedProduct(candidate, photo, placement),
     ]);
 
   const problems = [
@@ -125,6 +152,7 @@ export async function checkCandidate(
     ...(sameBox(expected.box, candidate.product)
       ? []
       : ["product: its box is not where the plan put it"]),
+    ...(placement && isCutOff(placement, photo.bbox) ? [CUT_OFF] : []),
     ...(await productProblems(png, expected, drawnBoxes(layout))),
   ];
   if (problems.length > 0) return problems;

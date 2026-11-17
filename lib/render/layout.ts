@@ -51,6 +51,8 @@ export const layoutSchema = z.object({
   fonts: z.record(z.string(), z.string()),
   method: z.enum(["bria", "solid", "tonal", "photo"]),
   product: boxSchema.nullable(),
+  // True when the text was planned to stay clear of the product; layouts stored before have no such guarantee.
+  keepClear: z.boolean().default(false),
   // A flat wash behind the headline block, only where the background alone doesn't make it readable. Rebuilt on every render, never part of background_path.
   scrim: z
     .object({

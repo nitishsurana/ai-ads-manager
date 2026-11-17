@@ -12,6 +12,7 @@ export async function planCandidates(
     object,
     input.inputs,
     brief.approvedAngles,
+    brief.settings,
   );
   if (repairs.length > 0) {
     console.warn(

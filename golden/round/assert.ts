@@ -108,12 +108,19 @@ function planProblems(
       problems.push(`${label}: offerFactId set without an offer badge`);
     }
     const photo = inputs.photos.find((p) => p.id === candidate.photoId);
-    const whole = photo && (photo.background === "scene" || photo.person);
+    // A tester who prefers cut-outs gets one for every photo without a person.
+    const whole =
+      photo &&
+      (photo.background === "scene" || photo.person) &&
+      !(brief.settings.preferCutout && !photo.person);
     const { background } = candidate;
     if (whole && background.method !== "photo") {
       problems.push(
         `${label}: a whole photo has background ${background.method}`,
       );
+    }
+    if (whole && background.method === "photo" && background.placement !== 2) {
+      problems.push(`${label}: a whole photo is not placed`);
     }
     if (!whole && background.method === "photo") {
       problems.push(`${label}: a cut-out photo has no generated background`);

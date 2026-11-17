@@ -12,7 +12,7 @@ import {
   withSymbol,
 } from "@/lib/render";
 import type { Box, Layout } from "@/lib/render";
-import { LOGO_MAX_HEIGHT } from "@/lib/render/canvas";
+import { LOGO_MAX_HEIGHT, overlaps } from "@/lib/render/canvas";
 import { contrast, deltaE, fromHex } from "@/lib/render/colour";
 import { brandColours, wordmarkName } from "../compose/inputs";
 import { COPY_WORDS, CTA_WORDS, HEADLINE_CHARS, HEADLINE_WORDS } from "../copy";
@@ -251,6 +251,18 @@ function elementProblems(
   return problems;
 }
 
+export const COVERS_PRODUCT =
+  "text: the eyebrow, headline or CTA covers the product";
+
+function coverProblems(layout: Layout) {
+  const { product } = layout;
+  if (!layout.keepClear || !product) return [];
+  const texts = [layout.eyebrow, layout.headline, layout.cta];
+  return texts.some((text) => text && overlaps(text.box, product))
+    ? [COVERS_PRODUCT]
+    : [];
+}
+
 // Everything Layer 1 can say from the candidate and its stored layout alone.
 export function layoutProblems(
   layout: Layout,
@@ -265,6 +277,7 @@ export function layoutProblems(
     ...drawnProblems(layout, copy),
     ...glyphProblems(layout, missingGlyphs),
     ...marginProblems(layout),
+    ...coverProblems(layout),
     ...colourProblems(layout, inputs),
     ...logoProblems(layout, inputs),
     ...elementProblems(layout, subject, inputs),

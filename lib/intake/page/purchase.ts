@@ -11,6 +11,8 @@ type Group =
 
 const CONTROLS =
   'button, input[type="submit"], input[type="button"], a[role="button"], a[class*="btn" i], a[class*="button" i]';
+const PERSONALIZE_CONTROLS =
+  'button, input[type="submit"], input[type="button"], [role="button"]:not(a)';
 const QUICK_CHECKOUT =
   '.shopify-payment-button, shopify-accelerated-checkout, shopify-buy-it-now-button, shop-pay-wallet-button, [data-shopify="payment-button"]';
 const PRICE_TEXT =
@@ -38,6 +40,11 @@ const GROUPS: [Group, RegExp][] = [
   ["buy", /^(?:add to (?:cart|bag|basket|trolley)|buy|order|purchase)\b/],
 ];
 
+const PERSONALIZE =
+  /^(?:start |begin |click to |tap to )?(?:personali[sz]e|personali[sz]ing|customi[sz]e|customi[sz]ing|make it yours|design (?:yours|your own)|create (?:yours|your own)|add personali[sz]ation)\b/;
+const NOT_PERSONALIZE =
+  /\b(?:bundle|subscription|plan|cookies?|consent|privacy|preferences|settings)\b/;
+
 function labelOf($: CheerioAPI, el: Node) {
   const node = $(el);
   const raw = textOf(el) || node.attr("value") || node.attr("aria-label") || "";
@@ -60,6 +67,8 @@ function isSubmit($: CheerioAPI, el: Node) {
 export type Purchase = {
   state: PurchaseState;
   chooseOption: boolean;
+  // A button that invites the shopper to personalize the product was found.
+  personalize: boolean;
 };
 
 function firstGroup($: CheerioAPI, controls: Node[]) {
@@ -95,6 +104,22 @@ function formControls($: CheerioAPI, form: Scope) {
   return [...form.find(CONTROLS).toArray(), ...attached];
 }
 
+// Personalize buttons often sit outside the cart form, so the whole section is searched. Links are left out: "Shop all personalized" is navigation. A disabled button still counts, because stores ship it disabled until their script runs.
+function hasPersonalizeButton(
+  $: CheerioAPI,
+  section: Scope,
+  isPill: (el: Node) => boolean,
+) {
+  return section
+    .find(PERSONALIZE_CONTROLS)
+    .toArray()
+    .some((el) => {
+      if (isPill(el)) return false;
+      const label = labelOf($, el);
+      return PERSONALIZE.test(label) && !NOT_PERSONALIZE.test(label);
+    });
+}
+
 // Submit buttons speak first, then other buttons, then links styled as buttons. With a cart form only its own controls count; without one, the whole section's do.
 export function readPurchase(
   $: CheerioAPI,
@@ -114,6 +139,7 @@ export function readPurchase(
     const text = normalise(textOf(el));
     return [...pills].some((v) => text === v || text.startsWith(`${v} `));
   };
+  const personalize = hasPersonalizeButton($, section, isPill);
   const group =
     firstGroup($, submits) ??
     firstGroup(
@@ -127,12 +153,18 @@ export function readPurchase(
     group === "store_only" ||
     group === "not_sold_online"
   ) {
-    return { state: group, chooseOption: false };
+    return { state: group, chooseOption: false, personalize };
   }
-  if (group === "cant_buy")
-    return { state: "not_purchasable", chooseOption: false };
-  if (group === "choose") return { state: "purchasable", chooseOption: true };
-  if (group === "buy") return { state: "purchasable", chooseOption: false };
+  if (group === "cant_buy") {
+    return { state: "not_purchasable", chooseOption: false, personalize };
+  }
+  if (group === "choose" || group === "buy" || personalize) {
+    return {
+      state: "purchasable",
+      chooseOption: group === "choose",
+      personalize,
+    };
+  }
 
   // An unlisted label is judged by this product's cart form only.
   const addButton = form ? submits[0] : undefined;
@@ -143,5 +175,6 @@ export function readPurchase(
         ? "purchasable"
         : "not_purchasable",
     chooseOption: false,
+    personalize,
   };
 }

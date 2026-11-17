@@ -1,5 +1,5 @@
 import { applyAnswers, initialConfirm } from "@/lib/confirm";
-import type { BriefContent } from "@/lib/brief/schema";
+import { DEFAULT_SETTINGS, type BriefContent } from "@/lib/brief/schema";
 import type { Storage } from "@/lib/providers/storage";
 import { freezeInputs } from "@/lib/round/inputs";
 import type { StoredPhoto } from "@/lib/round/stages";
@@ -16,6 +16,7 @@ export function briefOf(
     rules: [],
     research: [],
     approvedAngles: [],
+    settings: DEFAULT_SETTINGS,
     ...extra,
     campaign: inputs.campaign,
     values: inputs.values,

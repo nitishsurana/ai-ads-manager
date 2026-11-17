@@ -14,6 +14,7 @@ const photoRowSchema = z.object({
     added_text: z.boolean(),
     background: z.enum(["plain", "scene"]),
     person: z.boolean(),
+    transparent: z.boolean().default(false),
   }),
   selected: z.boolean(),
 });
@@ -28,6 +29,7 @@ export type WorkspacePhoto = {
   background: "plain" | "scene";
   addedText: boolean;
   person: boolean;
+  transparent: boolean;
   selected: boolean;
 };
 
@@ -59,6 +61,7 @@ export async function listWorkspacePhotos(
       background: row.checks.background,
       addedText: row.checks.added_text,
       person: row.checks.person,
+      transparent: row.checks.transparent,
       selected: row.selected,
     }));
 }

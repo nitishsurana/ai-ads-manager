@@ -63,10 +63,13 @@ export async function planCreative(
     fonts: FontSet;
     logo: Logo | null;
     label: string;
+    // An edit keeps the stored creative's setting; a new candidate keeps the text clear wherever the product's box can be trusted.
+    keepClear?: boolean;
   },
 ): Promise<Layout> {
   const { inputs, fonts, logo, label } = context;
   const { copy, product } = candidate;
+  const scene = candidate.background;
   if (!copy) throw new Error(`${label}: candidate has no copy`);
 
   const pixels = await decodePixels(background);
@@ -80,8 +83,11 @@ export async function planCreative(
   const layout = planLayout({
     copy,
     fonts: fontVersions(fonts),
-    method: candidate.background.method,
+    method: scene.method,
     product,
+    keepClear:
+      context.keepClear ??
+      (scene.method !== "photo" || scene.isolated === true),
     badge: badgeSpec(candidate, inputs),
     offerFactId: candidate.offerFactId,
     heading: face(inputs.brandKit.fonts.heading.family),

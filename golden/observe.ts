@@ -32,6 +32,7 @@ export function observe(outcome: Outcome): Record<string, unknown> {
     wasPrice: page.wasPrice,
     currency: page.currency,
     purchase: page.purchase,
+    orderFlow: page.orderFlow,
     needsVariantChoice: page.needsVariantChoice,
     buyableVariants: page.variants.filter((v) => v.availability === "buyable")
       .length,
@@ -50,6 +51,7 @@ export function observe(outcome: Outcome): Record<string, unknown> {
       .map((photo) => photo.position),
     lowResWarning: warns("low_resolution"),
     textWarning: warns("photo_text"),
+    transparentWarning: warns("transparent"),
     ...observeBrand(brand),
   };
 }

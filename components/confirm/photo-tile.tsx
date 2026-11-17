@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const FLAG_BADGE = {
   low_resolution: "Low resolution",
   photo_text: "Added text",
+  transparent: "See-through",
 } as const;
 
 type PhotoTileProps = {

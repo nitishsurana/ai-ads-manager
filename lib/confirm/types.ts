@@ -1,6 +1,7 @@
 import type {
   BrandKit,
   Logo,
+  OrderFlow,
   PageVariant,
   PhotoTier,
   PhotoWarning,
@@ -22,6 +23,7 @@ export type ConfirmVariant = PageVariant & {
 
 export type ConfirmState = {
   notPurchasable: boolean;
+  orderFlow: OrderFlow;
   // null until the tester answers the not-purchasable flag.
   continuePastFlag: boolean | null;
   needsVariantChoice: boolean;

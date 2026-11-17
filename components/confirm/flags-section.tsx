@@ -30,12 +30,16 @@ export function FlagsSection({
   const noLogo = found.find((message) => message.code === "no_logo");
   const addedText = found.filter((message) => message.code === "photo_text");
   const lowRes = found.filter((message) => message.code === "low_resolution");
+  const transparent = found.filter((message) => message.code === "transparent");
+  const [firstTransparent] = transparent;
   const purchase = found.find((message) => message.code === "not_purchasable");
+  const personalize = found.find((message) => message.code === "personalize");
   const needsVariant = state.needsVariantChoice;
 
   const count =
-    [purchase, needsVariant, noLogo].filter(Boolean).length +
-    [addedText, lowRes].filter((photos) => photos.length > 0).length;
+    [purchase, personalize, needsVariant, noLogo].filter(Boolean).length +
+    [addedText, lowRes, transparent].filter((photos) => photos.length > 0)
+      .length;
   if (count === 0) return null;
 
   return (
@@ -76,6 +80,7 @@ export function FlagsSection({
             }
           />
         ))}
+      {personalize && <Alert tone="info" message={personalize.text} />}
       {needsVariant && (
         <VariantFlag
           state={state}
@@ -102,6 +107,17 @@ export function FlagsSection({
           action={
             <Link href="#photos" className={linkClass}>
               Review {addedText.length === 1 ? "photo" : "photos"}
+            </Link>
+          }
+        />
+      )}
+      {firstTransparent && (
+        <Alert
+          tone="info"
+          message={firstTransparent.text}
+          action={
+            <Link href="#photos" className={linkClass}>
+              Review {transparent.length === 1 ? "photo" : "photos"}
             </Link>
           }
         />

@@ -1,6 +1,11 @@
 import { JUDGE_MAX_SHOWN, MAX_REGENERATIONS } from "@/lib/config";
 import { mapLimit } from "@/lib/intake";
-import { checkCandidate, type CheckContext } from "../checks";
+import {
+  checkCandidate,
+  COVERS_PRODUCT,
+  CUT_OFF,
+  type CheckContext,
+} from "../checks";
 import { judgePanel } from "../judge";
 import { ANGLE_ELEMENT, badgeOffers, elementsOn } from "../plan";
 import { select, type Contender } from "../select";
@@ -10,6 +15,7 @@ import { isFatal } from "./errors";
 import type { StageDeps } from "./types";
 
 const CONCURRENCY = 3;
+const DETERMINISTIC = [COVERS_PRODUCT, CUT_OFF];
 
 const contender = ({ index, angle, supportingElement, judge }: Candidate) =>
   ({
@@ -92,9 +98,14 @@ export async function checkAndSelect(
       console.warn(
         `round ${roundId}: candidate ${candidate.index} failed Layer 1 (regeneration ${regeneration}): ${problems.join("; ")}`,
       );
-      // Only a Bria scene changes with the seed; the other backgrounds would draw the same creative again.
+      // Only a generated image changes with the seed (a Bria scene, a placed photo's bands), and placement is deterministic, so a paid redo can't fix a product that is covered or cut off.
+      const { background } = current;
+      const generated =
+        background.method === "bria" ||
+        (background.method === "photo" && background.gaps === true);
       const redoable =
-        !current.previewPath || current.background.method === "bria";
+        !current.previewPath ||
+        (generated && problems.some((p) => !DETERMINISTIC.includes(p)));
       if (regeneration >= MAX_REGENERATIONS || !timeLeft() || !redoable) {
         return null;
       }

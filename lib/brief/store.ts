@@ -8,7 +8,11 @@ import {
   getLatestBrief,
 } from "@/lib/db/queries";
 import { loadWorkspaceState } from "@/lib/workspace/load";
-import { briefContentSchema, type BriefContent } from "./schema";
+import {
+  briefContentSchema,
+  DEFAULT_SETTINGS,
+  type BriefContent,
+} from "./schema";
 
 type Brief = { version: number; content: BriefContent };
 
@@ -63,6 +67,7 @@ export async function ensureBrief(
     rules: [],
     exemplarCreativeIds: [],
     approvedAngles: [],
+    settings: DEFAULT_SETTINGS,
   };
   const version = await addBriefVersion(userId, workspaceId, {
     cause: "initial",

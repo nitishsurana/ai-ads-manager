@@ -10,11 +10,13 @@ export function photoWarnings(photo: {
   origWidth: number;
   origHeight: number;
   addedText: boolean;
+  transparent: boolean;
 }): PhotoWarning[] {
   return [
     ...(isLowResolution(photo.origWidth, photo.origHeight)
       ? (["low_resolution"] as const)
       : []),
     ...(photo.addedText ? (["photo_text"] as const) : []),
+    ...(photo.transparent ? (["transparent"] as const) : []),
   ];
 }

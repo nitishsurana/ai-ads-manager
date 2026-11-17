@@ -29,6 +29,7 @@ type Checks = {
   added_text: boolean;
   background: "plain" | "scene";
   person: boolean;
+  transparent: boolean;
   has_product: boolean;
   product_count: number;
   text_overlaps_product: boolean;
@@ -40,6 +41,7 @@ const clean: Checks = {
   added_text: false,
   background: "plain",
   person: false,
+  transparent: false,
   has_product: true,
   product_count: 1,
   text_overlaps_product: false,
@@ -325,6 +327,12 @@ async function main() {
       bytes: await picture("#c23b3b", 800),
       checks: clean,
     },
+  ]);
+
+  // A glass product the model flags see-through; the other photo is solid.
+  writeFixture("photos-transparent", [
+    { file: "glass.png", bytes: blue, checks: { ...clean, transparent: true } },
+    { file: "solid.png", bytes: red, checks: clean },
   ]);
 
   writeFixture("photos-heic", [

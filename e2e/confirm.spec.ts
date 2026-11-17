@@ -15,6 +15,7 @@ import {
   sendMessage,
   testerContext,
 } from "./helpers";
+import { seedWorkspace } from "./seed";
 
 const SUCCESS_URL = "https://shopabc.myshopify.com/products/blue-mug";
 const SCREEN_TIMEOUT = 60_000;
@@ -320,5 +321,25 @@ test.describe("confirm", () => {
     expect(await replay.text()).toContain("not_found");
     expect(await photoSelected(workspaceId)).toEqual([true]);
     await b.context.close();
+  });
+
+  test("a personalized product shows the personalize note and no can't-buy flag", async () => {
+    const { page, uid } = a;
+    const seeded = await seedWorkspace({
+      userId: uid,
+      fixture: "personalize-outside-form",
+    });
+    await page.goto(`/w/${seeded.workspaceId}`);
+    await expect(
+      page.getByText(
+        "Shoppers personalize this product before ordering, so every button will invite them to personalize it.",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Shoppers can't buy this online right now. Continue anyway?",
+      ),
+    ).toHaveCount(0);
+    await expect(generate(page)).toBeEnabled();
   });
 });

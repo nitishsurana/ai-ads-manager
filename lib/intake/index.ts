@@ -24,7 +24,13 @@ export type {
   LogoSource,
   Palette,
 } from "./brand";
-export type { PageFacts, PageRating, PageVariant, PurchaseState } from "./page";
+export type {
+  OrderFlow,
+  PageFacts,
+  PageRating,
+  PageVariant,
+  PurchaseState,
+} from "./page";
 export type {
   CostEntry,
   DropReason,

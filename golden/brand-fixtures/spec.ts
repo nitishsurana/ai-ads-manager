@@ -40,6 +40,7 @@ export const CLEAN_CHECK = {
   added_text: false,
   background: "plain",
   person: false,
+  transparent: false,
   has_product: true,
   product_count: 1,
   text_overlaps_product: false,

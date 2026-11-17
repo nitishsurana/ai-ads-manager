@@ -50,6 +50,7 @@ const BASE: RoundInputs = {
   ],
   facts: [],
   campaign: {},
+  orderFlow: "direct",
 };
 
 type Photo = RoundInputs["photos"][number];

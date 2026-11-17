@@ -2592,5 +2592,78 @@
   },
   "malformed-scheme": {
     "message": "Failure: That doesn't look like a valid link. Check it and try again."
+  },
+  "personalize-outside-form": {
+    "message": null,
+    "price": "$13.46",
+    "wasPrice": null,
+    "currency": "USD",
+    "rating": null,
+    "warnings": [],
+    "purchase": "purchasable",
+    "orderFlow": "personalize",
+    "note": "The real ornamentshop.com structure: the cart form has no button and START PERSONALIZING sits outside it, disabled until the app's script runs. The real page's old-price strike-through was left out: the price reader doesn't recognise that markup."
+  },
+  "personalize-with-add": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "rating": null,
+    "warnings": [],
+    "purchase": "purchasable",
+    "orderFlow": "personalize"
+  },
+  "personalize-sold-out": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "rating": null,
+    "warnings": [
+      "Warning: Shoppers can't buy this online right now. Continue anyway?"
+    ],
+    "purchase": "not_purchasable",
+    "orderFlow": "direct"
+  },
+  "personalize-false-friends": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "rating": null,
+    "warnings": [],
+    "purchase": "purchasable",
+    "orderFlow": "direct"
+  },
+  "photos-transparent": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "rating": null,
+    "warnings": [],
+    "purchase": "purchasable",
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "transparentWarning": true,
+    "scenarios": {
+      "warning-sits-on-its-photo": {
+        "s1": {},
+        "confirm": {
+          "messages": [
+            "Warning: This product looks see-through (glass, acrylic or clear plastic). Cut-outs of clear materials can keep the photo's own backdrop, so check each creative closely."
+          ],
+          "canGenerate": true,
+          "price": "$18.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      }
+    }
   }
 }

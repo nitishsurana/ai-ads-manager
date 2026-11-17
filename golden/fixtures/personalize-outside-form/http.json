@@ -1,0 +1,27 @@
+{
+  "GET https://shop.example/products/reading-in-bed-ornament": {
+    "status": 200,
+    "headers": {
+      "powered-by": "Shopify",
+      "content-type": "text/html; charset=utf-8"
+    },
+    "location": null,
+    "body": "bodies/b8d239a82297b79f2a64690677989e8ddb69f38d860f6c5f2064897c674cc51d"
+  },
+  "GET https://shop.example/products/reading-in-bed-ornament.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/adafbba3a288270756fb7fff6a2c701d4c482702e4e029fa30940df294c2e8c3"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mug-front.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237"
+  }
+}

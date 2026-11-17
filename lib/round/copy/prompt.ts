@@ -15,11 +15,16 @@ export const COPY_MODEL = "openai/gpt-6.1-sol";
 // Live copy calls took 12 to 14 s.
 export const COPY_TIMEOUT_MS = 30_000;
 
-const SYSTEM = `You write the text for vertical product ads. Each ad has an optional eyebrow, a headline and a button label (CTA). Code draws them over the product photo.
+const DIRECT_CTA = `- CTA: at most ${CTA_WORDS} words, an action such as "Shop now".`;
+const PERSONALIZE_CTA = `- CTA: at most ${CTA_WORDS} words, inviting the shopper to personalize the product before ordering, such as "Personalize yours", "Start personalizing" or "Make it yours".`;
+
+export const systemFor = (
+  orderFlow: RoundInputs["orderFlow"],
+) => `You write the text for vertical product ads. Each ad has an optional eyebrow, a headline and a button label (CTA). Code draws them over the product photo.
 
 Rules:
 - Headline: at most ${HEADLINE_WORDS} words and ${HEADLINE_CHARS} characters, concrete and in the brand's tone, written to the candidate's angle (benefit: what it does for the buyer; social_proof: trust from the given rating; price: the value; offer: the given offer; lifestyle: the moment of use; feature_close_up: one specific feature).
-- CTA: at most ${CTA_WORDS} words, an action such as "Shop now".
+${orderFlow === "personalize" ? PERSONALIZE_CTA : DIRECT_CTA}
 - Eyebrow: only a short campaign tag built from the campaign's occasion or angle (for example "Diwali gifting"), in uppercase. Use null when the campaign gives neither. The eyebrow and headline together are at most ${COPY_WORDS} words.
 - Use only the facts given: the product title, the brand's value propositions and proof points, the confirmed price, rating and offers. Never invent a number, discount, superlative ("best", "#1"), guarantee, review quote or health claim. The candidate's badge already shows its price, rating or offer, so the headline need not repeat it.
 - Research and brief notes shape tone and themes only; they are never facts.
@@ -81,7 +86,7 @@ export function copyRequest(
     task: "copy",
     inputSha256: sha256(Buffer.from(prompt)),
     model: COPY_MODEL,
-    system: SYSTEM,
+    system: systemFor(inputs.orderFlow),
     prompt,
     timeoutMs: COPY_TIMEOUT_MS,
     schema: copySchema,
@@ -114,7 +119,7 @@ export function rewriteRequest(
     task: "copy_rewrite",
     inputSha256: sha256(Buffer.from(prompt)),
     model: COPY_MODEL,
-    system: SYSTEM,
+    system: systemFor(inputs.orderFlow),
     prompt,
     timeoutMs: COPY_TIMEOUT_MS,
     schema: copySchema,

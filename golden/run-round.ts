@@ -9,8 +9,10 @@ import { expectSchema, roundProblems } from "./round/assert";
 import { briefOf, rowInputs } from "./round/inputs";
 import { ROW_CASES } from "./round/rows";
 import { CHECK_CASES } from "./round/check-cases";
+import { COPY_CASES } from "./round/copy-cases";
 import { JUDGE_TABLES } from "./round/judge-cases";
 import { PIXEL_CASES } from "./round/pixel-cases";
+import { PLAN_CASES } from "./round/plan-cases";
 import { writeContactSheet } from "./round/contact-sheet";
 import { fixtureRenders, layoutCases } from "./round/render-run";
 import { rowRounds } from "./round/rows-run";
@@ -88,7 +90,9 @@ async function main() {
   for (const { name, run } of [
     ...JUDGE_TABLES,
     ...CHECK_CASES,
+    ...COPY_CASES,
     ...PIXEL_CASES,
+    ...PLAN_CASES,
   ]) {
     try {
       const problem = await run();

@@ -85,6 +85,7 @@ const expectationSchema = z.strictObject({
   wasPrice: z.string().nullable().optional(),
   currency: z.string().optional(),
   purchase: z.enum(["purchasable", "not_purchasable"]).optional(),
+  orderFlow: z.enum(["direct", "personalize"]).optional(),
   needsVariantChoice: z.boolean().optional(),
   buyableVariants: z.number().int().optional(),
   rating: ratingSchema.nullable().optional(),
@@ -100,6 +101,7 @@ const expectationSchema = z.strictObject({
   escalatedPositions: z.array(z.number().int()).optional(),
   lowResWarning: z.boolean().optional(),
   textWarning: z.boolean().optional(),
+  transparentWarning: z.boolean().optional(),
   // Brand stage: only rows with a homepage snapshot run it.
   brandPages: z.array(z.enum(["homepage", "about"])).optional(),
   logoSource: logoSourceSchema.optional(),

@@ -36,6 +36,7 @@ export function initialConfirm(result: ConfirmSource): ConfirmState {
   const variantsById = new Map(product.variants.map((v) => [v.id, v]));
   return {
     notPurchasable: warnings.includes("not_purchasable"),
+    orderFlow: page.orderFlow,
     continuePastFlag: null,
     needsVariantChoice: page.needsVariantChoice,
     variants: page.variants.map((variant) => {

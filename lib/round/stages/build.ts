@@ -61,7 +61,7 @@ export function createBuilder(
       candidate: Candidate,
       regeneration = 0,
     ): Promise<Candidate> {
-      const { bytes, product } = await makeBackground(
+      const { bytes, product, isolated, gaps } = await makeBackground(
         candidate,
         await prepared(candidate.photoId),
         inputs,
@@ -70,7 +70,15 @@ export function createBuilder(
       );
       const path = `${input.roundId}/c${candidate.index}.jpg`;
       await deps.storage.put("backgrounds", path, bytes, "image/jpeg");
-      return { ...candidate, backgroundPath: path, product };
+      return {
+        ...candidate,
+        background:
+          candidate.background.method === "photo" && gaps !== undefined
+            ? { ...candidate.background, isolated, gaps }
+            : candidate.background,
+        backgroundPath: path,
+        product,
+      };
     },
 
     // The text layer over the stored background, planned from its pixels; stores the preview.

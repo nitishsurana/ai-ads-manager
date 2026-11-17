@@ -30,6 +30,9 @@ const COUNT_WORDS: Record<string, number> = {
   millions: 1_000_000,
 };
 
+const PERSONALIZE_CTA =
+  /personali[sz]|customi[sz]|make it yours|(?:design|create) (?:yours|your own)/i;
+
 export type CopyFailure = {
   part: "eyebrow" | "headline" | "cta" | "claim";
   text: string;
@@ -129,6 +132,13 @@ export function checkCopy(copy: Copy, inputs: RoundInputs): CopyFailure[] {
     failures.push({
       part: "cta",
       text: `the CTA has ${ctaWords} words; it needs 1 to ${CTA_WORDS}`,
+    });
+  }
+
+  if (inputs.orderFlow === "personalize" && !PERSONALIZE_CTA.test(copy.cta)) {
+    failures.push({
+      part: "cta",
+      text: 'the CTA must invite the shopper to personalize the product, such as "Personalize yours"',
     });
   }
 

@@ -50,6 +50,8 @@ export const DESIGN = {
 // Where the product sits: between the headline block and the CTA, about half the frame.
 export const PRODUCT_ZONE: Box = { x: 65, y: 690, w: 950, h: 770 };
 export const PRODUCT_MAX = { w: 680, h: 770 } as const;
+// Where an isolated product sits in a whole photo: room for the smallest text block above it, and clear of the CTA below.
+export const PHOTO_PRODUCT_ZONE: Box = { x: 65, y: 500, w: 950, h: 968 };
 
 export const CTA_BOTTOM = 1624;
 export const BLOCK_GAP = 32;

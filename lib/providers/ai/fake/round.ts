@@ -89,7 +89,9 @@ function scripted(
           index,
           eyebrow: "New season picks",
           headline,
-          cta: "Shop now",
+          cta: request.system.includes("personalize")
+            ? "Personalize yours"
+            : "Shop now",
         })),
       };
     case "brief_rewrite":
@@ -98,6 +100,8 @@ function scripted(
           { kind: "do", text: "Keep headlines short and calm" },
           { kind: "dont", text: "Fill the background with orange" },
         ],
+        settings: (JSON.parse(request.prompt) as { currentSettings: unknown })
+          .currentSettings,
       };
     case "judge": {
       // The judged creatives are in the prompt's JSON; the fake copy gave candidate i the i-th headline.

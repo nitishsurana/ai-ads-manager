@@ -103,6 +103,7 @@ export async function editCreative(
       fonts,
       logo,
       label,
+      keepClear: creative.layout.keepClear,
     });
 
     const lost = lostElement(creative.layout, layout);

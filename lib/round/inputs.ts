@@ -34,6 +34,7 @@ export const roundInputsSchema = z.object({
     }),
   ),
   campaign: campaignPatchSchema,
+  orderFlow: z.enum(["direct", "personalize"]).default("direct"),
 });
 
 export type RoundInputs = z.infer<typeof roundInputsSchema>;
@@ -59,5 +60,6 @@ export function freezeInputs(source: {
     photos: source.photos.filter((photo) => selected.has(photo.position)),
     facts: source.facts,
     campaign: source.campaign,
+    orderFlow: state.orderFlow,
   });
 }

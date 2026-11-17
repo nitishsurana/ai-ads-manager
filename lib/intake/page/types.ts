@@ -11,12 +11,15 @@ export type PageVariant = { id: number; availability: VariantAvailability };
 
 export type PageRating = { value: number; count: number; show: boolean };
 
+export type OrderFlow = "direct" | "personalize";
+
 export type PageFacts = {
   price: string | null;
   priceAmount: number | null;
   wasPrice: string | null;
   currency: string;
   purchase: PurchaseState;
+  orderFlow: OrderFlow;
   needsVariantChoice: boolean;
   variants: PageVariant[];
   rating: PageRating | null;

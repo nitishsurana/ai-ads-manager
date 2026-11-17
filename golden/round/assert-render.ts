@@ -23,14 +23,18 @@ export type Rendered = {
   candidate: Candidate;
   preview: Buffer;
   background: Buffer;
+  // What Layer 1 said about the product when it checked the stored creative.
+  placement?: string[];
 };
 
 // Geometry and colour rules every rendered creative must meet, checked from the stored layout and the files. Written from the spec, not from what the renderer happened to produce.
 export async function renderProblems(
   inputs: RoundInputs,
-  { candidate, preview, background }: Rendered,
+  { candidate, preview, background, placement = [] }: Rendered,
 ) {
-  const problems: string[] = [];
+  const problems: string[] = placement.map(
+    (problem) => `candidate ${candidate.index}: ${problem}`,
+  );
   const label = `candidate ${candidate.index}`;
   const parsed = layoutSchema.safeParse(candidate.layout);
   if (!parsed.success) return [`${label}: layout fails its schema`];
@@ -64,6 +68,11 @@ export async function renderProblems(
       ) {
         check(false, `${name} covers ${other}`);
       }
+    }
+  }
+  if (layout.keepClear && layout.product) {
+    for (const [name, box] of texts) {
+      check(!overlaps(box, layout.product), `${name} covers the product`);
     }
   }
   check(layout.headline.lines.length <= 3, "headline has more than 3 lines");

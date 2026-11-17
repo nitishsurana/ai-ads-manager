@@ -120,6 +120,7 @@ export async function processPhoto(
         origWidth: image.origWidth,
         origHeight: image.origHeight,
         addedText: checks.added_text,
+        transparent: checks.transparent,
       });
 
   return {

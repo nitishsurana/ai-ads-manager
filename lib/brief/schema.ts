@@ -21,6 +21,18 @@ export const briefRuleSchema = z.object({
   locked: z.boolean(),
 });
 
+export const briefSettingsSchema = z.object({
+  productSize: z.enum(["normal", "smaller"]),
+  preferCutout: z.boolean(),
+  backgroundStyle: z.enum(["any", "plain", "scene"]),
+});
+
+export const DEFAULT_SETTINGS = {
+  productSize: "normal",
+  preferCutout: false,
+  backgroundStyle: "any",
+} satisfies z.infer<typeof briefSettingsSchema>;
+
 export const briefContentSchema = z.object({
   rules: z.array(briefRuleSchema),
   campaign: campaignPatchSchema,
@@ -28,9 +40,17 @@ export const briefContentSchema = z.object({
   values: confirmedValuesSchema,
   exemplarCreativeIds: z.array(z.string()),
   approvedAngles: z.array(z.string()),
+  settings: briefSettingsSchema.default(DEFAULT_SETTINGS),
   // Set on the version a round's rewrite created, so a later attempt of the same round reuses it.
   round: z.number().optional(),
 });
+
+export type BriefSettings = z.infer<typeof briefSettingsSchema>;
+
+export const isDefaultSettings = (settings: BriefSettings) =>
+  settings.productSize === DEFAULT_SETTINGS.productSize &&
+  settings.preferCutout === DEFAULT_SETTINGS.preferCutout &&
+  settings.backgroundStyle === DEFAULT_SETTINGS.backgroundStyle;
 
 export type BriefRule = z.infer<typeof briefRuleSchema>;
 export type BriefContent = z.infer<typeof briefContentSchema>;

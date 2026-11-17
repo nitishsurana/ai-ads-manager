@@ -25,11 +25,11 @@ export type SupportingElement = "price" | "rating" | "offer";
 
 export type Copy = { eyebrow: string | null; headline: string; cta: string };
 
-// A scene or person photo is used whole, so the model has no method to choose for it.
+// A whole photo (a scene, or a person) has no method for the model to choose. `placement` 2 is the fit-to-width placement; rows without it use the older cover crop. `size` is absent for a normal-size product.
 export type Background =
-  | { method: "bria"; prompt: string; reason: string }
-  | { method: "solid" | "tonal"; reason: string }
-  | { method: "photo" };
+  | { method: "bria"; prompt: string; reason: string; size?: "smaller" }
+  | { method: "solid" | "tonal"; reason: string; size?: "smaller" }
+  | { method: "photo"; placement?: 2; isolated?: boolean; gaps?: boolean };
 
 // One planned creative, filled in as the stages run. Plain data: it crosses step boundaries.
 export type Candidate = {

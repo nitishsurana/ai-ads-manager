@@ -7,9 +7,11 @@ import { briaSeed } from "./seed";
 import { productCutout, type PreparedPhoto } from "./cutout";
 import { fillBackground, fillColour } from "./fills";
 import { cropPhoto } from "./photo-crop";
+import { photoPlacement, wholePhotoBackground } from "./whole-photo";
 
 export { preparePhoto, productCutout, type PreparedPhoto } from "./cutout";
-export { cropPhoto } from "./photo-crop";
+export { cropPhoto, isCutOff, type PhotoPlacement } from "./photo-crop";
+export { photoPlacement, scaledPhoto } from "./whole-photo";
 
 type Deps = Pick<StageDeps, "fal">;
 
@@ -21,13 +23,40 @@ export async function makeBackground(
   deps: Deps,
   // The round's attempt, and how often this candidate was redone: both change the seed.
   variation: { attempt: number; regeneration?: number },
-): Promise<{ bytes: Buffer; product: Box }> {
+): Promise<{
+  bytes: Buffer;
+  product: Box;
+  isolated?: boolean;
+  gaps?: boolean;
+}> {
   const { background } = candidate;
   if (background.method === "photo") {
-    return cropPhoto(photo.work, photo.bbox);
+    if (background.placement !== 2) return cropPhoto(photo.work, photo.bbox);
+    const placement = await photoPlacement(photo);
+    const { bytes, product } = await wholePhotoBackground(
+      photo,
+      placement,
+      deps,
+      {
+        seed: briaSeed(
+          candidate.index,
+          variation.attempt,
+          variation.regeneration,
+        ),
+        person:
+          inputs.photos.find((p) => p.id === candidate.photoId)?.person ??
+          false,
+      },
+    );
+    return {
+      bytes,
+      product,
+      isolated: placement.isolated,
+      gaps: !placement.cover,
+    };
   }
 
-  const { png, box } = await productCutout(photo);
+  const { png, box } = await productCutout(photo, background.size);
   if (background.method === "bria") {
     const instruction = briaInstruction(background.prompt);
     const seed = briaSeed(

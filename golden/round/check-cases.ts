@@ -114,6 +114,34 @@ const LAYOUT_CHECKS: Case[] = [
       ),
   },
   {
+    name: "layer 1 layout: text over the product fails by 1 px, passes when touching, and is skipped without keepClear",
+    run: () => {
+      // The headline box ends at y 400.
+      const withProduct = (y: number, keepClear: boolean): Layout => ({
+        ...LAYOUT,
+        keepClear,
+        product: { x: 100, y, w: 300, h: 200 },
+      });
+      return same(
+        [
+          problemsOf(withProduct(399, true)),
+          problemsOf(withProduct(400, true)),
+          problemsOf(withProduct(399, false)),
+          problemsOf({
+            ...withProduct(1480, true),
+            cta: { ...LAYOUT.cta, box: { x: 300, y: 1500, w: 480, h: 120 } },
+          }),
+        ],
+        [
+          ["text: the eyebrow, headline or CTA covers the product"],
+          [],
+          [],
+          ["text: the eyebrow, headline or CTA covers the product"],
+        ],
+      );
+    },
+  },
+  {
     name: "layer 1 layout: a glyph no font has fails",
     run: () =>
       same(

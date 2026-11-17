@@ -2,13 +2,17 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createScriptedFal } from "@/lib/providers/fal";
+import type { Layout } from "@/lib/render";
+import { checkCandidate } from "@/lib/round/checks";
+import { intendedReadback } from "@/lib/round/checks/readback";
+import { createBuilder } from "@/lib/round/stages";
 import { createFontReplayHttp, FONT_FIXTURES } from "@/lib/providers/http";
 import { createLocalStorage } from "@/lib/providers/storage";
 import type { RoundInputs } from "@/lib/round/inputs";
 import type { StoredPhoto } from "@/lib/round/stages";
 import type { Candidate } from "@/lib/round/types";
 import { memoryPhotos } from "./photos";
-import { runRender } from "./run";
+import { roundContext, runRender } from "./run";
 import { colourLogo, darkLogo, plainPhoto, scenePhoto } from "./synthetic";
 
 const typeface = { declared: null, family: "Inter", exact: true };
@@ -56,11 +60,15 @@ export const BASE_INPUTS: RoundInputs = {
   ],
   facts: [{ id: "offer", text: "Free shipping over $50", kind: "offer" }],
   campaign: {},
+  orderFlow: "direct",
 };
 
 type Spec = {
   photoId: "plain" | "scene";
   method: "bria" | "solid" | "tonal" | "photo";
+  // A whole photo is placed (2) unless it stands for a creative stored before placement existed.
+  legacy?: boolean;
+  smaller?: boolean;
   element: Candidate["supportingElement"];
   eyebrow?: string | null;
   headline: string;
@@ -75,10 +83,21 @@ export const candidate = (index: number, spec: Spec): Candidate => ({
   offerFactId: spec.element === "offer" ? "offer" : null,
   background:
     spec.method === "bria"
-      ? { method: "bria", prompt: "A sunlit pine table", reason: "fixture" }
+      ? {
+          method: "bria",
+          prompt: "A sunlit pine table",
+          reason: "fixture",
+          ...(spec.smaller && { size: "smaller" }),
+        }
       : spec.method === "photo"
-        ? { method: "photo" }
-        : { method: spec.method, reason: "fixture" },
+        ? spec.legacy
+          ? { method: "photo" }
+          : { method: "photo", placement: 2 }
+        : {
+            method: spec.method,
+            reason: "fixture",
+            ...(spec.smaller && { size: "smaller" }),
+          },
   copy: {
     eyebrow: spec.eyebrow ?? null,
     headline: spec.headline,
@@ -118,6 +137,7 @@ export const SPECS: Spec[] = [
   {
     photoId: "scene",
     method: "photo",
+    legacy: true,
     element: null,
     headline: "A quieter way to start every single day",
     cta: "Discover the whole collection",
@@ -128,6 +148,22 @@ export const SPECS: Spec[] = [
     element: "price",
     headline: "Made for slow weekends",
     cta: "Order now",
+  },
+  {
+    photoId: "plain",
+    method: "photo",
+    element: "rating",
+    eyebrow: "ON THE SHELF",
+    headline: "Small enough to sit anywhere",
+    cta: "Get yours",
+  },
+  {
+    photoId: "plain",
+    method: "bria",
+    smaller: true,
+    element: "price",
+    headline: "Slow mornings start with this jar",
+    cta: "Shop the jar",
   },
   {
     photoId: "plain",
@@ -169,20 +205,41 @@ export async function renderFixture(
     if (logo && inputs.logo?.pngPath) {
       await storage.put("logos", inputs.logo.pngPath, logo, "image/png");
     }
+    const services = {
+      fal: createScriptedFal({ fault: null, slowMs: 0 }),
+      http: createFontReplayHttp(FONT_FIXTURES),
+    };
     const composed = await runRender(
       name,
       inputs,
       specs.map((spec, index) => candidate(index, spec)),
-      {
-        fal: createScriptedFal({ fault: null, slowMs: 0 }),
-        http: createFontReplayHttp(FONT_FIXTURES),
-        storage,
-        photos: memoryPhotos(stored),
-      },
+      { ...services, storage, photos: memoryPhotos(stored) },
     );
+    const deps = {
+      readBack: async (_png: Buffer, layout: Layout) =>
+        intendedReadback(layout),
+      storage,
+    };
+    const ctx = roundContext(name, inputs);
+    const builder = createBuilder(ctx, {
+      ...services,
+      storage,
+      photos: memoryPhotos(stored),
+    });
+    const { fonts, logo: drawn } = await builder.assets();
     const previews = await Promise.all(
       composed.map(async (c) => ({
         candidate: c,
+        // Layer 1 the way an edit runs it, on the stored creative: only the placement problems are reported.
+        placement: (
+          await checkCandidate(c, {
+            input: ctx,
+            fonts,
+            logo: drawn,
+            deps,
+            prepared: builder.prepared,
+          })
+        ).filter((problem) => /^(product|text):/.test(problem)),
         preview:
           (await storage.get("previews", c.previewPath ?? "")) ??
           Buffer.alloc(0),

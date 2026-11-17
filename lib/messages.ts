@@ -59,6 +59,14 @@ export const messages = {
   library_no_match: "No creatives match this filter.",
 
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
+  personalize:
+    "Shoppers personalize this product before ordering, so every button will invite them to personalize it.",
+  transparent:
+    "This product looks see-through (glass, acrylic or clear plastic). Cut-outs of clear materials can keep the photo's own backdrop, so check each creative closely.",
+  setting_smaller: "Product smaller",
+  setting_cutout: "Cut-out preferred",
+  setting_plain: "Plain backgrounds",
+  setting_scene: "Scene backgrounds",
   low_resolution: "This photo is low resolution and may look soft.",
   photo_text: "This photo has text on it; photos without text are used first.",
   no_logo:

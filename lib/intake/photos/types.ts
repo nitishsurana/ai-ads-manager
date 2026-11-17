@@ -11,6 +11,7 @@ export const photoChecksSchema = z.object({
   added_text: z.boolean(),
   background: z.enum(["plain", "scene"]),
   person: z.boolean(),
+  transparent: z.boolean(),
   has_product: z.boolean(),
   product_count: z.number().int().min(0),
   text_overlaps_product: z.boolean(),
@@ -29,7 +30,7 @@ export type DropReason =
   | "product_cropped"
   | "mask_not_one_shape";
 
-export type PhotoWarning = "low_resolution" | "photo_text";
+export type PhotoWarning = "low_resolution" | "photo_text" | "transparent";
 
 export type Photo = {
   position: number;

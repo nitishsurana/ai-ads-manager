@@ -2,6 +2,7 @@ export { AD_NETWORK_COLOURS } from "./ad-network";
 export { planBadge, withSymbol, type BadgeSpec } from "./badge";
 export {
   CANVAS,
+  PHOTO_PRODUCT_ZONE,
   PRODUCT_MAX,
   PRODUCT_ZONE,
   SAFE_BOX,

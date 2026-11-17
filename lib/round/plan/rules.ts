@@ -1,3 +1,4 @@
+import type { BriefSettings } from "@/lib/brief/schema";
 import type { FrozenPhoto, RoundInputs } from "../inputs";
 import { ANGLES, type Angle, type SupportingElement } from "../types";
 
@@ -53,3 +54,9 @@ export function allowedPhotos(photos: FrozenPhoto[]): FrozenPhoto[] {
 
 export const isWholePhoto = (photo: FrozenPhoto) =>
   photo.background === "scene" || photo.person;
+
+// A tester who prefers cut-outs gets one for every photo without a person: people are never cut out.
+export const usesWholePhoto = (
+  photo: FrozenPhoto,
+  settings: Pick<BriefSettings, "preferCutout">,
+) => isWholePhoto(photo) && !(settings.preferCutout && !photo.person);

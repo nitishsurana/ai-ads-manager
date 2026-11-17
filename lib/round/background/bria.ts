@@ -3,13 +3,17 @@ import { sha256 } from "@/lib/providers/snapshot";
 import { CANVAS, type Box } from "@/lib/render";
 import { EDIT_MARGIN, EDIT_WIDTH } from "./placement";
 
-const GREY = { r: 154, g: 154, b: 154 };
+export const GREY = { r: 154, g: 154, b: 154 };
 // Bumped when the canvas or mask recipe changes, so recorded edits stop matching.
 export const EDIT_RECIPE = "canvas-2";
 
 // Added in code after the model's scene prompt, which is free text and may carry words from scraped research notes. The wording follows the Nov 15 evaluation, which saw no stray text with it.
-const SUFFIX =
-  "Keep the product exactly as it is, in the same place and at the same size. Light the scene to match the product and add a soft, natural contact shadow under it. Photorealistic product photography, vertical 9:16. No text, letters, numbers, logos, signage or watermarks anywhere. No people. Do not duplicate the product. Keep the top third calm and uncluttered: soft, even tones, no objects.";
+export const NO_TEXT =
+  "No text, letters, numbers, logos, signage or watermarks anywhere.";
+export const NO_DUPLICATE = "Do not duplicate the product.";
+export const CALM_TOP =
+  "Keep the top third calm and uncluttered: soft, even tones, no objects.";
+const SUFFIX = `Keep the product exactly as it is, in the same place and at the same size. Light the scene to match the product and add a soft, natural contact shadow under it. Photorealistic product photography, vertical 9:16. ${NO_TEXT} No people. ${NO_DUPLICATE} ${CALM_TOP}`;
 
 export function briaInstruction(scenePrompt: string) {
   const scene = scenePrompt

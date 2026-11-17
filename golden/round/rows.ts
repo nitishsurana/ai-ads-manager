@@ -6,7 +6,9 @@ export type RowCase = {
   campaign: RoundInputs["campaign"];
   // What the tester confirmed in chat; the CSV rows have no chat.
   facts: RoundInputs["facts"];
-  brief: Partial<Pick<BriefContent, "rules" | "research" | "approvedAngles">>;
+  brief: Partial<
+    Pick<BriefContent, "rules" | "research" | "approvedAngles" | "settings">
+  >;
 };
 
 // Creative-producing rows between them cover price, strike-through, rating, an offer, a campaign, a typed brand name with no logo, so a text wordmark (G28), and a "My Store" left blank with no logo and eight photos (G29). The confirm answers come from each row's expectations.

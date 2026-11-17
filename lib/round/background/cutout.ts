@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import type { BriefSettings } from "@/lib/brief/schema";
 import { countMainShapes, makeCutout } from "@/lib/intake";
 import type { Box } from "@/lib/render";
 import type { StageDeps } from "../stages/types";
@@ -116,7 +117,10 @@ export async function preparePhoto(
 }
 
 // The product alone: trimmed to its box, scaled into the product zone, small gaps in its outline filled.
-export async function productCutout(photo: PreparedPhoto) {
+export async function productCutout(
+  photo: PreparedPhoto,
+  size?: BriefSettings["productSize"],
+) {
   const cutout = sharp(await makeCutout(photo.work, photo.mask));
   const { width, height } = await cutout.metadata();
   if (!width || !height) throw new Error("cut-out: the cut-out has no size");
@@ -128,7 +132,7 @@ export async function productCutout(photo: PreparedPhoto) {
     width: Math.min(width - left, Math.ceil(photo.bbox.w * width)),
     height: Math.min(height - top, Math.ceil(photo.bbox.h * height)),
   };
-  const box = placeProduct(crop.width, crop.height);
+  const box = placeProduct(crop.width, crop.height, size);
   const resized = await cutout
     .extract(crop)
     .resize(box.w, box.h, { kernel: "lanczos3" })

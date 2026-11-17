@@ -20,6 +20,7 @@ export const LAYOUT: Layout = {
   fonts: { Inter: "1" },
   method: "tonal",
   product: null,
+  keepClear: false,
   scrim: null,
   eyebrow: null,
   headline: {

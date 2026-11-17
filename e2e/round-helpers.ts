@@ -80,6 +80,11 @@ const BRIEF_CONTENT = {
   },
   exemplarCreativeIds: [],
   approvedAngles: [],
+  settings: {
+    productSize: "normal",
+    preferCutout: false,
+    backgroundStyle: "any",
+  },
 };
 
 // A round that is already over, inserted for cases the UI can't reach.

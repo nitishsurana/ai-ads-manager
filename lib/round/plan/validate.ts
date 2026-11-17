@@ -1,3 +1,4 @@
+import type { BriefSettings } from "@/lib/brief/schema";
 import type { RoundInputs } from "../inputs";
 import type { Angle, Background, Candidate, SupportingElement } from "../types";
 import { SCENE_PROMPT_MAX_CHARS } from "./prompt";
@@ -7,9 +8,9 @@ import {
   badgeOffers,
   CANDIDATES,
   elementsOn,
-  isWholePhoto,
   MIN_PER_ELEMENT,
   usableAngles,
+  usesWholePhoto,
 } from "./rules";
 import type { RawPlan } from "./schema";
 
@@ -132,25 +133,62 @@ function cutAtWord(text: string, max: number) {
   return (space > 0 ? cut.slice(0, space) : cut).trimEnd();
 }
 
+// Used when the tester wants scenes and the model chose none.
+const DEFAULT_SCENES = [
+  "A sunlit light-wood table beside a window, soft morning light, warm neutral colours, calm and uncluttered.",
+  "A smooth pale stone surface in soft diffused daylight with a gentle shadow, cool neutral tones, minimal and uncluttered.",
+  "A matte warm-beige studio backdrop with a soft glow of light and a gently curved surface, calm and uncluttered.",
+];
+
+// A background style of "plain" or "scene" overrides the model's choice; `repaired` says when it did.
 function background(
   candidate: Proposed | undefined,
+  index: number,
   whole: boolean,
-): Background {
-  if (whole) return { method: "photo" };
+  settings: BriefSettings,
+): { background: Background; repaired: boolean } {
+  if (whole)
+    return { background: { method: "photo", placement: 2 }, repaired: false };
+  const size =
+    settings.productSize === "smaller" ? { size: "smaller" as const } : {};
   const reason = (candidate?.background.reason ?? "")
     .trim()
     .slice(0, REASON_MAX_CHARS);
   const prompt = candidate?.background.scenePrompt?.trim() ?? "";
-  if (candidate?.background.method === "bria" && prompt) {
+  const scene = candidate?.background.method === "bria" && prompt !== "";
+  const { backgroundStyle } = settings;
+  if (backgroundStyle === "scene" && !scene) {
     return {
-      method: "bria",
-      prompt: cutAtWord(prompt, SCENE_PROMPT_MAX_CHARS),
-      reason,
+      background: {
+        method: "bria",
+        prompt: cutAtWord(
+          prompt || (DEFAULT_SCENES[index % DEFAULT_SCENES.length] ?? ""),
+          SCENE_PROMPT_MAX_CHARS,
+        ),
+        reason,
+        ...size,
+      },
+      repaired: true,
+    };
+  }
+  if (scene && backgroundStyle !== "plain") {
+    return {
+      background: {
+        method: "bria",
+        prompt: cutAtWord(prompt, SCENE_PROMPT_MAX_CHARS),
+        reason,
+        ...size,
+      },
+      repaired: false,
     };
   }
   return {
-    method: candidate?.background.method === "solid" ? "solid" : "tonal",
-    reason,
+    background: {
+      method: candidate?.background.method === "solid" ? "solid" : "tonal",
+      reason,
+      ...size,
+    },
+    repaired: scene,
   };
 }
 
@@ -159,6 +197,7 @@ export function validatePlan(
   raw: RawPlan,
   inputs: RoundInputs,
   approvedAngles: string[],
+  settings: BriefSettings,
 ) {
   if (raw.candidates.length < CANDIDATES) {
     throw new PlanRejected(`the plan has ${raw.candidates.length} candidates`);
@@ -189,13 +228,20 @@ export function validatePlan(
     }
     if (photo.id !== candidate.photoId)
       repairs.push(`candidate ${index}: photo`);
+    const styled = background(
+      candidate,
+      index,
+      usesWholePhoto(photo, settings),
+      settings,
+    );
+    if (styled.repaired) repairs.push(`candidate ${index}: background`);
     return {
       index,
       angle,
       photoId: photo.id,
       supportingElement: element,
       offerFactId: offer?.id ?? null,
-      background: background(candidate, isWholePhoto(photo)),
+      background: styled.background,
       copy: null,
       backgroundPath: null,
       product: null,

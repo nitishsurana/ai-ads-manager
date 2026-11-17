@@ -14,9 +14,19 @@ const backgroundJson = z.discriminatedUnion("method", [
     method: z.literal("bria"),
     prompt: z.string(),
     reason: z.string(),
+    size: z.literal("smaller").optional(),
   }),
-  z.object({ method: z.enum(["solid", "tonal"]), reason: z.string() }),
-  z.object({ method: z.literal("photo") }),
+  z.object({
+    method: z.enum(["solid", "tonal"]),
+    reason: z.string(),
+    size: z.literal("smaller").optional(),
+  }),
+  z.object({
+    method: z.literal("photo"),
+    placement: z.literal(2).optional(),
+    isolated: z.boolean().optional(),
+    gaps: z.boolean().optional(),
+  }),
 ]) satisfies z.ZodType<Background>;
 
 const textPair = z.object({ headline: z.string(), cta: z.string() });

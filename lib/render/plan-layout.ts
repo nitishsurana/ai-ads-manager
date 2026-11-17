@@ -14,7 +14,8 @@ import {
 } from "./canvas";
 import { DARK_INK, hexOf, LIGHT_INK, type Backdrop, type Rgb } from "./colour";
 import { pickCtaColour } from "./cta-colour";
-import { fitText, sizeRange } from "./fit";
+import { blockSteps, EYEBROW_LINE, HEADLINE_LINE, type Block } from "./block";
+import { fitText, sizeRange, type Fit } from "./fit";
 import type { Layout, TextLayout } from "./layout";
 import { placeLogo, type LogoSpec } from "./logo";
 import {
@@ -43,6 +44,8 @@ export type LayoutInput = {
   fonts: Record<string, string>;
   method: Layout["method"];
   product: Box | null;
+  // Keeps the eyebrow, headline and CTA at least CLEARANCE px from the product when it can.
+  keepClear: boolean;
   badge: BadgeSpec | null;
   offerFactId: string | null;
   heading: FaceInput;
@@ -56,12 +59,11 @@ export type LayoutInput = {
   sample: (box: Box, scrim: Scrim | null) => Backdrop;
 };
 
-const HEADLINE_LINE = 1.05;
-const EYEBROW_LINE = 1.2;
 const CTA_LINE = 1.15;
-const HEADLINE_MIN = 56;
-const EYEBROW_MIN = 22;
 const CTA_MIN = 24;
+const CLEARANCE = 32;
+
+type Edge = Scrim["edge"];
 const CTA_PAD_Y = 28;
 const BADGE_RADIUS = DESIGN.badgeRadius;
 const BADGE_OVERHANG = 24;
@@ -102,12 +104,30 @@ export function planLayout(input: LayoutInput): Layout {
   const { copy, heading, body, sample } = input;
   const dropped: Layout["dropped"] = [];
 
-  const label = fitText(copy.cta, body.measure, {
-    maxWidth: SAFE_BOX.w - 2 * DESIGN.ctaPadX,
-    maxLines: 2,
-    sizes: sizeRange(DESIGN.ctaSize, CTA_MIN, 2),
-    weight: 700,
-  });
+  const ctaFit = (maxLines: number) =>
+    fitText(copy.cta, body.measure, {
+      maxWidth: SAFE_BOX.w - 2 * DESIGN.ctaPadX,
+      maxLines,
+      sizes: sizeRange(DESIGN.ctaSize, CTA_MIN, 2),
+      weight: 700,
+    });
+  const ctaHeightOf = (fit: Fit) =>
+    Math.ceil(
+      Math.max(
+        DESIGN.ctaHeight,
+        fit.lines.length * fit.size * CTA_LINE + 2 * CTA_PAD_Y,
+      ),
+    );
+  const clear = input.keepClear ? input.product : null;
+  let label = ctaFit(2);
+  if (
+    clear &&
+    label.lines.length > 1 &&
+    CTA_BOTTOM - ctaHeightOf(label) < bottom(clear) + CLEARANCE
+  ) {
+    const single = ctaFit(1);
+    if (single.fits) label = single;
+  }
   if (!label.fits) dropped.push({ element: "cta", reason: "does not fit" });
   const accent = pickCtaColour({
     brand: input.brandColours,
@@ -116,12 +136,7 @@ export function planLayout(input: LayoutInput): Layout {
   const labelWidth = Math.max(
     ...label.lines.map((line) => body.measure(line, label.size, 700)),
   );
-  const ctaHeight = Math.ceil(
-    Math.max(
-      DESIGN.ctaHeight,
-      label.lines.length * label.size * CTA_LINE + 2 * CTA_PAD_Y,
-    ),
-  );
+  const ctaHeight = ctaHeightOf(label);
   const ctaWidth = Math.min(
     SAFE_BOX.w,
     Math.ceil(labelWidth + 2 * DESIGN.ctaPadX),
@@ -144,45 +159,38 @@ export function planLayout(input: LayoutInput): Layout {
     h: ctaHeight,
   };
 
-  const headFit = fitText(copy.headline, heading.measure, {
-    maxWidth: SAFE_BOX.w,
-    maxLines: 3,
-    sizes: sizeRange(DESIGN.headlineSize, HEADLINE_MIN, 4),
-    weight: 700,
+  const steps = blockSteps(copy, {
+    heading: heading.measure,
+    body: body.measure,
   });
-  if (!headFit.fits) {
-    dropped.push({ element: "headline", reason: "does not fit in 3 lines" });
-  }
-  const eyebrowFit = copy.eyebrow
-    ? [1, 2]
-        .map((maxLines) =>
-          fitText(copy.eyebrow ?? "", body.measure, {
-            maxWidth: SAFE_BOX.w,
-            maxLines,
-            sizes: sizeRange(DESIGN.eyebrowSize, EYEBROW_MIN, 2),
-            weight: 700,
-            tracking: DESIGN.eyebrowTracking,
-          }),
-        )
-        .find((fit) => fit.fits)
-    : undefined;
-  if (copy.eyebrow && !eyebrowFit) {
-    dropped.push({ element: "eyebrow", reason: "does not fit" });
-  }
-
-  const eyebrowHeight = eyebrowFit
-    ? Math.ceil(eyebrowFit.lines.length * eyebrowFit.size * EYEBROW_LINE)
-    : 0;
-  const headHeight = Math.ceil(
-    headFit.lines.length * headFit.size * HEADLINE_LINE,
-  );
-  const blockHeight = eyebrowHeight + (eyebrowFit ? BLOCK_GAP : 0) + headHeight;
-  const edge =
+  const natural =
     input.method === "photo" && input.product
       ? chooseEdge(input.product)
       : "top";
-  const blockTop =
-    edge === "bottom" ? cta.box.y - 48 - blockHeight : SAFE_BOX.y;
+  const topOf = (edge: Edge, block: Block) =>
+    edge === "bottom" ? cta.box.y - 48 - block.height : SAFE_BOX.y;
+  const clears = (edge: Edge, block: Block) =>
+    clear !== null &&
+    (edge === "top"
+      ? topOf(edge, block) + block.height + CLEARANCE <= clear.y
+      : topOf(edge, block) >= bottom(clear) + CLEARANCE);
+  const edges: Edge[] = [natural, natural === "top" ? "bottom" : "top"];
+  const placed = edges.flatMap((edge) => {
+    const block = steps.find((step) => clears(edge, step));
+    return block ? [{ edge, block }] : [];
+  })[0];
+  const { edge, block } = !clear
+    ? { edge: natural, block: steps[0] as Block }
+    : (placed ?? { edge: "top" as const, block: steps.at(-1) as Block });
+  const { headline: headFit, eyebrow: eyebrowFit, eyebrowHeight } = block;
+  if (!headFit.fits) {
+    dropped.push({ element: "headline", reason: "does not fit in 3 lines" });
+  }
+  if (copy.eyebrow && !eyebrowFit) {
+    dropped.push({ element: "eyebrow", reason: "does not fit" });
+  }
+  const blockHeight = block.height;
+  const blockTop = topOf(edge, block);
 
   const region = { x: SAFE_BOX.x, y: blockTop, w: SAFE_BOX.w, h: blockHeight };
   const raw = sample(region, null);
@@ -289,6 +297,7 @@ export function planLayout(input: LayoutInput): Layout {
     fonts: input.fonts,
     method: input.method,
     product: input.product,
+    keepClear: input.keepClear,
     scrim,
     eyebrow,
     headline,
