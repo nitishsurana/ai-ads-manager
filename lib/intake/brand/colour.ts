@@ -13,7 +13,7 @@ export function fromHex(hex: string): Rgb {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-// Theme settings arrive as "#fff", "rgb(0 0 0)", "0, 0, 0" (Dawn's channel triplets) or a colour name. Anything else is not read: hsl, gradients, unresolved var(), and any colour with transparency, which is a tint of something else rather than a brand colour.
+// Theme settings arrive as "#fff", "rgb(0 0 0)", "0, 0, 0" or "0 0 0" (channel triplets) or a colour name. Anything else is not read: hsl, gradients, unresolved var(), and any colour with transparency, which is a tint of something else rather than a brand colour.
 export function parseColour(value: string): Rgb | null {
   const text = value
     .trim()
@@ -35,7 +35,9 @@ export function parseColour(value: string): Rgb | null {
   const channels =
     /^rgba?\(\s*([\d.]+%?)[\s,]+([\d.]+%?)[\s,]+([\d.]+%?)(?:\s*[,/]\s*([\d.]+%?))?/.exec(
       text,
-    ) ?? /^([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)$/.exec(text);
+    ) ??
+    /^([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)$/.exec(text) ??
+    /^([\d.]+)\s+([\d.]+)\s+([\d.]+)$/.exec(text);
   if (!channels) return null;
   const alpha = channels[4];
   if (alpha !== undefined) {

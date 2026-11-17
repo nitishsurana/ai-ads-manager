@@ -1,5 +1,15 @@
 {
-  "photo_check:ad9a996f:6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811": {
+  "photo_check:1085a1cf:6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": false,
+    "product_count": 0,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check_text:c83e990b:6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811": {
     "added_text": true,
     "background": "plain",
     "person": false,

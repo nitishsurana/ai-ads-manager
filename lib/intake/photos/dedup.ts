@@ -1,14 +1,17 @@
 const CHANNELS = 3;
 
-// Untuned: the real rows so far only merged byte-identical copies, so these were set on synthetic resizes and tested only against the committed fixtures.
-const NEAR_DUPLICATE = {
-  // Aspect ratios of resized copies differ by rounding only.
-  aspectTolerance: 0.01,
+type Limits = {
   // Mean absolute RGB difference (0-255) over the whole 16x16 image.
-  maxMeanDiff: 1.5,
+  maxMeanDiff: number;
   // Largest per-cell mean difference: a colour variant changes some cells a lot even when most of the frame is white.
-  maxCellDiff: 16,
-} as const;
+  maxCellDiff: number;
+};
+
+// Resized copies differ by rounding and re-encoding. Aspect ratios differ by rounding only.
+const RESIZED: Limits = { maxMeanDiff: 1.5, maxCellDiff: 16 };
+const ASPECT_TOLERANCE = 0.01;
+// Same pixel size: only a visually identical picture with other bytes (a re-export) merges. Real pairs sit at mean 0.00-0.16 and worst cell 0-1.3; same-size colourways and other shots on white start at mean 0.7 or worst cell 5.
+const SAME_SIZE: Limits = { maxMeanDiff: 0.3, maxCellDiff: 2 };
 
 export type Hashed = {
   position: number;
@@ -20,14 +23,12 @@ export type Hashed = {
 
 function similar(a: Hashed, b: Hashed) {
   if (a.sha256 === b.sha256) return true;
-  // Only the same picture at a different size counts; a same-size copy with other bytes is its own photo.
-  if (a.origWidth === b.origWidth && a.origHeight === b.origHeight) {
-    return false;
-  }
+  const sameSize = a.origWidth === b.origWidth && a.origHeight === b.origHeight;
   const ratioA = a.origWidth / a.origHeight;
   const ratioB = b.origWidth / b.origHeight;
-  if (Math.abs(ratioA - ratioB) / ratioA > NEAR_DUPLICATE.aspectTolerance)
+  if (!sameSize && Math.abs(ratioA - ratioB) / ratioA > ASPECT_TOLERANCE) {
     return false;
+  }
 
   const left = Buffer.from(a.hash, "hex");
   const right = Buffer.from(b.hash, "hex");
@@ -43,9 +44,9 @@ function similar(a: Hashed, b: Hashed) {
     total += cell;
     worstCell = Math.max(worstCell, cell / CHANNELS);
   }
+  const limits = sameSize ? SAME_SIZE : RESIZED;
   return (
-    total / left.length <= NEAR_DUPLICATE.maxMeanDiff &&
-    worstCell <= NEAR_DUPLICATE.maxCellDiff
+    total / left.length <= limits.maxMeanDiff && worstCell <= limits.maxCellDiff
   );
 }
 

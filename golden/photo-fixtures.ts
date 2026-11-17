@@ -59,6 +59,8 @@ type Photo = {
   // A recorded failure replays as a thrown error.
   checks?: Checks | { error: string };
   escalated?: Checks | { error: string };
+  // The larger model's answer for a text photo; defaults to the primary answer.
+  text?: Checks | { error: string };
   mask?: Buffer | { error: string };
   response?: { status: number; truncated?: boolean };
   host?: string;
@@ -67,6 +69,12 @@ type Photo = {
 async function picture(colour: string, size = 800) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><rect width="800" height="800" fill="#fff"/><rect x="200" y="200" width="400" height="400" fill="${colour}"/><circle cx="400" cy="400" r="100" fill="#fff"/></svg>`;
   return sharp(Buffer.from(svg)).resize(size, size).png().toBuffer();
+}
+
+// Two colourways of one product: same size, a small coloured part that differs. The dot is 30px: mean difference about 0.2 (under the same-size limit) but a worst cell near 25, so only the cell limit keeps colourways apart.
+async function colourway(colour: string) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><rect width="800" height="800" fill="#fff"/><circle cx="400" cy="400" r="15" fill="${colour}"/></svg>`;
+  return sharp(Buffer.from(svg)).png().toBuffer();
 }
 
 async function blobs(
@@ -171,6 +179,10 @@ function writeFixture(name: string, photos: Photo[]) {
         inputSha256: sha,
       });
     if (p.checks) ai[key("photo_check", PRIMARY_MODEL)] = p.checks;
+    // A photo the primary model flags with added text is checked again by the larger model, whose answer decides.
+    if (p.checks && "added_text" in p.checks && p.checks.added_text) {
+      ai[key("photo_check_text", ESCALATION_MODEL)] = p.text ?? p.checks;
+    }
     if (p.escalated) {
       ai[key("photo_check_escalated", ESCALATION_MODEL)] = p.escalated;
     }
@@ -220,6 +232,36 @@ async function main() {
     { file: "red.png", bytes: red, checks: clean },
     { file: "red-small.png", bytes: await picture("#c23b3b", 400) },
     { file: "green.png", bytes: green, checks: clean },
+  ]);
+
+  writeFixture("photos-colourways", [
+    { file: "olive.png", bytes: await colourway("#6b7a3a"), checks: clean },
+    { file: "plum.png", bytes: await colourway("#7a3a5b"), checks: clean },
+    { file: "olive-reexport.png", bytes: await colourway("#6b7a3b") },
+  ]);
+
+  // Haiku flags text on three photos. Sonnet counts two products on one and its answer decides; its call fails on another and Haiku's answer stands; it finds no text on the last, which is then clean (low-res by size).
+  writeFixture("photos-text-disagreement", [
+    { file: "clean.png", bytes: blue, checks: clean },
+    {
+      file: "text.png",
+      bytes: red,
+      checks: withText(),
+      text: withText({ product_count: 2 }),
+    },
+    {
+      file: "text-call-fails.png",
+      bytes: green,
+      checks: withText(),
+      text: { error: "timeout" },
+      mask: await blobs([{ x: 40, y: 40, w: 160, h: 160 }]),
+    },
+    {
+      file: "no-text.png",
+      bytes: await picture("#c2a13b", 600),
+      checks: withText(),
+      text: clean,
+    },
   ]);
 
   const flat = (colour: string) =>

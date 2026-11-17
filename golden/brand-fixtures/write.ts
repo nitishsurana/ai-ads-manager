@@ -114,7 +114,11 @@ export async function writeAll(specs: Spec[]) {
     const { dir, body, json, http, response } = f;
     http[`GET ${IMAGES}/photo.png`] = response("image/png", photoBytes);
     for (const [name, file] of Object.entries(spec.files ?? {})) {
-      const type = name.endsWith(".svg") ? "image/svg+xml" : "image/png";
+      const type = name.endsWith(".svg")
+        ? "image/svg+xml"
+        : name.endsWith(".css")
+          ? "text/css"
+          : "image/png";
       http[`GET ${IMAGES}/${name}`] =
         typeof file === "number"
           ? { status: file, headers: {}, location: null, body: null }
@@ -151,6 +155,7 @@ export async function writeAll(specs: Spec[]) {
         status: 200,
         html: body(f.productPage),
         location: "US",
+        ...(spec.styles && { styles: spec.styles }),
       },
       [`${origin}/`]: { status: 200, html: body(f.homepage), location: "US" },
     };

@@ -1,5 +1,6 @@
 import type { CheerioAPI } from "cheerio";
-import { cleanPrice, parseAmount, PRICE_AT_START } from "./money";
+import { parseAmount } from "@/lib/money";
+import { cleanPrice, PRICE_AT_START } from "./money";
 import type { Node, Scope } from "./section";
 import { textOf } from "./text";
 

@@ -1,5 +1,5 @@
 {
-  "photo_check:ad9a996f:cdbed8c8d2bbe295e19b05385295d2bde4507e1b28c8342f898814fdb8457a43": {
+  "photo_check:1085a1cf:cdbed8c8d2bbe295e19b05385295d2bde4507e1b28c8342f898814fdb8457a43": {
     "added_text": false,
     "background": "plain",
     "person": false,
@@ -9,7 +9,7 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811": {
+  "photo_check:1085a1cf:6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811": {
     "added_text": true,
     "background": "plain",
     "person": false,
@@ -19,7 +19,17 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:c82194e8703b40b4d9643d12a0923a4ecb697437f8353a4468b526bd1902c5f6": {
+  "photo_check_text:c83e990b:6872469fdce084060bcd7eb0feef43f6da641c5be468d15e618f0f7a5b15f811": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": false,
+    "product_count": 0,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:c82194e8703b40b4d9643d12a0923a4ecb697437f8353a4468b526bd1902c5f6": {
     "added_text": true,
     "background": "scene",
     "person": false,
@@ -29,7 +39,17 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:74d292f9f85d22ed23d9020cee123abf17f4a75e98de2705083c23e279730209": {
+  "photo_check_text:c83e990b:c82194e8703b40b4d9643d12a0923a4ecb697437f8353a4468b526bd1902c5f6": {
+    "added_text": true,
+    "background": "scene",
+    "person": false,
+    "has_product": false,
+    "product_count": 0,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:74d292f9f85d22ed23d9020cee123abf17f4a75e98de2705083c23e279730209": {
     "added_text": true,
     "background": "plain",
     "person": false,
@@ -39,7 +59,17 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:369b19c8585b617b2fd1edcab729a47fc6fc613216c1ba918e0bdaa23d8d0d31": {
+  "photo_check_text:c83e990b:74d292f9f85d22ed23d9020cee123abf17f4a75e98de2705083c23e279730209": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 2,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:369b19c8585b617b2fd1edcab729a47fc6fc613216c1ba918e0bdaa23d8d0d31": {
     "added_text": true,
     "background": "plain",
     "person": false,
@@ -49,7 +79,17 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:f84a1493ae9bc7f5a54be43e41eed72378d81ee2910a6cff7048722e61ce0021": {
+  "photo_check_text:c83e990b:369b19c8585b617b2fd1edcab729a47fc6fc613216c1ba918e0bdaa23d8d0d31": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": true,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:f84a1493ae9bc7f5a54be43e41eed72378d81ee2910a6cff7048722e61ce0021": {
     "added_text": true,
     "background": "plain",
     "person": false,
@@ -59,7 +99,17 @@
     "product_cropped_by_frame": true,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:56a72531d8d7e04665c8ae288039e199a7c2c60664b3208b89573cc603a10057": {
+  "photo_check_text:c83e990b:f84a1493ae9bc7f5a54be43e41eed72378d81ee2910a6cff7048722e61ce0021": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": true,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:56a72531d8d7e04665c8ae288039e199a7c2c60664b3208b89573cc603a10057": {
     "added_text": true,
     "background": "plain",
     "person": false,
@@ -69,7 +119,27 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:ad9a996f:fc39f9f8e9fa1ebcb2d73b41cd455a5ebceece620397fea82d4ef3113593fc2d": {
+  "photo_check_text:c83e990b:56a72531d8d7e04665c8ae288039e199a7c2c60664b3208b89573cc603a10057": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:fc39f9f8e9fa1ebcb2d73b41cd455a5ebceece620397fea82d4ef3113593fc2d": {
+    "added_text": true,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check_text:c83e990b:fc39f9f8e9fa1ebcb2d73b41cd455a5ebceece620397fea82d4ef3113593fc2d": {
     "added_text": true,
     "background": "plain",
     "person": false,

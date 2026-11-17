@@ -1,0 +1,43 @@
+{
+  "GET https://shop.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b"
+  },
+  "GET https://shop.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/780e9300928d3c4bf2d0aa12fb9e0f3456c84eb96c19a0c2275bb8c83ec78afb"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/olive.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/60421a47eb5d247d08145e38bf75d6473ad52a28a7dd9638f3fd2eaa2bc41d8f"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/plum.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/2554bc15573a6bca163fddc94e06513e3df1cba123fe2e5a74c3e43525a12b55"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/olive-reexport.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/5dd4339e21885e8c6018573db0e187f8e21ce20a3341ffb6cd4acf4f48c5577f"
+  }
+}

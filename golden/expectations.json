@@ -13,10 +13,40 @@
     "warnings": [],
     "lowResWarning": true,
     "textWarning": false,
-    "note": "CSV says 16,731 reviews and $20; the live page says 16,733 and $20.00.",
     "uniquePhotos": 6,
     "shownPhotos": 6,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "No",
+        "price": "n/a",
+        "wasPrice": "n/a",
+        "currency": "USD",
+        "rating": "Yes",
+        "brandName": "n/a",
+        "brandKit": "Edit tone to 'clean, glossy, minimal'"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft."
+        ],
+        "canGenerate": true,
+        "price": null,
+        "wasPrice": null,
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [6],
+        "textPositions": [],
+        "tone": ["clean", "glossy", "minimal"]
+      }
+    },
+    "palettePrimary": "#673f33"
   },
   "G06": {
     "message": null,
@@ -36,13 +66,151 @@
     "uniquePhotos": 4,
     "shownPhotos": 4,
     "droppedPositions": [],
-    "note": "Photo counts: the CSV gives none for G06, G13, G21, G22 and G24; they are the live product's image counts with no drops expected.",
     "brandPages": ["homepage", "about"],
     "logoSource": "header",
     "logoTransparent": true,
     "storeName": "Allbirds",
     "needsBrandName": false,
-    "kitReady": true
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $70",
+        "wasPrice": "Yes ($100)",
+        "currency": "USD",
+        "rating": "Yes",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$70",
+        "wasPrice": "$100",
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "scenarios": {
+      "switch-clears-strike-through": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Switch currency to GBP, enter £55",
+          "currency": "GBP (switched from USD)"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "£55.00",
+          "wasPrice": null,
+          "showRating": true,
+          "logoSource": "header"
+        }
+      },
+      "edit-price-hide-strike-through": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Edit to $65",
+          "wasPrice": "No (override)"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$65.00",
+          "wasPrice": null,
+          "showRating": true,
+          "logoSource": "header"
+        }
+      },
+      "invalid-price-edit-ignored": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Edit to abc"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$70",
+          "wasPrice": "$100",
+          "showRating": true,
+          "logoSource": "header"
+        }
+      },
+      "negative-price-ignored": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Edit to -5"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$70",
+          "wasPrice": "$100",
+          "showRating": true,
+          "logoSource": "header"
+        }
+      },
+      "no-price-no-strike-through": {
+        "s1": {
+          "showPrice": "No",
+          "wasPrice": "Yes ($100)"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": null,
+          "wasPrice": null,
+          "showRating": true,
+          "logoSource": "header"
+        }
+      },
+      "strike-through-not-above-price": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Edit to $120"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$120.00",
+          "wasPrice": null,
+          "showRating": true,
+          "logoSource": "header"
+        }
+      },
+      "currency-not-offered": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Switch currency to JPY, enter 9000"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$70",
+          "wasPrice": "$100",
+          "showRating": true,
+          "logoSource": "header",
+          "currencies": ["USD", "CAD", "INR", "EUR", "GBP"]
+        }
+      },
+      "variant-ignored-without-picker": {
+        "s1": {
+          "variant": "Choose 33179624669264"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$70",
+          "wasPrice": "$100",
+          "showRating": true,
+          "logoSource": "header"
+        }
+      }
+    }
   },
   "G07": {
     "message": null,
@@ -58,7 +226,6 @@
     "warnings": [],
     "lowResWarning": true,
     "textWarning": false,
-    "note": "CSV says 28 reviews; the live widget now says 29 (aria-label 'Rated 4.8 out of 5 stars 29 reviews'). The stale structured data 4.5 (4) is still overruled.",
     "uniquePhotos": 9,
     "shownPhotos": 9,
     "droppedPositions": [],
@@ -69,7 +236,34 @@
     "storeName": "Taylor Stitch",
     "needsBrandName": false,
     "kitReady": true,
-    "headerBackground": "#171717"
+    "headerBackground": "#171717",
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "On-model 2nd photo",
+        "showPrice": "Yes",
+        "price": "Confirm $94.50",
+        "wasPrice": "Yes ($135)",
+        "currency": "USD",
+        "rating": "Yes",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft."
+        ],
+        "canGenerate": true,
+        "price": "$94.50",
+        "wasPrice": "$135",
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [9],
+        "textPositions": [],
+        "selectedCount": 8
+      },
+      "deselectPositions": [2]
+    }
   },
   "G08": {
     "message": null,
@@ -85,7 +279,69 @@
     "textWarning": false,
     "uniquePhotos": 9,
     "shownPhotos": 9,
-    "droppedPositions": []
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $398",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: Shoppers can't buy this online right now. Continue anyway?",
+          "Warning: This photo is low resolution and may look soft."
+        ],
+        "canGenerate": true,
+        "price": "$398",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [9],
+        "textPositions": []
+      }
+    },
+    "scenarios": {
+      "stop-at-flag": {
+        "s1": {
+          "continue": "No"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: Shoppers can't buy this online right now. Continue anyway?",
+            "Warning: This photo is low resolution and may look soft."
+          ],
+          "canGenerate": false,
+          "price": "$398",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "header"
+        }
+      },
+      "flag-unanswered": {
+        "s1": {},
+        "confirm": {
+          "messages": [
+            "Warning: Shoppers can't buy this online right now. Continue anyway?",
+            "Warning: This photo is low resolution and may look soft."
+          ],
+          "canGenerate": false,
+          "price": "$398",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "header"
+        }
+      }
+    }
   },
   "G09": {
     "message": null,
@@ -95,20 +351,44 @@
     "purchase": "purchasable",
     "rating": {
       "value": 4.8,
-      "count": 53089,
+      "count": 53096,
       "show": true
     },
     "warnings": [],
     "uniquePhotos": 12,
     "shownPhotos": 7,
-    "droppedPositions": [7, 9, 10, 11, 12],
+    "droppedPositions": [6, 7, 8, 9, 11],
     "lowResWarning": false,
     "textWarning": true,
-    "note": "CSV says 53,082 reviews; the live count is 53,089. The title widget shows only the count; the numeric value 4.8 comes from the product's own Okendo widget in its reviews section (data-oke-reviews-product-id matches the product id). The page is bot-protected: product JSON and page come through Firecrawl.",
-    "triage": "photo 6 shows three wallets on a plain backdrop with callouts, so the >1-product drop rule applies and the model looks right; photo 12 is a collage (a scene), so keeping it looks right; photos 5 (dark textured backdrop, two wallets) and 8 (card stack slightly cut) are borderline.",
-    "triageActual": {
-      "shownPhotos": 5,
-      "droppedPositions": [5, 6, 7, 8, 9, 10, 11]
+    "note": "The title widget shows only the count; the numeric value 4.8 comes from the product's own Okendo widget in its reviews section (data-oke-reviews-product-id matches the product id). The page is bot-protected: product JSON and page come through Firecrawl.",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $150",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "Yes",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo has text on it; photos without text are used first."
+        ],
+        "canGenerate": true,
+        "price": "$150",
+        "wasPrice": null,
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": [5, 10, 12]
+      }
     }
   },
   "G11": {
@@ -122,12 +402,39 @@
     "uniquePhotos": 8,
     "shownPhotos": 7,
     "droppedPositions": [5],
-    "dropReasons": {
-      "5": "text_over_product"
-    },
     "lowResWarning": true,
     "textWarning": true,
-    "note": "The carousel's '117 reviews' trap is gone from the live page; the product's own Judge.me badge is hidden, so no rating either way. The live product now has 8 images (CSV: 7, '6 of 7' shown); photo 5 is dropped as the CSV says, photos 1 and 6 carry the low-res warning."
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $18.99",
+        "wasPrice": "Yes ($32.99)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft.",
+          "Warning: This photo has text on it; photos without text are used first."
+        ],
+        "canGenerate": true,
+        "price": "$18.99",
+        "wasPrice": "$32.99",
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [1, 6],
+        "textPositions": [6, 7]
+      }
+    },
+    "logoColourClass": "multi_colour"
   },
   "G12": {
     "message": "Failure: Only products with a price above $0 are supported."
@@ -148,7 +455,6 @@
     ],
     "lowResWarning": false,
     "textWarning": false,
-    "note": "CSV says the button reads 'Notify me'. The live page shows a disabled 'Sold out' submit button plus a 'Notify Me When Available' link; both are the can't-buy group.",
     "uniquePhotos": 14,
     "shownPhotos": 14,
     "droppedPositions": [],
@@ -160,7 +466,51 @@
     "storeName": "Midnight Hour",
     "needsBrandName": false,
     "headingFont": "Cardo",
-    "kitReady": true
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $89",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: Shoppers can't buy this online right now. Continue anyway?"
+        ],
+        "canGenerate": true,
+        "price": "$89",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "scenarios": {
+      "rating-override-on": {
+        "s1": {
+          "continue": "Yes",
+          "rating": "Yes (override: default off)"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: Shoppers can't buy this online right now. Continue anyway?"
+          ],
+          "canGenerate": true,
+          "price": "$89",
+          "wasPrice": null,
+          "showRating": true,
+          "logoSource": "header"
+        }
+      }
+    },
+    "bodyFont": "Open Sans"
   },
   "G14": {
     "message": null,
@@ -178,7 +528,51 @@
     },
     "lowResWarning": false,
     "textWarning": false,
-    "note": "CSV says CA$59.99 as the page prints it; the live page now prints a bare $59.99 and the CA$ comes from the CAD currency signal (og:price:currency)."
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm CA$59.99",
+        "wasPrice": "Leave empty",
+        "currency": "CAD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "CA$59.99",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "scenarios": {
+      "switch-currency": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Switch currency to USD, enter $44.99",
+          "currency": "USD (switched from CAD)"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$44.99",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "header"
+        }
+      }
+    },
+    "logoColourClass": "multi_colour"
   },
   "G15": {
     "message": "Failure: This product is only sold in stores, so we can't make ads for it."
@@ -191,15 +585,42 @@
     "purchase": "purchasable",
     "rating": null,
     "warnings": [],
-    "uniquePhotos": 76,
-    "shownPhotos": 76,
+    "uniquePhotos": 71,
+    "shownPhotos": 71,
     "droppedPositions": [],
     "duplicatePositions": [
-      25, 26, 27, 28, 45, 61, 62, 64, 65, 66, 67, 68, 70, 73, 74, 75
+      25, 26, 27, 28, 45, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74,
+      75, 76, 77
     ],
     "lowResWarning": false,
     "textWarning": false,
-    "note": "CSV expects 77 unique (15 repeats, listing no photo 61). Photo 61 is byte-identical to photo 1 (same sha256), so it is a 16th exact repeat and 76 are unique."
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $86.19",
+        "wasPrice": "Yes ($169)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$86.19",
+        "wasPrice": "$169",
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    }
   },
   "G19": {
     "message": null,
@@ -221,7 +642,29 @@
     "needsBrandName": false,
     "headingFont": "EB Garamond",
     "kitReady": true,
-    "note": "The CSV describes the opaque header JPG. The Storefront emblem is transparent and its ring text carries the store name, so the spec's replacement rule picks it over the opaque header logo; white-box removal on this JPG is covered by the brand-white-box fixture."
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $9.00",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$9.00",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "storefront",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    }
   },
   "G21": {
     "message": null,
@@ -237,7 +680,6 @@
     "warnings": [],
     "lowResWarning": false,
     "textWarning": false,
-    "note": "CSV says 'no rating found'. The live page's JSON-LD now carries 4.4 from 148 on a ProductGroup for this URL, and the widget's count (148) agrees, so the rating counts.",
     "uniquePhotos": 18,
     "shownPhotos": 18,
     "droppedPositions": [],
@@ -245,7 +687,30 @@
     "logoSource": "header",
     "storeName": "Kylie Cosmetics",
     "needsBrandName": false,
-    "kitReady": true
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $36",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "Yes",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$36",
+        "wasPrice": null,
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    }
   },
   "G22": {
     "message": null,
@@ -257,9 +722,54 @@
     "warnings": [],
     "lowResWarning": false,
     "textWarning": false,
-    "uniquePhotos": 44,
-    "shownPhotos": 44,
-    "droppedPositions": []
+    "uniquePhotos": 42,
+    "shownPhotos": 42,
+    "droppedPositions": [],
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Edit to $24.99 (upcoming campaign)",
+        "wasPrice": "Yes (add $29.99; none on the page)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$24.99",
+        "wasPrice": "$29.99",
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "scenarios": {
+      "strike-through-without-a-value": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Confirm $29.99",
+          "wasPrice": "Yes"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$29.99",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "header"
+        }
+      }
+    },
+    "duplicatePositions": [20, 32]
   },
   "G23": {
     "message": "Failure: We couldn't find that product."
@@ -283,7 +793,31 @@
     "storeName": "Boston General Store",
     "needsBrandName": false,
     "headingFont": "Libre Baskerville",
-    "kitReady": true
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $22.50",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$22.50",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "bodyFont": "Inter"
   },
   "G30": {
     "message": "Failure: Only Shopify product pages are supported for now."
@@ -467,7 +1001,46 @@
     "purchase": "purchasable",
     "rating": null,
     "warnings": [],
-    "needsVariantChoice": true
+    "needsVariantChoice": true,
+    "scenarios": {
+      "variant-unchosen": {
+        "s1": {},
+        "confirm": {
+          "messages": [],
+          "canGenerate": false,
+          "price": "$18.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      },
+      "variant-chosen": {
+        "s1": {
+          "variant": "Choose 4456"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": false,
+          "price": "$24.00",
+          "wasPrice": "$28.00",
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      },
+      "variant-chosen-and-confirmed": {
+        "s1": {
+          "variant": "Choose 4456, confirmed"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$24.00",
+          "wasPrice": "$28.00",
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      }
+    }
   },
   "price-after-variant-choice": {
     "message": null,
@@ -676,7 +1249,33 @@
     "needsBrandName": false,
     "headingFont": "DM Sans",
     "paletteBackground": "#000000",
-    "kitReady": true
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $11.99",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "Yes (override: default off)",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo has text on it; photos without text are used first."
+        ],
+        "canGenerate": true,
+        "price": "$11.99",
+        "wasPrice": null,
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": [1]
+      }
+    },
+    "bodyFont": "DM Sans"
   },
   "G10": {
     "message": null,
@@ -697,7 +1296,38 @@
     ],
     "lowResWarning": false,
     "textWarning": true,
-    "note": "CSV says $63; the page prints $63.00."
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "logoSource": "header",
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "No",
+        "price": "n/a",
+        "wasPrice": "n/a",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo has text on it; photos without text are used first."
+        ],
+        "canGenerate": true,
+        "price": null,
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": [2, 3, 7, 8, 13]
+      }
+    },
+    "logoColourClass": "one_colour",
+    "headingFont": "Cormorant Garamond",
+    "bodyFont": "Cormorant Garamond"
   },
   "G29": {
     "message": null,
@@ -712,18 +1342,60 @@
     "droppedPositions": [1, 2, 3, 4],
     "lowResWarning": true,
     "textWarning": true,
-    "note": "Low-res warnings on 5, 6, 7 and 8 match the CSV.",
-    "triage": "photos 3 and 4 are white-background composites with several items and added text; the model called them scenes, and the CSV's drop looks right, so the scene-vs-plain wording needs tuning.",
-    "triageActual": {
-      "shownPhotos": 10,
-      "droppedPositions": [1, 2]
-    },
     "brandPages": ["homepage"],
     "logoSource": null,
     "storeName": null,
     "needsBrandName": true,
     "paletteBackground": "#efecec",
-    "kitReady": true
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $7.79",
+        "wasPrice": "Yes ($13.90)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "Leave blank",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft.",
+          "Warning: This photo has text on it; photos without text are used first.",
+          "Warning: We couldn't find a logo for this store, so these ads won't include one."
+        ],
+        "canGenerate": true,
+        "price": "$7.79",
+        "wasPrice": "$13.90",
+        "showRating": false,
+        "logoSource": null,
+        "lowResPositions": [5, 6, 7, 8],
+        "brandName": null,
+        "textPositions": [5, 6]
+      }
+    },
+    "scenarios": {
+      "typed-name-is-a-logo": {
+        "s1": {
+          "continue": "Yes",
+          "brandName": "Enter 'Windshield Mount Co.'"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: This photo is low resolution and may look soft.",
+            "Warning: This photo has text on it; photos without text are used first."
+          ],
+          "canGenerate": true,
+          "price": "$7.79",
+          "wasPrice": "$13.90",
+          "showRating": false,
+          "logoSource": "wordmark",
+          "brandName": "Windshield Mount Co."
+        }
+      }
+    }
   },
   "G38": {
     "message": null,
@@ -739,7 +1411,60 @@
     "duplicatePositions": [2],
     "lowResWarning": false,
     "textWarning": true,
-    "note": "text_overlaps_product varied between calls on the same photo (the dimension lines): it came back true in one recording, which dropped the only photo, and false in the others. The recorded call says false. A flakiness risk for later tuning."
+    "note": "text_overlaps_product varied between calls on the same photo (the dimension lines): it came back true in one recording, which dropped the only photo, and false in the others. The recorded call says false. A flakiness risk for later tuning.",
+    "brandPages": ["homepage"],
+    "needsBrandName": true,
+    "kitReady": true,
+    "logoSource": null,
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $276.28",
+        "wasPrice": "Yes ($414.42)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "Leave blank",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo has text on it; photos without text are used first.",
+          "Warning: We couldn't find a logo for this store, so these ads won't include one."
+        ],
+        "canGenerate": true,
+        "price": "$276.28",
+        "wasPrice": "$414.42",
+        "showRating": false,
+        "logoSource": null,
+        "lowResPositions": [],
+        "textPositions": [1],
+        "brandName": null
+      }
+    },
+    "scenarios": {
+      "deselect-only-photo": {
+        "s1": {
+          "continue": "Yes",
+          "deselect": "Photo 1",
+          "brandName": "Leave blank"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: We couldn't find a logo for this store, so these ads won't include one."
+          ],
+          "canGenerate": false,
+          "price": "$276.28",
+          "wasPrice": "$414.42",
+          "showRating": false,
+          "logoSource": null,
+          "selectedCount": 0,
+          "brandName": null
+        },
+        "deselectPositions": [1]
+      }
+    }
   },
   "photos-duplicates": {
     "message": null,
@@ -790,7 +1515,38 @@
     "shownPhotos": 2,
     "droppedPositions": [],
     "lowResWarning": true,
-    "textWarning": false
+    "textWarning": false,
+    "scenarios": {
+      "deselect-the-low-res-photo": {
+        "s1": {
+          "deselect": "Photo 1"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$18.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark",
+          "lowResPositions": []
+        },
+        "deselectPositions": [1]
+      },
+      "warning-sits-on-its-photo": {
+        "s1": {},
+        "confirm": {
+          "messages": [
+            "Warning: This photo is low resolution and may look soft."
+          ],
+          "canGenerate": true,
+          "price": "$18.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark",
+          "lowResPositions": [1]
+        }
+      }
+    }
   },
   "photos-heic": {
     "message": null,
@@ -887,7 +1643,42 @@
     "logoSource": "wordmark",
     "storeName": "Goertzen Pottery",
     "needsBrandName": false,
-    "kitReady": true
+    "kitReady": true,
+    "price": "$38.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "No",
+        "price": "n/a",
+        "wasPrice": "n/a",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a (store name found in header)",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": null,
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "wordmark",
+        "lowResPositions": [],
+        "textPositions": [],
+        "brandName": "Goertzen Pottery"
+      }
+    }
   },
   "G25": {
     "message": null,
@@ -898,7 +1689,43 @@
     "needsBrandName": false,
     "kitReady": true,
     "lowResWarning": true,
-    "note": "The CSV describes the opaque header PNG badge (shown at 64x64). The Storefront logo is a transparent 512x512 badge that passes the same logo check, so the spec's replacement rule picks it over the opaque header logo."
+    "price": "$12.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "textWarning": false,
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $12.00",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft."
+        ],
+        "canGenerate": true,
+        "price": "$12.00",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "storefront",
+        "lowResPositions": [1],
+        "textPositions": []
+      }
+    },
+    "headingFont": "Montserrat",
+    "bodyFont": "Montserrat"
   },
   "G27": {
     "message": null,
@@ -906,7 +1733,42 @@
     "logoSource": "wordmark",
     "storeName": "SparkCalm Candles and Body Works",
     "needsBrandName": false,
-    "kitReady": true
+    "kitReady": true,
+    "price": "$27.00",
+    "wasPrice": "$30.00",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $27.00",
+        "wasPrice": "Yes ($30.00)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a (store name found in the product page header)",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$27.00",
+        "wasPrice": "$30.00",
+        "showRating": false,
+        "logoSource": "wordmark",
+        "lowResPositions": [],
+        "textPositions": [],
+        "brandName": "SparkCalm Candles and Body Works"
+      }
+    }
   },
   "G28": {
     "message": null,
@@ -915,7 +1777,79 @@
     "storeName": null,
     "needsBrandName": true,
     "kitReady": true,
-    "lowResWarning": true
+    "lowResWarning": true,
+    "price": "CA$10.34",
+    "wasPrice": null,
+    "currency": "CAD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "textWarning": false,
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Switch currency to USD, enter $7.99",
+        "wasPrice": "Leave empty",
+        "currency": "USD (switched from CAD)",
+        "rating": "No",
+        "brandName": "Enter 'Weekend Coffee Co.'",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft."
+        ],
+        "canGenerate": true,
+        "price": "$7.99",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "wordmark",
+        "lowResPositions": [1],
+        "textPositions": [],
+        "brandName": "Weekend Coffee Co."
+      }
+    },
+    "scenarios": {
+      "prompt-still-open": {
+        "s1": {
+          "continue": "Yes"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: This photo is low resolution and may look soft."
+          ],
+          "canGenerate": true,
+          "price": "CA$10.34",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": null,
+          "brandName": null
+        }
+      },
+      "blank-answer": {
+        "s1": {
+          "continue": "Yes",
+          "brandName": "Leave blank"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: This photo is low resolution and may look soft.",
+            "Warning: We couldn't find a logo for this store, so these ads won't include one."
+          ],
+          "canGenerate": true,
+          "price": "CA$10.34",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": null,
+          "brandName": null
+        }
+      }
+    }
   },
   "brand-header-lazy-suffix": {
     "message": null,
@@ -1055,7 +1989,41 @@
     "logoSource": null,
     "storeName": null,
     "needsBrandName": true,
-    "kitReady": true
+    "kitReady": true,
+    "scenarios": {
+      "blank-answer": {
+        "s1": {
+          "showPrice": "No",
+          "brandName": "Leave blank"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: We couldn't find a logo for this store, so these ads won't include one."
+          ],
+          "canGenerate": true,
+          "price": null,
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": null,
+          "brandName": null
+        }
+      },
+      "typed-name": {
+        "s1": {
+          "showPrice": "No",
+          "brandName": "Enter 'Typed Goods'"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": null,
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark",
+          "brandName": "Typed Goods"
+        }
+      }
+    }
   },
   "brand-name-from-alt": {
     "message": null,
@@ -1142,7 +2110,24 @@
     "logoTransparent": true,
     "storeName": null,
     "needsBrandName": true,
-    "kitReady": true
+    "kitReady": true,
+    "scenarios": {
+      "real-logo-blank-name": {
+        "s1": {
+          "showPrice": "No",
+          "brandName": "Leave blank"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": null,
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "header",
+          "brandName": null
+        }
+      }
+    }
   },
   "brand-header-svg-raster-url": {
     "message": null,
@@ -1206,5 +2191,403 @@
     "storeName": "Tiny Goods",
     "needsBrandName": false,
     "kitReady": true
+  },
+  "G03": {
+    "message": null,
+    "price": "$32.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.4,
+      "count": 3961,
+      "show": true
+    },
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 5,
+    "shownPhotos": 5,
+    "droppedPositions": [],
+    "duplicatePositions": [5],
+    "logoSource": "header",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $32.00",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "Yes",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$32.00",
+        "wasPrice": null,
+        "showRating": true,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    }
+  },
+  "G04": {
+    "message": null,
+    "price": "$16.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 4.6,
+      "count": 76,
+      "show": true
+    },
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 5,
+    "shownPhotos": 4,
+    "droppedPositions": [5],
+    "logoSource": "header",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $16",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No (override: default on)",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$16.00",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "palettePrimary": "#d3504c"
+  },
+  "G05": {
+    "message": null,
+    "price": "$120",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 4,
+    "shownPhotos": 4,
+    "droppedPositions": [],
+    "logoSource": "header",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $120",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$120",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    }
+  },
+  "G17": {
+    "message": null,
+    "price": "$10.99",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": false,
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "logoSource": "header",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "n/a",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $10.99",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [],
+        "canGenerate": true,
+        "price": "$10.99",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": []
+      }
+    },
+    "palettePrimary": "#aa8e72"
+  },
+  "G18": {
+    "message": null,
+    "price": "$13.99",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "lowResWarning": true,
+    "textWarning": false,
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "logoSource": "header",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $13.99",
+        "wasPrice": "Leave empty",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo is low resolution and may look soft."
+        ],
+        "canGenerate": true,
+        "price": "$13.99",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [1, 2],
+        "textPositions": []
+      }
+    },
+    "palettePrimary": "#aa8e72"
+  },
+  "G26": {
+    "message": null,
+    "price": "$379.79",
+    "wasPrice": "$419.80",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": {
+      "value": 5.0,
+      "count": 4,
+      "show": false
+    },
+    "warnings": [],
+    "lowResWarning": false,
+    "textWarning": true,
+    "uniquePhotos": 5,
+    "shownPhotos": 5,
+    "droppedPositions": [],
+    "logoSource": "header",
+    "brandPages": ["homepage", "about"],
+    "needsBrandName": false,
+    "kitReady": true,
+    "confirmed": {
+      "s1": {
+        "continue": "Yes",
+        "deselect": "none",
+        "showPrice": "Yes",
+        "price": "Confirm $379.79",
+        "wasPrice": "No (override)",
+        "currency": "USD",
+        "rating": "No",
+        "brandName": "n/a",
+        "brandKit": "none"
+      },
+      "confirm": {
+        "messages": [
+          "Warning: This photo has text on it; photos without text are used first."
+        ],
+        "canGenerate": true,
+        "price": "$379.79",
+        "wasPrice": null,
+        "showRating": false,
+        "logoSource": "header",
+        "lowResPositions": [],
+        "textPositions": [1]
+      }
+    },
+    "logoTransparent": true
+  },
+  "brand-style-font-fallback": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Style Goods",
+    "needsBrandName": false,
+    "headingFont": "DM Sans",
+    "paletteBackground": "#000000",
+    "kitReady": true
+  },
+  "brand-style-no-solid-background": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Style Goods",
+    "needsBrandName": false,
+    "headingFont": "Inter",
+    "paletteBackground": "#101010",
+    "kitReady": true
+  },
+  "photos-colourways": {
+    "message": null,
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "duplicatePositions": [3]
+  },
+  "brand-style-linked-sheet": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Style Goods",
+    "needsBrandName": false,
+    "kitReady": true,
+    "headingFont": "Inter",
+    "palettePrimary": "#aa8e72",
+    "paletteBackground": "#0c2238"
+  },
+  "brand-style-default-fonts-button": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "wordmark",
+    "storeName": "Style Goods",
+    "needsBrandName": false,
+    "kitReady": true,
+    "headingFont": "Inter",
+    "palettePrimary": "#78283c",
+    "paletteSecondary": null,
+    "paletteBackground": null
+  },
+  "photos-text-disagreement": {
+    "message": null,
+    "uniquePhotos": 4,
+    "shownPhotos": 3,
+    "droppedPositions": [2],
+    "dropReasons": {
+      "2": "multiple_products"
+    },
+    "escalatedPositions": [2, 4],
+    "lowResWarning": true,
+    "textWarning": true
+  },
+  "choose-option-compare-at": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": [],
+    "needsVariantChoice": true,
+    "scenarios": {
+      "variant-brings-its-strike-through": {
+        "s1": {
+          "variant": "Choose 4456, confirmed"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$24.00",
+          "wasPrice": "$30.00",
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      },
+      "variant-without-compare-at": {
+        "s1": {
+          "variant": "Choose 4455, confirmed"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$18.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      },
+      "typed-price-survives-variant": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Edit to $20",
+          "variant": "Choose 4456, confirmed"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "$20.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      },
+      "switched-price-survives-variant": {
+        "s1": {
+          "showPrice": "Yes",
+          "price": "Switch currency to CAD, enter $30",
+          "currency": "CAD (switched from USD)",
+          "variant": "Choose 4456, confirmed"
+        },
+        "confirm": {
+          "messages": [],
+          "canGenerate": true,
+          "price": "CA$30.00",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "wordmark"
+        }
+      }
+    }
   }
 }

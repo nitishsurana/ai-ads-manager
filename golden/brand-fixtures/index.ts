@@ -3,6 +3,7 @@
 import { logoSpecs } from "./specs-logo";
 import { nameSpecs } from "./specs-name";
 import { sourceSpecs } from "./specs-source";
+import { styleSpecs } from "./specs-style";
 import { writeAll } from "./write";
 
 process.env.PROVIDERS = "fake";
@@ -12,6 +13,7 @@ async function main() {
     ...(await logoSpecs()),
     ...(await sourceSpecs()),
     ...(await nameSpecs()),
+    ...styleSpecs(),
   ]);
 }
 

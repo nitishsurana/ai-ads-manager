@@ -1,0 +1,26 @@
+{
+  "https://shop.example/products/blue-mug": {
+    "status": 200,
+    "html": "bodies/880501f31283926417a53bb152e06a482c9e8ca5eaa7aa98e033826ab25744d3",
+    "location": "US",
+    "styles": {
+      "button": null,
+      "header": null,
+      "title": {
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "\"Fenomen Sans\", \"DM Sans\""
+      },
+      "body": {
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "\"Fenomen Sans\", \"DM Sans\"",
+        "background": "rgb(0, 0, 0)"
+      },
+      "link": null
+    }
+  },
+  "https://shop.example/": {
+    "status": 200,
+    "html": "bodies/58121eeed1aba64330d2148853302174ca5de3f6ff8b09e3db3fae34e7c48b86",
+    "location": "US"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "photo_check:1085a1cf:60421a47eb5d247d08145e38bf75d6473ad52a28a7dd9638f3fd2eaa2bc41d8f": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:1085a1cf:2554bc15573a6bca163fddc94e06513e3df1cba123fe2e5a74c3e43525a12b55": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  }
+}

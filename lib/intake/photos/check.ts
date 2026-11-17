@@ -8,7 +8,7 @@ import { PHOTO_CHECK_PROMPT, PHOTO_CHECK_SYSTEM } from "./prompts";
 export const PRIMARY_MODEL = "anthropic/claude-haiku-5.5";
 export const ESCALATION_MODEL = "anthropic/claude-sonnet-5.5";
 
-// A low-confidence answer, or any primary-model failure (refusal, schema miss, timeout), goes to the larger model.
+// A low-confidence answer, or any primary-model failure (refusal, schema miss, timeout), goes to the larger model. A photo the primary model says has added text gets the larger model's answer too, and that answer decides, because the added-text judgement drives the drop rules and the primary model flips on borderline photos. If that second call fails, the primary answer stands.
 // Both failing gives checks: null, with the cost of whatever did answer.
 export async function checkPhoto(
   input: { label: string; sha256: string; image: Buffer },
@@ -38,7 +38,11 @@ export async function checkPhoto(
   }
 
   const first = await ask("photo_check", PRIMARY_MODEL);
-  if (first && first.confidence !== "low") return { checks: first, costs };
+  if (first && first.confidence !== "low") {
+    if (!first.added_text) return { checks: first, costs };
+    const decided = await ask("photo_check_text", ESCALATION_MODEL);
+    return { checks: decided ?? first, costs };
+  }
   return {
     checks: await ask("photo_check_escalated", ESCALATION_MODEL),
     costs,

@@ -8,6 +8,7 @@ import { ogImageHref } from "./og";
 import { renderBrandPages } from "./pages";
 import { storefrontLogo } from "./storefront";
 import { nameFromAlt, readStoreName } from "./store-name";
+import { readLinkedCss } from "./stylesheets";
 import { readOrganisation } from "./structured-data";
 import { capturedColour, readStyle, usableStyles } from "./style";
 import {
@@ -49,7 +50,14 @@ export async function runBrand(
   const pages: BrandPage[] = about ? ["homepage", "about"] : ["homepage"];
 
   const styles = usableStyles(input.styles);
-  const { palette, fonts } = readStyle(product.$, styles);
+  // The sheets only supply colours, so they're skipped when the capture already gave a primary and a background.
+  const capturedBoth =
+    capturedColour(styles?.button?.background) &&
+    capturedColour(styles?.body.background);
+  const linkedCss = capturedBoth
+    ? ""
+    : await readLinkedCss(product.$, productUrl, label, deps);
+  const { palette, fonts } = readStyle(product.$, styles, linkedCss);
   const headerBackground =
     capturedColour(styles?.header?.background) ??
     readHeaderBackground(product.$, palette.background);

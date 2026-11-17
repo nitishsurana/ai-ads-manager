@@ -37,22 +37,6 @@ export function cleanPrice(token: string) {
   return token.trim().replace(/[.,]+$/, "");
 }
 
-export function parseAmount(token: string) {
-  const digits = token.replace(/[^\d.,]/g, "");
-  const lastSeparator = Math.max(
-    digits.lastIndexOf("."),
-    digits.lastIndexOf(","),
-  );
-  const hasDecimals =
-    lastSeparator >= 0 && digits.length - lastSeparator - 1 <= 2;
-  const whole = (hasDecimals ? digits.slice(0, lastSeparator) : digits).replace(
-    /[.,]/g,
-    "",
-  );
-  const fraction = hasDecimals ? digits.slice(lastSeparator + 1) : "0";
-  return Number(`${whole || "0"}.${fraction || "0"}`);
-}
-
 // Only symbols that name one currency; a bare "$" says nothing on its own.
 export function currencyOfSymbol(token: string) {
   const symbol = token
@@ -64,12 +48,6 @@ export function currencyOfSymbol(token: string) {
 
 export function marketCurrency(market: Market) {
   return MARKET_CURRENCIES[market];
-}
-
-export function formatAmount(amount: number, currency: string) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(
-    amount,
-  );
 }
 
 // A bare "$" on a non-USD page is that currency's dollar: swap in its distinct symbol and keep the page's digits.

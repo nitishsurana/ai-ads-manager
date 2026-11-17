@@ -11,6 +11,50 @@ const ratingSchema = z.strictObject({
   show: z.boolean(),
 });
 
+// The CSV's S1 columns, verbatim; golden/s1-answers.ts parses them.
+const s1Schema = z.strictObject({
+  continue: z.string().default("n/a"),
+  deselect: z.string().default("none"),
+  showPrice: z.string().default("n/a"),
+  price: z.string().default("n/a"),
+  wasPrice: z.string().default("n/a"),
+  currency: z.string().default("n/a"),
+  rating: z.string().default("n/a"),
+  brandName: z.string().default("n/a"),
+  brandKit: z.string().default("none"),
+  // Fixtures only: "Choose <variant id>".
+  variant: z.string().optional(),
+});
+
+export type S1 = z.infer<typeof s1Schema>;
+
+// What the confirm screen shows after the S1 answers are applied. The final currency is the S1 currency column.
+const confirmSchema = z.strictObject({
+  messages: z.array(z.string()),
+  canGenerate: z.boolean(),
+  price: z.string().nullable(),
+  wasPrice: z.string().nullable(),
+  showRating: z.boolean(),
+  currencies: z.array(z.string()).optional(),
+  selectedCount: z.number().int().optional(),
+  brandName: z.string().nullable().optional(),
+  logoSource: logoSourceSchema,
+  tone: z.array(z.string()).optional(),
+  lowResPositions: z.array(z.number().int()).optional(),
+  textPositions: z.array(z.number().int()).optional(),
+});
+
+export type ConfirmExpectation = z.infer<typeof confirmSchema>;
+
+const scriptSchema = z.strictObject({
+  s1: s1Schema,
+  // Positions the CSV's description of the photos to deselect ("On-model 2nd photo") stands for.
+  deselectPositions: z.array(z.number().int()).optional(),
+  confirm: confirmSchema,
+});
+
+export type ConfirmScript = z.infer<typeof scriptSchema>;
+
 const expectationSchema = z.strictObject({
   note: z.string().optional(),
   // A model judgement (photo or logo) the model and the CSV disagree on: the expected values stay the CSV's, a mismatch on the judgement fields is reported as TRIAGE while the output equals triageActual, and anything else fails.
@@ -28,6 +72,10 @@ const expectationSchema = z.strictObject({
     })
     .optional(),
   message: z.string().nullable(),
+  // The CSV row's scripted answers and what the confirm screen then shows.
+  confirmed: scriptSchema.optional(),
+  // More scripted answers on the same intake (a stop, an unanswered flag, a typed brand name), by name.
+  scenarios: z.record(z.string(), scriptSchema).optional(),
   existingWorkspaceId: z.string().optional(),
   existingWorkspaces: z.record(z.string(), z.string()).optional(),
   productKey: z.string().optional(),
@@ -67,6 +115,9 @@ const expectationSchema = z.strictObject({
   storeName: z.string().nullable().optional(),
   needsBrandName: z.boolean().optional(),
   headingFont: z.string().optional(),
+  bodyFont: z.string().optional(),
+  palettePrimary: z.string().nullable().optional(),
+  paletteSecondary: z.string().nullable().optional(),
   paletteBackground: z.string().nullable().optional(),
   // Pixels of the stored logo: its top-left corner and a point a quarter of the way in at mid height (the inside of a ring emblem).
   logoProbe: z

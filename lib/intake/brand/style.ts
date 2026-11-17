@@ -11,6 +11,7 @@ const COLOUR_VARS = {
     "color-background",
     "color-base-background-1",
     "color-body-bg",
+    "body-bg-color",
     "hh-color-background",
     "color-bg",
     "background-color",
@@ -20,6 +21,7 @@ const COLOUR_VARS = {
     "color-foreground",
     "color-base-text",
     "color-body-text",
+    "body-text-color",
     "hh-color-text",
     "color-text",
     "text-color",
@@ -27,6 +29,8 @@ const COLOUR_VARS = {
   ],
   primary: [
     "color-button",
+    "color-base-solid-button",
+    "btn-bg-color",
     "color-base-accent-1",
     "hh-color-brand-primary",
     "color-primary",
@@ -158,24 +162,46 @@ function themeColour($: CheerioAPI) {
   return rgb ? toHex(rgb) : null;
 }
 
-// Chrome's font for an element no stylesheet has touched. A body in it means the theme CSS never applied in the capture (seen on G13 and G24 even after 8 s), so nothing in that capture is brand.
+// Chrome's font for an element no stylesheet has touched. A body in it means the theme CSS never applied in the capture (seen on G13 and G24 even after 8 s), so only a button colour (inline styles still count) is kept.
 const DEFAULT_FONT = '"Times New Roman"';
 const DEFAULT_BUTTON = "#efefef";
+// Chrome's colour for a link nothing has styled.
+const DEFAULT_LINK = "#0000ee";
 
 export function usableStyles(styles: PageStyles | null): PageStyles | null {
-  if (!styles || styles.body.fontFamily === DEFAULT_FONT) return null;
+  if (!styles) return null;
   const { title, button } = styles;
-  // An unstyled button is Chrome's #efefef (or a translucent version of it), not the brand's.
-  const buttonColour = capturedColour(button?.background);
+  const link =
+    capturedColour(styles.link?.color) === DEFAULT_LINK ? null : styles.link;
+  // A translucent button or Chrome's #efefef is unstyled; any other solid colour is the brand's, even when the fonts never applied.
+  const buttonColour = isOpaque(button?.background)
+    ? capturedColour(button?.background)
+    : null;
+  const realButton =
+    button && buttonColour && buttonColour !== DEFAULT_BUTTON ? button : null;
+  if (styles.body.fontFamily === DEFAULT_FONT) {
+    return {
+      button: realButton,
+      header: null,
+      title: null,
+      body: { color: null, fontFamily: null, background: null },
+      link,
+    };
+  }
   return {
     ...styles,
-    button:
-      button && buttonColour && buttonColour !== DEFAULT_BUTTON ? button : null,
+    link,
+    button: realButton,
     title:
       title && title.fontFamily === DEFAULT_FONT
         ? { ...title, fontFamily: null }
         : title,
   };
+}
+
+// rgba(…, 0.3) is a translucent wash, not a brand colour.
+function isOpaque(value: string | null | undefined) {
+  return !!value && !/(?:,|\/)\s*(?:0?\.\d+|0)\s*\)\s*$/.test(value);
 }
 
 export function capturedColour(value: string | null | undefined) {
@@ -187,24 +213,28 @@ export function capturedColour(value: string | null | undefined) {
 export function readStyle(
   $: CheerioAPI,
   styles: PageStyles | null,
+  linkedCss = "",
 ): { palette: Palette; fonts: BrandFonts } {
+  // Fonts come from the capture and the page's inline CSS only; linked sheets feed colour variables, after the inline ones.
   const css = themeCss($);
   const variables = rootVariables(css);
+  const colourVariables = rootVariables(`${css}\n${linkedCss}`);
 
   const palette: Palette = {
     primary:
       capturedColour(styles?.button?.background) ??
-      firstColour(COLOUR_VARS.primary, variables),
+      firstColour(COLOUR_VARS.primary, colourVariables),
     secondary:
       capturedColour(styles?.link?.color) ??
-      firstColour(COLOUR_VARS.secondary, variables),
-    // A usable capture with no solid background behind the product means the canvas itself: white.
-    background: styles
-      ? (capturedColour(styles.body.background) ?? "#ffffff")
-      : firstColour(COLOUR_VARS.background, variables),
+      firstColour(COLOUR_VARS.secondary, colourVariables),
+    // No solid background behind the product in a usable capture means the canvas: the theme's own colour if the CSS names one (a dark page whose backdrop isn't an ancestor), else white.
+    background:
+      capturedColour(styles?.body.background) ??
+      firstColour(COLOUR_VARS.background, colourVariables) ??
+      (styles?.body.fontFamily ? "#ffffff" : null),
     text:
       capturedColour(styles?.body.color) ??
-      firstColour(COLOUR_VARS.text, variables),
+      firstColour(COLOUR_VARS.text, colourVariables),
     themeColour: themeColour($),
   };
 

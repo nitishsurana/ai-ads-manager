@@ -1,3 +1,5 @@
+import type { PageStyles } from "@/lib/providers/firecrawl";
+
 export const IMAGES = "https://cdn.shopify.com/s/files/1/0001/files";
 export const STOREFRONT_QUERY = encodeURIComponent(
   "{shop{brand{logo{image{url}}}}}",
@@ -59,4 +61,6 @@ export type Spec = {
   // The Storefront API answer: a logo URL, null for no logo, or an error status.
   storefront?: string | null | number;
   verdicts?: Verdict[];
+  // The computed-style capture that came with the product page render.
+  styles?: PageStyles;
 };
