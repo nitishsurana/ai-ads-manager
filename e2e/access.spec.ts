@@ -173,7 +173,7 @@ test.describe("tester access", () => {
     const stolenTesterCookie = {
       name: "tester",
       value: stolenCookie ?? "",
-      url: "http://localhost:3000",
+      url: `http://localhost:${process.env.E2E_PORT ?? 3000}`,
     };
 
     const bare = await browser.newContext();

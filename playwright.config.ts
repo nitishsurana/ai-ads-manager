@@ -2,15 +2,19 @@ import { defineConfig, devices } from "@playwright/test";
 
 process.loadEnvFile(".env.local");
 
+// Parallel worktrees each pick their own port so they never reuse another checkout's dev server.
+const port = Number(process.env.E2E_PORT ?? 3000);
+const baseURL = `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: "e2e",
   globalSetup: "./e2e/global-setup.ts",
   workers: 1,
-  use: { baseURL: "http://localhost:3000" },
+  use: { baseURL },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000/sign-in",
+    command: `npm run dev -- --port ${port}`,
+    url: `${baseURL}/sign-in`,
     reuseExistingServer: true,
     env: { PROVIDERS: process.env.PROVIDERS ?? "fake" },
   },
