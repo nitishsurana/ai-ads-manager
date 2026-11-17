@@ -1,0 +1,112 @@
+{
+  "art_direction:2407841d:0d1b44e9bcc7e5e8612e1b1a672f98ac01317bf32e7f38600decacae8f5daadb": {
+    "candidates": [
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A pale oak shelf",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "social_proof",
+        "photoId": "p2",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A sunlit table",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "price",
+        "photoId": "p3",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A kitchen counter",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "lifestyle",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A window sill",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "feature_close_up",
+        "photoId": "p2",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A grey stone",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "benefit",
+        "photoId": "p3",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A linen cloth",
+          "reason": "a scene fits the angle"
+        }
+      }
+    ]
+  },
+  "copy:4a151d3a:237e258156a7040d1cb38c2d9a89639006fd981775e40dd95c5433c72ffd12de": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": null,
+        "headline": "Made for slow mornings",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "Loved by 212 happy owners",
+        "cta": "Shop now"
+      },
+      {
+        "index": 2,
+        "eyebrow": null,
+        "headline": "Good stoneware, fairly priced",
+        "cta": "Shop now"
+      },
+      {
+        "index": 3,
+        "eyebrow": null,
+        "headline": "Hand glazed, one at a time",
+        "cta": "Get yours"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "See the glaze up close",
+        "cta": "Take a look"
+      },
+      {
+        "index": 5,
+        "eyebrow": null,
+        "headline": "Dishwasher safe, every day",
+        "cta": "Shop now"
+      }
+    ]
+  }
+}

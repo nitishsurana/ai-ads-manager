@@ -55,6 +55,8 @@ export type CostEntry = {
   provider: "ai" | "fal";
   model: string;
   usd: number | null;
+  // The round's paid calls name their task.
+  task?: string;
 };
 
 export type PhotosResult = {

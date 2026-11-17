@@ -1,0 +1,112 @@
+{
+  "art_direction:fcfbf7a9:778d403c0140cbf1bf4153c1521a157d88c566693fcab86a3c7c3f562a0b2b18": {
+    "candidates": [
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "social_proof",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "price",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "offer",
+        "photoId": "p1",
+        "element": "offer",
+        "offerFactId": "f-long",
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "lifestyle",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "feature_close_up",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      }
+    ]
+  },
+  "copy:25c6d233:0ea7a9a08a14269e7c1b9c1f6ab570c0d61bd1f0dbb16ea10f1e82f176cf754e": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": null,
+        "headline": "Made for slow mornings",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "Loved by 212 happy owners",
+        "cta": "Shop now"
+      },
+      {
+        "index": 2,
+        "eyebrow": null,
+        "headline": "Good stoneware, fairly priced",
+        "cta": "Shop now"
+      },
+      {
+        "index": 3,
+        "eyebrow": null,
+        "headline": "Buy two, get a third free",
+        "cta": "Shop now"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "See the glaze up close",
+        "cta": "Take a look"
+      },
+      {
+        "index": 5,
+        "eyebrow": null,
+        "headline": "Dishwasher safe, every day",
+        "cta": "Shop now"
+      }
+    ]
+  }
+}

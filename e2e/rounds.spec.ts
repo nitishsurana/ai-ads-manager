@@ -1,4 +1,4 @@
-// Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. The stub stages make fake candidates; faults are injected through the campaign occasion ("fake:slow", "fake:no_pass", "fake:fail"). Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
+// Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. Art direction and copy run on the scripted fake ai (its plan ignores the rules on purpose, so the code that enforces them runs too); the other stages are stubs. Faults are injected through the campaign occasion: "fake:slow" and "fake:fail" reach the scripted ai, "fake:no_pass" the stub checks. Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
 import { expect, test, type Page } from "@playwright/test";
 import { generate, nextAction, roundsOf } from "./confirm-helpers";
 import {
@@ -169,9 +169,13 @@ test.describe("rounds", () => {
     expect(await previewFiles(round?.id ?? "")).toHaveLength(3);
     const creatives = await secret
       .from("creatives")
-      .select("n, rating")
+      .select("n, rating, copy, background")
       .eq("round_id", round?.id ?? "");
     expect(creatives.data).toHaveLength(3);
+    for (const creative of creatives.data ?? []) {
+      expect(creative.copy).toMatchObject({ cta: "Shop now" });
+      expect(creative.background).toHaveProperty("method");
+    }
 
     const b = await testerContext(browser, "b");
     expect(

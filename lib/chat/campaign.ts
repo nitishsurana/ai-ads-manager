@@ -1,5 +1,5 @@
 import "server-only";
-import { z } from "zod";
+import { campaignPatchSchema, type Campaign } from "./campaign-schema";
 import { retryOnMiss } from "@/lib/workspace/cas";
 import {
   getThread,
@@ -10,15 +10,7 @@ import {
   type Thread,
 } from "@/lib/db/queries";
 
-const field = z.string().trim().min(1).max(80);
-
-export const campaignPatchSchema = z.object({
-  occasion: field.optional(),
-  angle: field.optional(),
-  audience: field.optional(),
-});
-
-export type Campaign = z.infer<typeof campaignPatchSchema>;
+export { campaignPatchSchema, type Campaign };
 
 const CAMPAIGN_KEYS = ["occasion", "angle", "audience"] as const;
 

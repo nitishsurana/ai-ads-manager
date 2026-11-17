@@ -14,7 +14,9 @@
     "db:types": "node scripts/db-types.mjs",
     "test:e2e": "playwright test",
     "test:golden": "tsx golden/run-step1.ts",
-    "golden:record": "tsx golden/record.ts"
+    "test:rounds": "tsx golden/run-round.ts",
+    "golden:record": "tsx golden/record.ts",
+    "golden:record-round": "tsx golden/record-round.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.105",

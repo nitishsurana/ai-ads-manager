@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { campaignPatchSchema } from "@/lib/chat/campaign";
+import { campaignPatchSchema } from "@/lib/chat/campaign-schema";
 import { researchSchema } from "@/lib/chat/types";
 import type { ConfirmedValues } from "@/lib/confirm";
 

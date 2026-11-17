@@ -1,6 +1,7 @@
 import "server-only";
 import { start } from "workflow/api";
 import { ensureBrief } from "@/lib/brief";
+import { parseCampaign } from "@/lib/chat/campaign";
 import type { ConfirmState } from "@/lib/confirm";
 import { ROUND_DAILY_LIMIT } from "@/lib/config";
 import {
@@ -67,10 +68,13 @@ export async function startRound(
       : (await ensureBrief(userId, workspaceId)).version;
   const inputs = freezeInputs({
     title: loaded.title,
-    workspace: loaded.workspace,
+    sourceUrl: loaded.workspace.sourceUrl,
+    campaign: parseCampaign(loaded.workspace.campaign),
     state: committed.state,
     photos: loaded.photos,
-    facts: await listFacts(userId, loaded.workspace.threadId),
+    facts: (await listFacts(userId, loaded.workspace.threadId))
+      .filter((fact) => fact.status === "confirmed")
+      .map(({ id, text, kind }) => ({ id, text, kind })),
   });
 
   const started = await startRoundRow(userId, workspaceId, {

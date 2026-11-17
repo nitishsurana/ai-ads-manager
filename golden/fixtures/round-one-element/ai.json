@@ -1,0 +1,112 @@
+{
+  "art_direction:9096b7e0:c76ba7cdceecc80a6745695b6941c9fae3d3176db5da266a430f853f5c61ba26": {
+    "candidates": [
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "social_proof",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "offer",
+        "photoId": "p2",
+        "element": "offer",
+        "offerFactId": "nope",
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "lifestyle",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A wooden breakfast table",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "feature_close_up",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "price",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      }
+    ]
+  },
+  "copy:5d9cb59a:8a3038f8847fe739d8acbfd12cda0436ce78561185b177d7ae37391af2efaeaa": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": null,
+        "headline": "Made for slow mornings",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "Hand glazed stoneware for mornings",
+        "cta": "Shop now"
+      },
+      {
+        "index": 2,
+        "eyebrow": null,
+        "headline": "Good stoneware, fairly priced",
+        "cta": "Shop now"
+      },
+      {
+        "index": 3,
+        "eyebrow": null,
+        "headline": "Hand glazed, one at a time",
+        "cta": "Get yours"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "See the glaze up close",
+        "cta": "Take a look"
+      },
+      {
+        "index": 5,
+        "eyebrow": null,
+        "headline": "Dishwasher safe, every day",
+        "cta": "Shop now"
+      }
+    ]
+  }
+}

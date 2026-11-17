@@ -1,0 +1,128 @@
+{
+  "art_direction:52bae28b:f965c54353798835f4676e33722fe6ca0aa02e0c507a8be37d1a788adb721c4e": {
+    "candidates": [
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "social_proof",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "price",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "lifestyle",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "feature_close_up",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      }
+    ]
+  },
+  "copy:1bf0d553:5398f8b7345d6f4426faecbb3edd216576f7a5862b67af23c2d497450ee503bf": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": "Diwali gifting",
+        "headline": "Made for slow mornings",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "A mug that makes every single morning of your life better",
+        "cta": "Shop now"
+      },
+      {
+        "index": 2,
+        "eyebrow": "DIWALI GIFTING SEASON SPECIAL OFFER",
+        "headline": "Stoneware glazed by hand",
+        "cta": "Get yours"
+      },
+      {
+        "index": 3,
+        "eyebrow": null,
+        "headline": "Hand glazed, one at a time",
+        "cta": "Get yours"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "",
+        "cta": "Shop now"
+      },
+      {
+        "index": 5,
+        "eyebrow": null,
+        "headline": "Dishwasher safe, every day",
+        "cta": "Shop now"
+      }
+    ]
+  },
+  "copy_rewrite:e625dbd0:5b8354baecc099c79991147b3bdf8946a86bae5c2403ee641fb66759291f23a9": {
+    "candidates": [
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "A mug that makes every single morning better",
+        "cta": "Shop now"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "The #1 mug for tea",
+        "cta": "Shop now"
+      }
+    ]
+  }
+}

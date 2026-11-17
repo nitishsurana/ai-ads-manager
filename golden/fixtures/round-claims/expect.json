@@ -1,0 +1,13 @@
+{
+  "note": "digit-less urgency and superlatives, 'Free returns' next to a 'lead-free' fact, and 'thousands' on a 28-review rating all fail and pass after the rewrite; an eyebrow with an unconfirmed 'sale' is dropped; a repeated headline is rewritten",
+  "dropped": [],
+  "headlines": {
+    "0": "A calmer start to the day",
+    "1": "Lead-free glaze, hand finished",
+    "2": "Rated 4.9 from 28 reviews",
+    "5": "Dishwasher safe, every day"
+  },
+  "eyebrows": {
+    "3": null
+  }
+}

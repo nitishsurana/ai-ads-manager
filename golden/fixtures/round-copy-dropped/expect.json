@@ -1,0 +1,12 @@
+{
+  "note": "a draft still over the limit after the rewrite and one that invents a claim are dropped; an eyebrow that pushes past 8 words is dropped instead",
+  "dropped": [1, 4],
+  "eyebrows": {
+    "0": "DIWALI GIFTING",
+    "2": null
+  },
+  "elements": {
+    "0": "rating",
+    "5": "rating"
+  }
+}

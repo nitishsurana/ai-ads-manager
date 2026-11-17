@@ -1,0 +1,74 @@
+{
+  "inputs": {
+    "productTitle": "Blue Mug",
+    "sourceUrl": "https://shop.example/products/blue-mug",
+    "values": {
+      "price": "$18.00",
+      "wasPrice": null,
+      "currency": "USD",
+      "rating": {
+        "value": 4.9,
+        "count": 28
+      },
+      "brandName": "Blue Mug Co"
+    },
+    "brandKit": {
+      "palette": {
+        "primary": "#1f4e79",
+        "secondary": "#f4b942",
+        "background": "#ffffff",
+        "text": "#222222",
+        "themeColour": null
+      },
+      "fonts": {
+        "heading": {
+          "declared": null,
+          "family": "Inter",
+          "exact": false
+        },
+        "body": {
+          "declared": null,
+          "family": "Inter",
+          "exact": false
+        }
+      },
+      "tone": ["warm", "simple"],
+      "audience": "Home cooks",
+      "valuePropositions": ["Hand glazed stoneware", "Lead-free glaze"],
+      "proofPoints": ["Made in small batches"]
+    },
+    "logo": null,
+    "photos": [
+      {
+        "id": "p1",
+        "position": 1,
+        "tier": "clean",
+        "background": "plain",
+        "person": false
+      }
+    ],
+    "facts": [],
+    "campaign": {
+      "occasion": "Spring sale"
+    }
+  },
+  "brief": {
+    "rules": [],
+    "research": [],
+    "approvedAngles": [],
+    "campaign": {
+      "occasion": "Spring sale"
+    },
+    "values": {
+      "price": "$18.00",
+      "wasPrice": null,
+      "currency": "USD",
+      "rating": {
+        "value": 4.9,
+        "count": 28
+      },
+      "brandName": "Blue Mug Co"
+    },
+    "exemplarCreativeIds": []
+  }
+}

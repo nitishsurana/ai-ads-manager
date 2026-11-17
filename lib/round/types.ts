@@ -23,13 +23,21 @@ export type SupportingElement = "price" | "rating" | "offer";
 
 export type Copy = { eyebrow: string | null; headline: string; cta: string };
 
+// A scene or person photo is used whole, so the model has no method to choose for it.
+export type Background =
+  | { method: "bria"; prompt: string; reason: string }
+  | { method: "solid" | "tonal"; reason: string }
+  | { method: "photo" };
+
 // One planned creative, filled in as the stages run. Plain data: it crosses step boundaries.
 export type Candidate = {
   index: number;
   angle: Angle;
   photoId: string;
   supportingElement: SupportingElement | null;
-  background: { method: "stub" };
+  // The confirmed offer a badge shows; set only when supportingElement is "offer".
+  offerFactId: string | null;
+  background: Background;
   copy: Copy | null;
   backgroundPath: string | null;
   previewPath: string | null;

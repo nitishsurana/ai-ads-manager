@@ -6,6 +6,7 @@ import { confirmedValues } from "@/lib/confirm";
 import {
   addBriefVersion,
   findRoundBriefVersion,
+  getBriefVersion,
   getLatestBrief,
 } from "@/lib/db/queries";
 import { retryOnMiss } from "@/lib/workspace/cas";
@@ -25,6 +26,17 @@ async function readLatest(userId: string, workspaceId: string) {
   return row
     ? { version: row.version, content: briefContentSchema.parse(row.content) }
     : null;
+}
+
+// The version a round works from; a missing one is a programming error.
+export async function loadBrief(
+  userId: string,
+  workspaceId: string,
+  version: number,
+) {
+  const row = await getBriefVersion(userId, workspaceId, version);
+  if (!row) throw new Error(`brief: version ${version} not found`);
+  return briefContentSchema.parse(row.content);
 }
 
 // Built from the confirmed values, the workspace's campaign and the research the thread collected.

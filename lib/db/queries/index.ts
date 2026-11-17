@@ -65,6 +65,7 @@ export type { WorkspaceListItem, WorkspaceRow } from "./workspaces";
 export {
   addBriefVersion,
   findRoundBriefVersion,
+  getBriefVersion,
   getLatestBrief,
 } from "./briefs";
 export type { BriefRow } from "./briefs";

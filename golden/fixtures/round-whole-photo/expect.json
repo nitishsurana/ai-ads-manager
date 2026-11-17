@@ -1,0 +1,4 @@
+{
+  "note": "a scene photo and a photo with a person are used whole, so their candidates get the photo background whatever the model asked for",
+  "photoIds": ["p1", "p2", "p3"]
+}

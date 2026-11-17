@@ -1,10 +1,18 @@
 import { z } from "zod";
 import { confirmedValues, type ConfirmState } from "@/lib/confirm";
-import { campaignPatchSchema } from "@/lib/chat/campaign";
+import { campaignPatchSchema } from "@/lib/chat/campaign-schema";
 import { confirmedValuesSchema } from "@/lib/brief/schema";
-import type { Fact } from "@/lib/db/queries";
 import { brandKitSchema, logoSchema } from "@/lib/workspace/schemas";
-import type { WorkspacePhoto, WorkspaceRow } from "@/lib/db/queries";
+
+const frozenPhotoSchema = z.object({
+  id: z.string(),
+  position: z.number(),
+  tier: z.enum(["clean", "clean_low_res", "added_text"]),
+  background: z.enum(["plain", "scene"]),
+  person: z.boolean(),
+});
+
+export type FrozenPhoto = z.infer<typeof frozenPhotoSchema>;
 
 // Everything a round may read, copied at start. Stages never look at the live workspace.
 export const roundInputsSchema = z.object({
@@ -13,7 +21,7 @@ export const roundInputsSchema = z.object({
   values: confirmedValuesSchema,
   brandKit: brandKitSchema,
   logo: logoSchema.nullable(),
-  photoIds: z.array(z.string()),
+  photos: z.array(frozenPhotoSchema),
   facts: z.array(
     z.object({
       id: z.string(),
@@ -28,27 +36,24 @@ export type RoundInputs = z.infer<typeof roundInputsSchema>;
 
 export function freezeInputs(source: {
   title: string;
-  workspace: WorkspaceRow;
+  sourceUrl: string;
+  campaign: RoundInputs["campaign"];
   state: ConfirmState;
-  photos: WorkspacePhoto[];
-  facts: Fact[];
+  photos: FrozenPhoto[];
+  facts: RoundInputs["facts"];
 }): RoundInputs {
-  const { workspace, state } = source;
+  const { state } = source;
   const selected = new Set(
     state.photos.filter((photo) => photo.selected).map((p) => p.position),
   );
   return roundInputsSchema.parse({
     productTitle: source.title,
-    sourceUrl: workspace.sourceUrl,
+    sourceUrl: source.sourceUrl,
     values: confirmedValues(state),
     brandKit: state.brandKit,
     logo: state.logo,
-    photoIds: source.photos
-      .filter((photo) => selected.has(photo.position))
-      .map((photo) => photo.id),
-    facts: source.facts
-      .filter((fact) => fact.status === "confirmed")
-      .map(({ id, text, kind }) => ({ id, text, kind })),
-    campaign: workspace.campaign,
+    photos: source.photos.filter((photo) => selected.has(photo.position)),
+    facts: source.facts,
+    campaign: source.campaign,
   });
 }

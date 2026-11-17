@@ -17,11 +17,11 @@ export async function guardStage<T>(
   progress: Progress,
   stage: (deps: StageDeps) => Promise<T>,
 ): Promise<StageResult<T>> {
-  // The stubs make no paid calls; 6b wraps the paid deps to push here, as the intake guard does.
   const costs: CostEntry[] = [];
   const deps = createStepDeps(ctx, {
     progress: progress.onProgress,
     isAbandoned: progress.isAbandoned,
+    costs,
   });
   try {
     await progress.flush();

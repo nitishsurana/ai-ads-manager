@@ -1,0 +1,7 @@
+{
+  "note": "price, rating and a short offer are on: each shows on two candidates, and the offer badge uses the short offer, not the long one",
+  "offerFactId": "f-short",
+  "eyebrows": {
+    "0": "SPRING REFRESH"
+  }
+}

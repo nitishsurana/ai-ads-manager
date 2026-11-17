@@ -7,7 +7,7 @@ export function recordCosts(run: RoundRun, { costs }: Spend) {
     provider: cost.provider,
     model: cost.model,
     usd: cost.usd,
-    meta: {},
+    meta: cost.task ? { task: cost.task } : {},
   }));
   return replaceRoundCosts(run.userId, run.roundId, run.workspaceId, rows);
 }

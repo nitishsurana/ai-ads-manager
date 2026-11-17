@@ -1,42 +1,18 @@
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { isDeepStrictEqual } from "node:util";
 import { join } from "node:path";
-import {
-  type IntakeResult,
-  createIntakeDeps,
-  runIntake,
-  runIntakeUntilBrand,
-} from "@/lib/intake";
-import { firecrawlSnapshotSchema } from "@/lib/providers/snapshot";
+import { createIntakeDeps, runIntake, runIntakeUntilBrand } from "@/lib/intake";
 import { caseSchema, readSnapshotJson } from "@/lib/providers/snapshot";
 import { createLocalStorage } from "@/lib/providers/storage";
 import { type Diff, mismatches, TRIAGE_FIELDS } from "./compare";
 import { runConfirm } from "./confirm-check";
 import { loadExpectations, type Expectation } from "./expectations";
 import type { Outcome } from "./observe";
-import { stubBrand } from "./stub-brand";
+import { fullResult, hasBrandPages, snapshotDirOf } from "./replay";
 import { probeLogo, storedLogoFiles } from "./probe";
 
 process.env.PROVIDERS = "fake";
-
-// Rows recorded before the brand stage have no homepage page to replay; their expectations carry no brand fields, so they run the stages up to photos only.
-function hasBrandPages(dir: string) {
-  const file = join(dir, "firecrawl.json");
-  if (!existsSync(file)) return false;
-  const pages = Object.keys(
-    readSnapshotJson(dir, "firecrawl.json", firecrawlSnapshotSchema),
-  );
-  return pages.some((page) =>
-    /^\/([a-z]{2}(-[a-z]{2})?\/)?$/i.test(new URL(page).pathname),
-  );
-}
-
-function snapshotDirOf(name: string) {
-  return [join(".golden", name), join("golden", "fixtures", name)].find((dir) =>
-    existsSync(join(dir, "case.json")),
-  );
-}
 
 type CaseResult = {
   diffs: Diff[];
@@ -45,14 +21,6 @@ type CaseResult = {
 };
 
 const noDiffs: CaseResult = { diffs: [], actual: {}, unpinned: [] };
-
-// A row recorded before the brand stage gets a stub brand, so its confirm scenarios still run.
-function fullResult(outcome: Outcome): IntakeResult | null {
-  if (!outcome.ok || !("result" in outcome)) return null;
-  return "brand" in outcome.result
-    ? outcome.result
-    : { ...outcome.result, brand: stubBrand };
-}
 
 async function runCase(
   name: string,

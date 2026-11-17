@@ -1,0 +1,112 @@
+{
+  "art_direction:09d3132c:481fb561e44c5ccbc2d1a8548c1521ff97d05bc75100c7fbcfc0351452492bbc": {
+    "candidates": [
+      {
+        "angle": "benefit",
+        "photoId": "p3",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "A sunlit pine kitchen counter with folded linen, a small bowl of lemons and soft morning light from a window on the left, warm neutral colours, shallow depth, calm and uncluttered, nothing else in frame, gentle shadows",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "social_proof",
+        "photoId": "p5",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "price",
+        "photoId": "p2",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "lifestyle",
+        "photoId": "p3",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "bria",
+          "scenePrompt": "Warm kitchen counter",
+          "reason": "a scene fits the angle"
+        }
+      },
+      {
+        "angle": "feature_close_up",
+        "photoId": "p5",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "benefit",
+        "photoId": "p2",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      }
+    ]
+  },
+  "copy:4a151d3a:237e258156a7040d1cb38c2d9a89639006fd981775e40dd95c5433c72ffd12de": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": null,
+        "headline": "Made for slow mornings",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "Loved by 212 happy owners",
+        "cta": "Shop now"
+      },
+      {
+        "index": 2,
+        "eyebrow": null,
+        "headline": "Good stoneware, fairly priced",
+        "cta": "Shop now"
+      },
+      {
+        "index": 3,
+        "eyebrow": null,
+        "headline": "Hand glazed, one at a time",
+        "cta": "Get yours"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "See the glaze up close",
+        "cta": "Take a look"
+      },
+      {
+        "index": 5,
+        "eyebrow": null,
+        "headline": "Dishwasher safe, every day",
+        "cta": "Shop now"
+      }
+    ]
+  }
+}

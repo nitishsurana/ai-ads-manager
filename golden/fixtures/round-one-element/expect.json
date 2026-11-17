@@ -1,0 +1,6 @@
+{
+  "note": "only price is on: no rating or offer badge, and the unusable angles are replaced",
+  "noElements": ["rating", "offer"],
+  "angles": ["benefit", "feature_close_up", "lifestyle", "price"],
+  "photoIds": ["p1"]
+}

@@ -1,0 +1,12 @@
+{
+  "note": "an offer over 40 characters can't be a badge: the offer angle stays but shows no badge",
+  "noElements": ["offer"],
+  "angles": [
+    "benefit",
+    "feature_close_up",
+    "lifestyle",
+    "offer",
+    "price",
+    "social_proof"
+  ]
+}

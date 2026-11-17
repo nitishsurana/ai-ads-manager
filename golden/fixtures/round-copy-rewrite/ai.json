@@ -1,0 +1,134 @@
+{
+  "art_direction:058e258a:71605ce4f34b72fe7ed85c1a1fb7998617d1dd9dffbbc049750e81ecdd555ee0": {
+    "candidates": [
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "social_proof",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "price",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "lifestyle",
+        "photoId": "p1",
+        "element": "price",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "feature_close_up",
+        "photoId": "p1",
+        "element": "rating",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      },
+      {
+        "angle": "benefit",
+        "photoId": "p1",
+        "element": "none",
+        "offerFactId": null,
+        "background": {
+          "method": "tonal",
+          "scenePrompt": null,
+          "reason": "flat colour"
+        }
+      }
+    ]
+  },
+  "copy:4a151d3a:237e258156a7040d1cb38c2d9a89639006fd981775e40dd95c5433c72ffd12de": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": null,
+        "headline": "A mug that makes every single morning better",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "Loved by 212 happy owners",
+        "cta": "Order yours today right now"
+      },
+      {
+        "index": 2,
+        "eyebrow": null,
+        "headline": "Save 50% on your first mug",
+        "cta": "Shop now"
+      },
+      {
+        "index": 3,
+        "eyebrow": "SUMMER SALE",
+        "headline": "Hand glazed, one at a time",
+        "cta": "Get yours"
+      },
+      {
+        "index": 5,
+        "eyebrow": null,
+        "headline": "Dishwasher safe, every day",
+        "cta": "Shop now"
+      }
+    ]
+  },
+  "copy_rewrite:17b0d377:3b10c66e252c127232e32b8b78a897e6c7543c3b8a44550107a10b620f5c43db": {
+    "candidates": [
+      {
+        "index": 0,
+        "eyebrow": null,
+        "headline": "Better mornings start here",
+        "cta": "Shop now"
+      },
+      {
+        "index": 1,
+        "eyebrow": null,
+        "headline": "Loved by 212 happy owners",
+        "cta": "Order yours"
+      },
+      {
+        "index": 2,
+        "eyebrow": null,
+        "headline": "A fair price for real stoneware",
+        "cta": "Shop now"
+      },
+      {
+        "index": 4,
+        "eyebrow": null,
+        "headline": "See the glaze up close",
+        "cta": "Take a look"
+      }
+    ]
+  }
+}

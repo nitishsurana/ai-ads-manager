@@ -24,6 +24,22 @@ export async function getLatestBrief(
   return data ? briefRowSchema.parse(data) : null;
 }
 
+export async function getBriefVersion(
+  userId: string,
+  workspaceId: string,
+  version: number,
+): Promise<BriefRow | null> {
+  const { data, error } = await createSecretClient()
+    .from("briefs")
+    .select("version, content")
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", userId)
+    .eq("version", version)
+    .maybeSingle();
+  check(error, "get brief version");
+  return data ? briefRowSchema.parse(data) : null;
+}
+
 // The version the rewrite for round n created, if it already ran.
 export async function findRoundBriefVersion(
   userId: string,

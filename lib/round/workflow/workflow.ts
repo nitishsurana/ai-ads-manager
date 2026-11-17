@@ -60,6 +60,7 @@ export async function roundWorkflow(run: RoundRun) {
       if ("ending" in planned) return planned.ending;
       const written = settle(await copyStep(ctx, planned.value));
       if ("ending" in written) return written.ending;
+      if (written.value.length === 0) return { status: "no_pass" };
       const backgrounds = settle(await backgroundsStep(ctx, written.value));
       if ("ending" in backgrounds) return backgrounds.ending;
       const composed = settle(await compositeStep(ctx, backgrounds.value));
