@@ -48,9 +48,12 @@ export function applyAnswers(
     if (!rejected(typed, edited)) {
       if (edited || !answers.price.show) next.pricingEdited = true;
       if (edited) next.price = edited;
-      // With no price to show, the field starts hidden.
-      next.showPrice = answers.price.show && next.price !== null;
+      next.showPrice = answers.price.show;
     }
+  }
+  if (answers.clearPrice) {
+    next.pricingEdited = true;
+    next.price = null;
   }
   if (answers.wasPrice) {
     const typed = answers.wasPrice.show && answers.wasPrice.value;
@@ -93,9 +96,16 @@ export function applyAnswers(
 
   const edit = answers.brandKit;
   if (edit) {
-    const { palette, ...fields } = edit;
+    const { palette, typeface, ...fields } = edit;
     Object.assign(next.brandKit, fields);
     Object.assign(next.brandKit.palette, palette);
+    if (typeface) {
+      next.brandKit.fonts.heading = {
+        ...next.brandKit.fonts.heading,
+        family: typeface,
+        exact: true,
+      };
+    }
   }
 
   return next;

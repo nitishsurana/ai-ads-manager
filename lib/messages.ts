@@ -22,6 +22,10 @@ export const messages = {
   extra_links: "I only read the first link in a message.",
   try_another_link: "Paste a different product link to try again.",
   chat_failed: "Something went wrong with that message. Try again.",
+  confirm_locked:
+    "A round is still running. Wait for it to finish, then save your changes.",
+  save_failed: "We couldn't save that. Try again.",
+  cannot_generate: "Finish the items at the top before generating.",
 
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
   low_resolution: "This photo is low resolution and may look soft.",

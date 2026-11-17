@@ -20,6 +20,7 @@ import {
   type Thread,
 } from "@/lib/db/queries";
 import { startIntake } from "@/lib/intake/workflow";
+import { mergeFinishedIntake } from "@/lib/workspace";
 import { messages } from "@/lib/messages";
 import {
   CHAT_MODEL,
@@ -221,6 +222,11 @@ export async function runChatTurn(userId: string, request: ChatRequest) {
               meta: { thread_id: threadId, kind: "chat" },
             },
           ],
+        );
+      }
+      if (intakeId) {
+        await mergeFinishedIntake(userId, threadId, intakeId).catch((error) =>
+          console.error(`chat: merging intake ${intakeId} failed`, error),
         );
       }
       const parts = assistantParts(responseMessage.parts);

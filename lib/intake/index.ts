@@ -1,7 +1,7 @@
 export { createIntakeDeps } from "./deps";
 export { runIntake, runIntakeBrand, runIntakeUntilBrand } from "./pipeline";
 export { BrandStageError } from "./brand";
-export { PhotosStageError } from "./photos";
+export { PhotosStageError, photoWarnings } from "./photos";
 export type {
   BrandKit,
   BrandResult,

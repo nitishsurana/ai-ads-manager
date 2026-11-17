@@ -34,4 +34,5 @@ next-env.d.ts
 .workflow-data/
 supabase/.temp/
 test-results/
+e2e/.auth/
 playwright-report/

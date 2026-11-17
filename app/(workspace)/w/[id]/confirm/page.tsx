@@ -1,12 +1,15 @@
+import { notFound, redirect } from "next/navigation";
+import { ConfirmScreen } from "@/components/confirm/confirm-screen";
+import { requireTester } from "@/lib/auth";
+import { loadConfirmScreen } from "@/lib/workspace";
+
 export default async function Page({ params }: PageProps<"/w/[id]/confirm">) {
   const { id } = await params;
+  const { userId } = await requireTester();
+  const screen = await loadConfirmScreen(userId, id);
+  if (!screen) notFound();
+  // Before the first round the confirm screen is the workspace itself.
+  if (screen.phase === "confirm") redirect(`/w/${id}`);
 
-  return (
-    <>
-      <h1 className="text-[26px] font-semibold tracking-tight">
-        Confirm what we found
-      </h1>
-      <p className="font-mono text-muted-foreground">{id}</p>
-    </>
-  );
+  return <ConfirmScreen screen={screen} mode="edit" />;
 }

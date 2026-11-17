@@ -1,9 +1,37 @@
-import type { IntakeResult } from "@/lib/intake";
+import type {
+  BrandResult,
+  IntakeResult,
+  PageFacts,
+  Photo,
+  ShopifyProduct,
+} from "@/lib/intake";
 import { formatAmount } from "@/lib/money";
 import { currencyChoices } from "./currency";
 import type { ConfirmState } from "./types";
 
-export function initialConfirm(result: IntakeResult): ConfirmState {
+// The part of an intake result the screen reads, so a workspace can rebuild it from its stored rows.
+export type ConfirmSource = {
+  product: {
+    variants: Pick<
+      ShopifyProduct["variants"][number],
+      "id" | "price" | "compareAtPrice"
+    >[];
+  };
+  page: PageFacts;
+  photos: {
+    photos: Pick<
+      Photo,
+      "position" | "thumbPath" | "tier" | "warnings" | "dropped"
+    >[];
+  };
+  brand: Pick<
+    BrandResult,
+    "storeName" | "needsBrandName" | "logo" | "brandKit"
+  >;
+  warnings: IntakeResult["warnings"];
+};
+
+export function initialConfirm(result: ConfirmSource): ConfirmState {
   const { page, photos, brand, product, warnings } = result;
   const variantsById = new Map(product.variants.map((v) => [v.id, v]));
   return {

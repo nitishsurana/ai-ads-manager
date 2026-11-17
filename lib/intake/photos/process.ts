@@ -6,16 +6,15 @@ import { decideDrop } from "./drop";
 import { logSwallowed } from "./log";
 import { countMainShapes } from "./mask";
 import type { PreparedImage } from "./prepare";
+import { isLowResolution, photoWarnings } from "./warnings";
 import type {
   CostEntry,
   DropReason,
   Photo,
   PhotoTier,
-  PhotoWarning,
   PhotosDeps,
 } from "./types";
 
-const MIN_LONG_SIDE = 800;
 const PHOTOS_BUCKET = "photos";
 const CUTOUTS_BUCKET = "cutouts";
 export const MASK_MODEL = "fal-ai/birefnet/v2";
@@ -107,16 +106,20 @@ export async function processPhoto(
       : []),
   ]);
 
-  const lowRes = Math.max(image.origWidth, image.origHeight) < MIN_LONG_SIDE;
+  const lowRes = isLowResolution(image.origWidth, image.origHeight);
   const tier: PhotoTier = checks.added_text
     ? "added_text"
     : lowRes
       ? "clean_low_res"
       : "clean";
   const dropped = dropReason !== null;
-  const warnings: PhotoWarning[] = [];
-  if (!dropped && lowRes) warnings.push("low_resolution");
-  if (!dropped && checks.added_text) warnings.push("photo_text");
+  const warnings = dropped
+    ? []
+    : photoWarnings({
+        origWidth: image.origWidth,
+        origHeight: image.origHeight,
+        addedText: checks.added_text,
+      });
 
   return {
     position,

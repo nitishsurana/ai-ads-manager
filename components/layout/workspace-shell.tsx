@@ -1,12 +1,19 @@
 import type { ReactNode } from "react";
 import { ChatPane } from "@/components/chat/chat-pane";
+import { cn } from "@/lib/utils";
 
 type WorkspaceShellProps = {
   threadId: string;
+  // The screen lays out its own main area (the confirm screen's sticky bottom bar needs the full width).
+  flush?: boolean;
   children: ReactNode;
 };
 
-export function WorkspaceShell({ threadId, children }: WorkspaceShellProps) {
+export function WorkspaceShell({
+  threadId,
+  flush = false,
+  children,
+}: WorkspaceShellProps) {
   return (
     <div className="flex flex-1 items-stretch">
       <aside
@@ -17,7 +24,14 @@ export function WorkspaceShell({ threadId, children }: WorkspaceShellProps) {
           <ChatPane threadId={threadId} />
         </div>
       </aside>
-      <main className="min-w-0 flex-1 px-12 py-18">{children}</main>
+      <main
+        className={cn(
+          "min-w-0 flex-1",
+          flush ? "flex flex-col pt-6" : "px-12 py-18",
+        )}
+      >
+        {children}
+      </main>
     </div>
   );
 }

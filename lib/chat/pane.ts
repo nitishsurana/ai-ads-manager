@@ -4,6 +4,7 @@ import {
   createThread,
   getLatestIntake,
   getThread,
+  getWorkspacePhase,
   listFacts,
 } from "@/lib/db/queries";
 import { readIntake } from "@/lib/intake/workflow";
@@ -14,6 +15,13 @@ import type { ChatMode } from "./types";
 // The Empty screen's thread: the newest one that hasn't become a workspace, or a fresh one.
 export async function ensureCurrentThread(userId: string) {
   return (await findOpenThreadId(userId)) ?? createThread(userId);
+}
+
+// Where a pending fact is confirmed: the facts card of the confirm screen, which is its own route once rounds exist.
+async function confirmHref(userId: string, workspaceId: string) {
+  return (await getWorkspacePhase(userId, workspaceId)) === "rounds"
+    ? `/w/${workspaceId}/confirm#facts`
+    : `/w/${workspaceId}#facts`;
 }
 
 export async function loadChatPane(userId: string, threadId: string) {
@@ -39,5 +47,13 @@ export async function loadChatPane(userId: string, threadId: string) {
       : intake?.status === "failed"
         ? "failed"
         : "empty";
-  return { rows, facts, campaign, mode };
+  return {
+    rows,
+    facts,
+    campaign,
+    mode,
+    confirmHref: thread.workspaceId
+      ? await confirmHref(userId, thread.workspaceId)
+      : null,
+  };
 }

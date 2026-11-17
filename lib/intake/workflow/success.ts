@@ -3,32 +3,12 @@ import {
   completeIntake,
   completeIntakeWithWorkspace,
   getIntake,
-  type NewPhoto,
 } from "@/lib/db/queries";
-import type { Photo } from "../photos";
+import { mergeIntoExisting } from "@/lib/workspace/existing";
 import type { IntakeResult } from "../types";
 import { removeIntakeFiles } from "./cleanup";
+import { photoRow, workspaceRow } from "./rows";
 import type { IntakeRun } from "./types";
-
-function photoRow(photo: Photo): NewPhoto {
-  return {
-    position: photo.position,
-    source_url: photo.sourceUrl,
-    orig_width: photo.origWidth,
-    orig_height: photo.origHeight,
-    work_path: photo.workPath,
-    thumb_path: photo.thumbPath,
-    sha256: photo.sha256,
-    phash: photo.phash,
-    checks: photo.checks,
-    tier: photo.tier,
-    cutout_path: photo.cutoutPath,
-    mask_path: photo.maskPath,
-    dropped: photo.dropped,
-    drop_reason: photo.dropReason,
-    selected: photo.selected,
-  };
-}
 
 function summary(result: IntakeResult) {
   const { product, page, photos, brand } = result;
@@ -39,19 +19,6 @@ function summary(result: IntakeResult) {
     brand.logo ? "logo found" : "no logo found",
   ];
   return `I read ${product.title}: ${details.filter(Boolean).join(", ")}.`;
-}
-
-// Everything the confirm screen shows about the product that has no column of its own.
-function productJson(result: IntakeResult) {
-  return {
-    shopify: result.product,
-    page: result.page,
-    market: result.market,
-    finalUrl: result.finalUrl,
-    storeName: result.brand.storeName,
-    needsBrandName: result.brand.needsBrandName,
-    warnings: result.warnings,
-  };
 }
 
 export type Persisted = { workspaceId: string | null };
@@ -65,14 +32,7 @@ export async function persistSuccess(
     run.userId,
     run.intakeId,
     {
-      workspace: {
-        product_key: result.productKey,
-        source_url: result.finalUrl,
-        product: productJson(result),
-        brand_kit_scraped: result.brand.brandKitScraped,
-        brand_kit: result.brand.brandKit,
-        logo: result.brand.logo,
-      },
+      workspace: workspaceRow(result),
       photos: result.photos.photos.map(photoRow),
       summary: {
         ui_id: `intake-${run.intakeId}-summary`,
@@ -92,10 +52,14 @@ export async function persistExisting(
     workspaceId: existingWorkspaceId,
     productKey: null,
   });
-  if (completed) return { workspaceId: existingWorkspaceId };
   // A retry after the update committed finds the intake already done.
-  const intake = await getIntake(run.userId, run.intakeId);
-  return {
-    workspaceId: intake?.status === "done" ? intake.workspaceId : null,
-  };
+  const intake = completed ? null : await getIntake(run.userId, run.intakeId);
+  const workspaceId = completed
+    ? existingWorkspaceId
+    : intake?.status === "done"
+      ? intake.workspaceId
+      : null;
+  // The chat turn repeats this when it ends; each merge replaces the last one's suggestion.
+  if (workspaceId) await mergeIntoExisting(run, existingWorkspaceId);
+  return { workspaceId };
 }

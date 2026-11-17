@@ -1,10 +1,12 @@
 import "server-only";
 import { z } from "zod";
+import { retryOnMiss } from "@/lib/workspace/cas";
 import {
   getThread,
+  getWorkspace,
   getWorkspaceCampaign,
   setThreadCampaign,
-  setWorkspaceCampaign,
+  updateWorkspaceIf,
   type Thread,
 } from "@/lib/db/queries";
 
@@ -26,7 +28,7 @@ const labels = {
   audience: "Audience",
 } as const;
 
-function parseCampaign(json: unknown): Campaign {
+export function parseCampaign(json: unknown): Campaign {
   return campaignPatchSchema.catch({}).parse(json);
 }
 
@@ -39,6 +41,27 @@ export async function readCampaign(userId: string, thread: Thread) {
   );
 }
 
+// Only the fields the tool set are merged, into the campaign as it is now, and written only if nothing wrote since it was read.
+async function patchWorkspaceCampaign(
+  userId: string,
+  workspaceId: string,
+  patch: Campaign,
+) {
+  const saved = await retryOnMiss(async () => {
+    const workspace = await getWorkspace(userId, workspaceId);
+    if (!workspace) throw new Error(`chat: workspace ${workspaceId} not found`);
+    const campaign = { ...parseCampaign(workspace.campaign), ...patch };
+    return (await updateWorkspaceIf(userId, workspaceId, workspace.updatedAt, {
+      campaign,
+    }))
+      ? true
+      : null;
+  });
+  if (!saved) {
+    throw new Error(`chat: campaign of workspace ${workspaceId} kept changing`);
+  }
+}
+
 // The thread is read again: an intake started in this turn may have made it a workspace since the turn began.
 export async function mergeCampaign(
   userId: string,
@@ -47,11 +70,13 @@ export async function mergeCampaign(
 ) {
   const thread = await getThread(userId, threadId);
   if (!thread) throw new Error(`chat: thread ${threadId} not found`);
-  const next = { ...(await readCampaign(userId, thread)), ...patch };
   if (thread.workspaceId) {
-    await setWorkspaceCampaign(userId, thread.workspaceId, next);
+    await patchWorkspaceCampaign(userId, thread.workspaceId, patch);
   } else {
-    await setThreadCampaign(userId, thread.id, next);
+    await setThreadCampaign(userId, thread.id, {
+      ...(await readCampaign(userId, thread)),
+      ...patch,
+    });
   }
   return CAMPAIGN_KEYS.flatMap((key) => {
     const text = patch[key];

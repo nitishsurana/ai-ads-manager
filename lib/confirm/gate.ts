@@ -11,7 +11,10 @@ export function canGenerate(state: ConfirmState) {
     !state.needsVariantChoice ||
     (state.variantId !== null &&
       (!variantNeedsConfirmation(state) || state.variantConfirmed));
+  // A shown price needs an amount; creatives never get an empty one.
+  const priceReady = !state.showPrice || state.price !== null;
   return (
+    priceReady &&
     state.photos.some((photo) => photo.selected) &&
     (!state.notPurchasable || state.continuePastFlag === true) &&
     variantReady

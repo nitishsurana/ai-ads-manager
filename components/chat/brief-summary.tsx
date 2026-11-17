@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Fact } from "@/lib/db/queries";
 
 type BriefSummaryProps = {
@@ -5,6 +6,8 @@ type BriefSummaryProps = {
   angle?: string;
   audience?: string;
   facts: Pick<Fact, "text" | "status">[];
+  // Once the thread has a workspace, a pending fact links to where it is confirmed.
+  confirmHref?: string | null;
 };
 
 export function BriefSummary({
@@ -12,6 +15,7 @@ export function BriefSummary({
   angle,
   audience,
   facts,
+  confirmHref,
 }: BriefSummaryProps) {
   const campaign = [
     ["Occasion", occasion],
@@ -41,6 +45,13 @@ export function BriefSummary({
               {fact.text} ·{" "}
               {fact.status === "confirmed" ? (
                 <span className="font-medium text-success">confirmed</span>
+              ) : confirmHref ? (
+                <Link
+                  href={confirmHref}
+                  className="font-medium text-warning-foreground underline underline-offset-2"
+                >
+                  Confirm in step 1
+                </Link>
               ) : (
                 <span className="font-medium text-warning-foreground">
                   confirm it on the right

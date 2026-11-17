@@ -1,4 +1,6 @@
-import { expect, type Browser, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { type Browser, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
 export const TESTER_PASSWORD = process.env.TESTER_PASSWORD ?? "";
@@ -10,28 +12,54 @@ export const secret = createClient(
   { auth: { persistSession: false } },
 );
 
-export const userIds = new Set<string>();
+const BUCKETS = ["photos", "cutouts", "logos"];
 
-export async function deleteUsers() {
-  // Deleting the user cascades to its threads, messages, facts, intakes, workspaces, photos and costs.
-  for (const id of userIds) await secret.auth.admin.deleteUser(id);
+// Deleting a user cascades its rows but not its Storage objects, which are keyed by intake id; they are listed from the intakes before the rows go.
+export async function removeUserFiles(userId: string) {
+  const { data: intakes } = await secret
+    .from("intakes")
+    .select("id")
+    .eq("user_id", userId);
+  for (const { id } of intakes ?? []) {
+    for (const bucket of BUCKETS) {
+      const { data } = await secret.storage
+        .from(bucket)
+        .list(id, { limit: 1000 });
+      if (data?.length) {
+        await secret.storage
+          .from(bucket)
+          .remove(data.map((file) => `${id}/${file.name}`));
+      }
+    }
+  }
 }
 
-export async function signedInContext(browser: Browser, name: string) {
-  const context = await browser.newContext();
+// The shared testers are signed in once per run by global-setup.ts, which saves their browser state here.
+export const AUTH_DIR = join("e2e", ".auth");
+export const TESTER_NAMES = { a: "E2E A", b: "E2E B" } as const;
+export type TesterKey = keyof typeof TESTER_NAMES;
+
+export const authFile = (key: TesterKey) => join(AUTH_DIR, `${key}.json`);
+
+export function testerIds() {
+  return JSON.parse(
+    readFileSync(join(AUTH_DIR, "users.json"), "utf8"),
+  ) as Record<TesterKey, string>;
+}
+
+export async function testerContext(browser: Browser, key: TesterKey) {
+  const context = await browser.newContext({ storageState: authFile(key) });
   const page = await context.newPage();
-  await page.goto("/sign-in");
-  await page.getByLabel("Your name").fill(name);
-  await page.getByLabel("Tester password").fill(TESTER_PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL("/");
-  const cookie = (await context.cookies()).find((c) => c.name === "tester");
-  const body = (cookie?.value ?? "").split(".")[0] ?? "";
-  const { uid } = JSON.parse(
-    Buffer.from(body, "base64url").toString("utf8"),
-  ) as { uid: string };
-  userIds.add(uid);
-  return { context, page, uid };
+  await page.goto("/");
+  return { context, page, uid: testerIds()[key] };
+}
+
+// Specs share testers one after another (one worker), so each leaves them as it found them: no threads, and so no workspaces, intakes, facts, messages or Storage files. Deleting the testers at the end of the run removes the rest.
+export async function resetTesters() {
+  for (const userId of Object.values(testerIds())) {
+    await removeUserFiles(userId);
+    await secret.from("threads").delete().eq("user_id", userId);
+  }
 }
 
 export async function sendMessage(page: Page, text: string) {
@@ -41,17 +69,4 @@ export async function sendMessage(page: Page, text: string) {
 
 export function intakeIdOf(page: Page) {
   return /\/r\/([0-9a-f-]{36})$/.exec(page.url())?.[1] ?? "";
-}
-
-export async function removeIntakeFiles(intakeIds: Iterable<string>) {
-  for (const id of intakeIds) {
-    for (const bucket of ["photos", "cutouts", "logos"]) {
-      const { data } = await secret.storage.from(bucket).list(id);
-      if (data?.length) {
-        await secret.storage
-          .from(bucket)
-          .remove(data.map((file) => `${id}/${file.name}`));
-      }
-    }
-  }
 }

@@ -12,5 +12,9 @@ export default async function WorkspaceDetailLayout({
   const threadId = await getWorkspaceThreadId(userId, id);
   if (!threadId) notFound();
 
-  return <WorkspaceShell threadId={threadId}>{children}</WorkspaceShell>;
+  return (
+    <WorkspaceShell threadId={threadId} flush>
+      {children}
+    </WorkspaceShell>
+  );
 }

@@ -1,4 +1,9 @@
-export { insertMessage, listMessages, moveMessage } from "./messages";
+export {
+  insertMessage,
+  listMessages,
+  moveMessage,
+  upsertMessage,
+} from "./messages";
 export type { NewMessage } from "./messages";
 export { completeIntakeWithWorkspace } from "./complete";
 export type { CompletedIntake, NewPhoto } from "./complete";
@@ -17,7 +22,14 @@ export {
   writeIntakeProgress,
 } from "./intakes";
 export type { Intake } from "./intakes";
-export { insertFact, listFacts } from "./facts";
+export {
+  confirmFact,
+  editFact,
+  insertFact,
+  listFacts,
+  moveFactPending,
+  removeFact,
+} from "./facts";
 export type { Fact, FactKind } from "./facts";
 export {
   createThread,
@@ -27,9 +39,14 @@ export {
   setThreadCampaign,
 } from "./threads";
 export type { Thread } from "./threads";
+export { listWorkspacePhotos, setPhotosSelected } from "./photos";
+export type { WorkspacePhoto } from "./photos";
 export {
   findWorkspaceByProductKey,
+  getWorkspace,
   getWorkspaceCampaign,
+  getWorkspacePhase,
   getWorkspaceThreadId,
-  setWorkspaceCampaign,
+  updateWorkspaceIf,
 } from "./workspaces";
+export type { WorkspaceRow } from "./workspaces";

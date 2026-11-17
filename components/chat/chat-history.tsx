@@ -23,12 +23,14 @@ type ChatHistoryProps = {
   rows: ChatRow[];
   campaign: Campaign;
   facts: Pick<Fact, "text" | "status">[];
+  confirmHref: string | null;
 };
 
 function Row({
   row,
   campaign,
   facts,
+  confirmHref,
 }: Omit<ChatHistoryProps, "rows"> & { row: ChatRow }) {
   const text = textOf(row);
   switch (row.kind) {
@@ -56,9 +58,12 @@ function Row({
         </div>
       );
     case "brief_update":
+      if (!Object.values(campaign).some(Boolean) && facts.length === 0) {
+        return null;
+      }
       return (
         <div className="pl-8">
-          <BriefSummary {...campaign} facts={facts} />
+          <BriefSummary {...campaign} facts={facts} confirmHref={confirmHref} />
         </div>
       );
     case "divider":
@@ -96,8 +101,19 @@ function researchLast(rows: ChatRow[]) {
   return [...ordered, ...held];
 }
 
-export function ChatHistory({ rows, campaign, facts }: ChatHistoryProps) {
+export function ChatHistory({
+  rows,
+  campaign,
+  facts,
+  confirmHref,
+}: ChatHistoryProps) {
   return researchLast(rows).map((row) => (
-    <Row key={row.id} row={row} campaign={campaign} facts={facts} />
+    <Row
+      key={row.id}
+      row={row}
+      campaign={campaign}
+      facts={facts}
+      confirmHref={confirmHref}
+    />
   ));
 }

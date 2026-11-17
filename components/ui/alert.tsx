@@ -31,11 +31,13 @@ type AlertProps = {
   tone: keyof typeof tones;
   message: string;
   detail?: string;
+  // Sits at the right of a single-line alert; a stacked alert takes its action as children.
+  action?: ReactNode;
   children?: ReactNode;
 };
 
 // With a detail or an action the alert stacks them under the message.
-export function Alert({ tone, message, detail, children }: AlertProps) {
+export function Alert({ tone, message, detail, action, children }: AlertProps) {
   const stacked = Boolean(detail || children);
 
   return (
@@ -59,7 +61,10 @@ export function Alert({ tone, message, detail, children }: AlertProps) {
           {children && <div>{children}</div>}
         </div>
       ) : (
-        <p className="m-0 flex-1 text-[13.5px]">{message}</p>
+        <>
+          <p className="m-0 flex-1 text-[13.5px]">{message}</p>
+          {action}
+        </>
       )}
     </div>
   );

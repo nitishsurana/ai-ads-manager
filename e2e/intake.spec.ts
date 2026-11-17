@@ -2,39 +2,24 @@
 // By default the Playwright config runs PROVIDERS=fake, which replays golden/fixtures. The paid success case needs real providers: set PROVIDERS=real and INTAKE_E2E_URL to a real Shopify product page; it spends Firecrawl, AI Gateway and Fal credits.
 import { expect, test } from "@playwright/test";
 import {
-  deleteUsers,
+  resetTesters,
   FAKE_PROVIDERS,
   intakeIdOf,
   secret,
   sendMessage,
-  signedInContext,
+  testerContext,
 } from "./helpers";
 
 const PRODUCT_URL = process.env.INTAKE_E2E_URL;
 const FAILING_URL = FAKE_PROVIDERS
   ? "https://plain.example/products/blue-mug"
   : "https://example.com/products/anything";
-const BUCKETS = ["photos", "cutouts", "logos"];
 const NAVIGATE_TIMEOUT = 30_000;
 
-const intakeIds = new Set<string>();
-
-test.afterAll(async () => {
-  for (const id of intakeIds) {
-    for (const bucket of BUCKETS) {
-      const { data } = await secret.storage.from(bucket).list(id);
-      if (data?.length) {
-        await secret.storage
-          .from(bucket)
-          .remove(data.map((file) => `${id}/${file.name}`));
-      }
-    }
-  }
-  await deleteUsers();
-});
+test.afterAll(resetTesters);
 
 async function runIntake(
-  page: Awaited<ReturnType<typeof signedInContext>>["page"],
+  page: Awaited<ReturnType<typeof testerContext>>["page"],
   url: string,
 ) {
   await sendMessage(page, url);
@@ -42,7 +27,6 @@ async function runIntake(
     timeout: NAVIGATE_TIMEOUT,
   });
   const intakeId = intakeIdOf(page);
-  intakeIds.add(intakeId);
 
   await expect
     .poll(
@@ -68,7 +52,7 @@ async function runIntake(
 test("a failing URL fails the intake with its message and leaves nothing behind", async ({
   browser,
 }) => {
-  const { context, page, uid } = await signedInContext(browser, "Intake test");
+  const { context, page, uid } = await testerContext(browser, "a");
   const { intakeId, intake } = await runIntake(page, FAILING_URL);
   expect(intake).toMatchObject({
     status: "failed",
@@ -121,7 +105,7 @@ test("a real product becomes a workspace with photos, a summary and costs", asyn
     FAKE_PROVIDERS || !PRODUCT_URL,
     "set PROVIDERS=real and INTAKE_E2E_URL to run the paid success case",
   );
-  const { context, page, uid } = await signedInContext(browser, "Intake test");
+  const { context, page, uid } = await testerContext(browser, "a");
   const { intakeId, intake } = await runIntake(page, PRODUCT_URL ?? "");
   expect(intake.status).toBe("done");
   expect(intake.workspace_id).not.toBeNull();

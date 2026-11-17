@@ -2,42 +2,28 @@
 import { expect, test } from "@playwright/test";
 import sharp from "sharp";
 import type { ProgressState } from "../lib/intake/workflow/types";
-import {
-  deleteUsers,
-  intakeIdOf,
-  removeIntakeFiles,
-  secret,
-  sendMessage,
-  signedInContext,
-} from "./helpers";
+import { resetTesters, secret, sendMessage, testerContext } from "./helpers";
 
 const SUCCESS_URL = "https://shopabc.myshopify.com/products/blue-mug";
 const FAILING_URL = "https://plain.example/products/blue-mug";
 const NAVIGATE_TIMEOUT = 30_000;
 const SCREEN_TIMEOUT = 60_000;
 
-const intakeIds = new Set<string>();
-
-test.afterAll(async () => {
-  await removeIntakeFiles(intakeIds);
-  await deleteUsers();
-});
+// Each test starts with the testers' threads empty, as the third one counts them.
+test.afterEach(resetTesters);
 
 async function startIntake(
-  page: Awaited<ReturnType<typeof signedInContext>>["page"],
+  page: Awaited<ReturnType<typeof testerContext>>["page"],
   url: string,
 ) {
   await sendMessage(page, url);
   await expect(page).toHaveURL(/\/r\/[0-9a-f-]{36}$/, {
     timeout: NAVIGATE_TIMEOUT,
   });
-  const id = intakeIdOf(page);
-  intakeIds.add(id);
-  return id;
 }
 
 test("a readable product ends on its workspace", async ({ browser }) => {
-  const { context, page } = await signedInContext(browser, "Reading success");
+  const { context, page } = await testerContext(browser, "a");
   await startIntake(page, SUCCESS_URL);
   await expect(page).toHaveURL(/\/w\/[0-9a-f-]{36}$/, {
     timeout: SCREEN_TIMEOUT,
@@ -48,7 +34,7 @@ test("a readable product ends on its workspace", async ({ browser }) => {
 test("an unreadable product shows the failure with its exact message", async ({
   browser,
 }) => {
-  const { context, page } = await signedInContext(browser, "Reading failed");
+  const { context, page } = await testerContext(browser, "a");
   await startIntake(page, FAILING_URL);
 
   await expect(
@@ -74,7 +60,7 @@ test("an unreadable product shows the failure with its exact message", async ({
 test("the reading screen follows progress and the stuck rule, and only its owner can poll it", async ({
   browser,
 }) => {
-  const owner = await signedInContext(browser, "Reading owner");
+  const owner = await testerContext(browser, "a");
   const { page } = owner;
   const { data: thread } = await secret
     .from("threads")
@@ -91,7 +77,6 @@ test("the reading screen follows progress and the stuck rule, and only its owner
     .select("id")
     .single();
   const id = intake?.id ?? "";
-  intakeIds.add(id);
 
   await page.goto(`/r/${id}`);
   await expect(
@@ -110,7 +95,7 @@ test("the reading screen follows progress and the stuck rule, and only its owner
   }
   await expect(page.getByText("Photos so far")).toBeVisible();
 
-  const other = await signedInContext(browser, "Reading other");
+  const other = await testerContext(browser, "b");
   expect((await other.page.request.get(`/api/intakes/${id}`)).status()).toBe(
     404,
   );

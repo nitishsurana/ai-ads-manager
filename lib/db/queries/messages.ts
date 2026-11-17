@@ -66,3 +66,21 @@ export async function listMessages(userId: string, threadId: string) {
   check(error, "list messages");
   return data ?? [];
 }
+
+// Replaces the message with this ui_id, so a later write updates what the first one said.
+export async function upsertMessage(userId: string, message: NewMessage) {
+  if (!(await getThread(userId, message.threadId))) {
+    throw new Error(`db: thread ${message.threadId} not found for user`);
+  }
+  const { error } = await createSecretClient().from("messages").upsert(
+    {
+      thread_id: message.threadId,
+      ui_id: message.uiId,
+      role: message.role,
+      kind: message.kind,
+      parts: message.parts,
+    },
+    { onConflict: "thread_id,ui_id" },
+  );
+  check(error, "upsert message");
+}

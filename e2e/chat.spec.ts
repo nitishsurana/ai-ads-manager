@@ -1,21 +1,27 @@
 // Runs against `next dev` with PROVIDERS=fake (the Playwright config sets it): the chat model is scripted and intakes replay golden/fixtures.
 import { expect, test } from "@playwright/test";
-import { deleteUsers, secret, sendMessage, signedInContext } from "./helpers";
+import {
+  resetTesters,
+  secret,
+  sendMessage,
+  TESTER_NAMES,
+  testerContext,
+} from "./helpers";
 
 const REPLAY_URL = "https://plain.example/products/blue-mug";
 const MALFORMED_URL = "htps://www.allbirds.com/products/mens-tree-runners";
 const NAVIGATE_TIMEOUT = 30_000;
 const FAILED_INTAKE_TIMEOUT = 60_000;
 
-test.afterAll(deleteUsers);
+test.afterAll(resetTesters);
 test.describe.configure({ mode: "serial" });
 
 test.describe("chat", () => {
-  let a: Awaited<ReturnType<typeof signedInContext>>;
+  let a: Awaited<ReturnType<typeof testerContext>>;
   let threadId: string;
 
   test.beforeAll(async ({ browser }) => {
-    a = await signedInContext(browser, "Chat A");
+    a = await testerContext(browser, "a");
   });
   test.afterAll(async () => {
     await a?.context.close();
@@ -28,7 +34,9 @@ test.describe("chat", () => {
     ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2 })).toHaveCount(3);
     await expect(
-      page.getByText("Hi Chat A. Paste a Shopify product link to start."),
+      page.getByText(
+        `Hi ${TESTER_NAMES.a}. Paste a Shopify product link to start.`,
+      ),
     ).toBeVisible();
 
     const examples = page.getByRole("button", { name: /\/products\// });
@@ -154,7 +162,7 @@ test.describe("chat", () => {
   test("another tester can't reach this thread through the chat route", async ({
     browser,
   }) => {
-    const b = await signedInContext(browser, "Chat B");
+    const b = await testerContext(browser, "b");
     const message = {
       id: "intruderintruder1",
       role: "user",

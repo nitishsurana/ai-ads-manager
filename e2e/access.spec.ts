@@ -6,6 +6,7 @@ import {
   type Page,
 } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { resetTesters, testerContext } from "./helpers";
 
 const TESTER_PASSWORD = process.env.TESTER_PASSWORD ?? "";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
@@ -56,6 +57,7 @@ async function newTesterContext(browser: Browser, name: string) {
 }
 
 test.afterAll(async () => {
+  await resetTesters();
   for (const id of createdUserIds) {
     await secretClient.auth.admin.deleteUser(id);
   }
@@ -152,15 +154,19 @@ test.describe("tester access", () => {
   });
 
   test("a second browser is isolated from the first", async ({ browser }) => {
-    const second = await browser.newContext();
-    const secondPage = await second.newPage();
-    await secondPage.goto("/");
-    await expect(secondPage).toHaveURL(/\/sign-in/);
+    const fresh = await browser.newContext();
+    const freshPage = await fresh.newPage();
+    await freshPage.goto("/");
+    await expect(freshPage).toHaveURL(/\/sign-in/);
+    await fresh.close();
 
-    await signInTester(secondPage, "Ravi");
+    // The shared tester B, signed in by the global setup, is a second user.
+    const { context: second, page: secondPage } = await testerContext(
+      browser,
+      "b",
+    );
     await expect(secondPage).toHaveURL("/");
     const secondPayload = await testerPayload(second);
-    createdUserIds.add(secondPayload.uid);
     expect(secondPayload.uid).not.toBe((await testerPayload(a.context)).uid);
 
     const stolenCookie = await cookieValue(a.context, "tester");
@@ -222,7 +228,7 @@ test.describe("admin access", () => {
   test("the tester and admin cookies never grant each other's routes", async ({
     browser,
   }) => {
-    const tester = await newTesterContext(browser, "Meera");
+    const tester = await testerContext(browser, "b");
     await tester.page.goto("/admin");
     await expect(tester.page).toHaveURL("/admin/sign-in");
     await tester.context.close();

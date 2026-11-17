@@ -21,6 +21,7 @@ export async function ChatPane({ threadId }: { threadId: string }) {
         rows={pane.rows}
         campaign={pane.campaign}
         facts={pane.facts}
+        confirmHref={pane.confirmHref}
       />
     </ChatSession>
   );
