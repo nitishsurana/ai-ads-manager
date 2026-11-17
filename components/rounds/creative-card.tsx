@@ -101,8 +101,10 @@ export function CreativeCard({
   return (
     <article className="flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card font-sans text-sm text-foreground shadow-xs">
       <header className="flex items-center gap-2 px-3 py-2.5">
-        <span className="text-[13px] font-semibold">Creative {creative.n}</span>
-        <span className="inline-flex h-5.5 items-center rounded-full bg-muted px-2 text-xs font-medium text-muted-foreground">
+        <span className="text-[13px] font-semibold whitespace-nowrap">
+          Creative {creative.n}
+        </span>
+        <span className="inline-flex h-5.5 items-center rounded-full bg-muted px-2 text-xs font-medium whitespace-nowrap text-muted-foreground">
           {angleLabel(creative.angle)}
         </span>
         <span className="ml-auto flex gap-1">

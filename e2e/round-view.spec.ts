@@ -414,7 +414,7 @@ test.describe("round view", () => {
 
     // The zip holds the round's files, built in the browser from the same names.
     const zipDownload = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Download all as zip" }).click();
+    await page.getByRole("button", { name: "Download round as zip" }).click();
     const zipFile = await zipDownload;
     expect(zipFile.suggestedFilename()).toBe(
       `${names[0]?.replace(/-c\d+(-[A-Z]{3})?\.png$/, "")}.zip`,

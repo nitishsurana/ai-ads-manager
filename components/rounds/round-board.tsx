@@ -100,7 +100,7 @@ export function RoundBoard({
           </span>
           <Button variant="outline" onClick={zip} disabled={zipping}>
             <Download className="size-4" aria-hidden="true" />
-            Download all as zip
+            Download round as zip
           </Button>
           <Button size="lg" disabled={pending || starting} onClick={next}>
             {starting ? "Starting…" : "Next round"}
