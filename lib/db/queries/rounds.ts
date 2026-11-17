@@ -101,6 +101,25 @@ export async function getLatestRound(userId: string, workspaceId: string) {
   return data ? toRound(data) : null;
 }
 
+// The finished attempt of round n, if there is one.
+export async function getDoneRound(
+  userId: string,
+  workspaceId: string,
+  n: number,
+) {
+  const { data, error } = await createSecretClient()
+    .from("rounds")
+    .select(COLUMNS)
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", userId)
+    .eq("n", n)
+    .eq("status", "done")
+    .limit(1)
+    .maybeSingle();
+  check(error, "get done round");
+  return data ? toRound(data) : null;
+}
+
 export async function hasActiveRound(userId: string, workspaceId: string) {
   const { data, error } = await createSecretClient()
     .from("rounds")

@@ -66,3 +66,50 @@ export async function runScenario(
 
 export const roundOf = async (workspaceId: string, index = 0) =>
   (await roundsOf(workspaceId))[index];
+
+const BRIEF_CONTENT = {
+  rules: [],
+  campaign: {},
+  research: [],
+  values: {
+    price: null,
+    wasPrice: null,
+    currency: "USD",
+    rating: null,
+    brandName: null,
+  },
+  exemplarCreativeIds: [],
+  approvedAngles: [],
+};
+
+// A round that is already over, inserted for cases the UI can't reach.
+export async function insertRounds(
+  userId: string,
+  workspaceId: string,
+  rounds: Record<string, unknown>[],
+) {
+  await secret.from("briefs").insert({
+    workspace_id: workspaceId,
+    user_id: userId,
+    version: 1,
+    cause: "initial",
+    content: BRIEF_CONTENT,
+  });
+  await secret
+    .from("workspaces")
+    .update({ phase: "rounds" })
+    .eq("id", workspaceId);
+  const { error } = await secret.from("rounds").insert(
+    rounds.map((round) => ({
+      workspace_id: workspaceId,
+      user_id: userId,
+      brief_version: 1,
+      inputs: {},
+      ...round,
+    })),
+  );
+  expect(error).toBeNull();
+}
+
+export const tryAgain = (page: Page) =>
+  page.getByRole("button", { name: /^(Try again|Retry)/ });

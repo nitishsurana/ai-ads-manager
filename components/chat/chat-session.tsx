@@ -13,18 +13,13 @@ import { ChatComposer } from "./chat-composer";
 import { ExamplePrompt } from "./example-prompt";
 import { UserMessage } from "./user-message";
 
-const STATUS: Record<ChatMode, string> = {
-  empty: "New workspace",
-  reading: "Reading…",
-  failed: "Couldn’t read link",
-  confirm: "Step 1 · Confirm",
-};
-
 const PLACEHOLDER: Record<ChatMode, string> = {
   empty: "Paste a Shopify product link…",
   reading: "Add campaign context…",
   failed: "Paste a Shopify product link…",
   confirm: "Add context or correct something…",
+  generating: "Add direction for the next round…",
+  round: "Give direction for the next round…",
 };
 
 // The server persists every turn, so only the in-flight exchange is rendered from the stream.
@@ -53,6 +48,7 @@ function progressLabel(message: ChatUIMessage | undefined) {
 type ChatSessionProps = {
   threadId: string;
   mode: ChatMode;
+  statusLabel: string;
   name: string;
   empty: boolean;
   knownIds: string[];
@@ -62,6 +58,7 @@ type ChatSessionProps = {
 export function ChatSession({
   threadId,
   mode,
+  statusLabel,
   name,
   empty,
   knownIds,
@@ -111,7 +108,7 @@ export function ChatSession({
     <div className="flex h-full w-full flex-col bg-card font-sans text-[13.5px] leading-normal text-foreground">
       <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-4">
         <span className="text-sm font-semibold">Chat</span>
-        <span className="text-xs text-muted-foreground">{STATUS[mode]}</span>
+        <span className="text-xs text-muted-foreground">{statusLabel}</span>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col-reverse overflow-y-auto">

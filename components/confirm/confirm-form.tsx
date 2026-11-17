@@ -104,6 +104,8 @@ export function ConfirmForm({ screen, mode, header }: ConfirmFormProps) {
         report(result);
         if (!result.ok) return;
         router.push(`/w/${screen.id}`);
+        // The chat pane lives in the layout, which a navigation to the same workspace keeps; refreshing moves its status on.
+        router.refresh();
       } catch {
         failed(messages.save_failed);
       }

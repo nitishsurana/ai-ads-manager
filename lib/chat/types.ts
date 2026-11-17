@@ -42,4 +42,5 @@ export type ChatRow = {
   parts: MessagePart[];
 };
 
-export type ChatMode = "empty" | "reading" | "failed" | "confirm";
+export type ChatMode =
+  "empty" | "reading" | "failed" | "confirm" | "generating" | "round";

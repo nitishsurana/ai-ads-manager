@@ -48,6 +48,8 @@ export async function removeUserFiles(userId: string) {
     .select("id")
     .eq("user_id", userId);
   await removeRoundFiles((rounds ?? []).map((row) => row.id));
+  // Exports are keyed by user.
+  await removePrefixes(["exports"], [userId]);
 }
 
 // The shared testers are signed in once per run by global-setup.ts, which saves their browser state here.

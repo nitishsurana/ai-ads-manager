@@ -1,9 +1,14 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ConfirmScreen } from "@/components/confirm/confirm-screen";
 import { Stepper } from "@/components/layout/stepper";
-import { RoundScreen } from "@/components/rounds/round-screen";
+import { BriefPanel } from "@/components/rounds/brief-panel";
+import { GeneratingScreen } from "@/components/rounds/generating-screen";
+import { RoundBoard } from "@/components/rounds/round-board";
+import { elapsedLabel } from "@/components/rounds/stages";
 import { requireTester } from "@/lib/auth";
-import { getLatestRoundStatus } from "@/lib/round";
+import { loadBriefPanel } from "@/lib/brief";
+import { loadRoundScreen } from "@/lib/round";
 import { loadConfirmScreen } from "@/lib/workspace";
 
 export default async function Page({ params }: PageProps<"/w/[id]">) {
@@ -16,12 +21,59 @@ export default async function Page({ params }: PageProps<"/w/[id]">) {
     return <ConfirmScreen screen={screen} mode="first" />;
   }
 
-  // Phase 7 replaces RoundScreen with the Generating and Round views.
-  const round = await getLatestRoundStatus(userId, id);
+  const round = await loadRoundScreen(userId, id);
+  // A rounds-phase workspace always has a round; until one exists, only the way back to step 1 shows.
+  if (round.kind === "none") {
+    return (
+      <div className="px-8 pb-12">
+        <Stepper step={2} confirmHref={`/w/${id}/confirm`} />
+      </div>
+    );
+  }
+  if (round.kind === "generating") {
+    return (
+      <GeneratingScreen
+        key={round.status.id}
+        workspaceId={id}
+        initial={round.status}
+      />
+    );
+  }
+
+  const { view } = round;
+  const brief = await loadBriefPanel(userId, id);
+  const count = view.creatives.length;
   return (
-    <div className="flex flex-col gap-5 px-12 py-6">
-      <Stepper step={2} confirmHref={`/w/${id}/confirm`} />
-      {round && <RoundScreen key={round.id} workspaceId={id} initial={round} />}
-    </div>
+    <RoundBoard
+      key={view.id}
+      workspaceId={id}
+      round={view}
+      header={
+        <div className="flex flex-col gap-3">
+          <Stepper step={3} confirmHref={`/w/${id}/confirm`} />
+          <div className="flex flex-wrap items-baseline gap-3">
+            <h1 className="m-0 text-2xl font-semibold tracking-tight">
+              Round {view.n}
+            </h1>
+            <span className="text-xs text-muted-foreground">
+              {count} {count === 1 ? "creative" : "creatives"}
+              {view.madeInS !== null &&
+                ` · made in ${elapsedLabel(view.madeInS)}`}
+              {` · brief v${view.briefVersion}`}
+              {view.campaign && ` · ${view.campaign}`}
+            </span>
+            {view.n > 1 && (
+              <Link
+                href={`/w/${id}/library`}
+                className="text-xs text-primary-text hover:underline"
+              >
+                Round {view.n - 1} in Library
+              </Link>
+            )}
+          </div>
+        </div>
+      }
+      brief={brief && <BriefPanel workspaceId={id} data={brief} />}
+    />
   );
 }

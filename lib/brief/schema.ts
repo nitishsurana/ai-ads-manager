@@ -11,11 +11,13 @@ export const confirmedValuesSchema = z.object({
   brandName: z.string().nullable(),
 }) satisfies z.ZodType<ConfirmedValues>;
 
+export const MAX_RULES = 20;
+
 export const briefRuleSchema = z.object({
   id: z.string(),
   kind: z.enum(["do", "dont"]),
   text: z.string().trim().min(1).max(200),
-  source: z.enum(["chat", "rating", "edit"]),
+  source: z.enum(["chat", "round", "tester_edit"]),
   locked: z.boolean(),
 });
 
@@ -32,3 +34,10 @@ export const briefContentSchema = z.object({
 
 export type BriefRule = z.infer<typeof briefRuleSchema>;
 export type BriefContent = z.infer<typeof briefContentSchema>;
+
+// A copy of a brief for a non-round version: the round marker names the version a rewrite made.
+export function withoutRound(content: BriefContent): BriefContent {
+  const copy = { ...content };
+  delete copy.round;
+  return copy;
+}

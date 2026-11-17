@@ -1,3 +1,10 @@
 export { housekeep } from "./housekeeping";
 export { startRound } from "./start";
-export { getLatestRoundStatus, getRoundStatus } from "./status";
+export { loadRoundScreen } from "./screen";
+export { getRoundStatus } from "./status";
+export { editCreative } from "./edit";
+export { exportCreative } from "./export";
+export { rateCreative } from "./feedback";
+export { loadRoundView } from "./view";
+export type { CreativeView, RoundView } from "./view";
+export type { RoundScreenData } from "./screen";

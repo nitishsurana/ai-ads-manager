@@ -30,6 +30,40 @@ export function createStorage() {
   return createSupabaseStorage(createSecretClient());
 }
 
+// The ai with every call's cost noted in `costs`; a call that fails may still have been billed, with the amount unknown.
+function costAi(ai: Ai, costs: CostEntry[]): Ai {
+  return {
+    async generate(request) {
+      const entry = {
+        provider: "ai" as const,
+        model: request.model,
+        task: request.task,
+      };
+      try {
+        const result = await ai.generate(request);
+        costs.push({ ...entry, usd: result.costUsd });
+        return result;
+      } catch (error) {
+        costs.push({ ...entry, usd: null });
+        throw error;
+      }
+    },
+  };
+}
+
+// The models a round step calls outside its stages (the brief rewrite): scripted under PROVIDERS=fake.
+export function createRoundAi(
+  inputs: RoundContext["inputs"],
+  costs: CostEntry[],
+) {
+  return costAi(
+    process.env.PROVIDERS === "fake"
+      ? createScriptedAi({ scenario: scenarioFor(inputs) })
+      : createRealAi(),
+    costs,
+  );
+}
+
 export function createStepDeps(
   ctx: RoundContext,
   options: {
@@ -62,24 +96,7 @@ export function createStepDeps(
       return storage.put(...args);
     },
   };
-  const costedAi: Ai = {
-    async generate(request) {
-      const entry = {
-        provider: "ai" as const,
-        model: request.model,
-        task: request.task,
-      };
-      try {
-        const result = await ai.generate(request);
-        options.costs.push({ ...entry, usd: result.costUsd });
-        return result;
-      } catch (error) {
-        // The call may still have been billed; the amount is unknown.
-        options.costs.push({ ...entry, usd: null });
-        throw error;
-      }
-    },
-  };
+  const costedAi = costAi(ai, options.costs);
   return {
     ai: costedAi,
     readBack: fake

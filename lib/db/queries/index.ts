@@ -10,6 +10,7 @@ export type { CompletedIntake, NewPhoto } from "./complete";
 export {
   getSpendTodayUsd,
   insertCosts,
+  insertRoundCosts,
   replaceIntakeCosts,
   replaceRoundCosts,
 } from "./costs";
@@ -69,16 +70,23 @@ export {
   findRoundBriefVersion,
   getBriefVersion,
   getLatestBrief,
+  listBriefVersions,
 } from "./briefs";
 export type { BriefRow } from "./briefs";
-export { countUnratedCreatives, listRoundCreatives } from "./creatives";
-export type { RoundCreative } from "./creatives";
+export {
+  countUnratedCreatives,
+  getCreative,
+  listRoundCreatives,
+  writeCreativeIf,
+} from "./creatives";
+export type { CreativeWrite, RoundCreative } from "./creatives";
 export {
   claimRound,
   countRoundsRunningSince,
   failQueuedRound,
   finishRound,
   writeJudgeRecords,
+  getDoneRound,
   getLatestRound,
   getRound,
   hasActiveRound,

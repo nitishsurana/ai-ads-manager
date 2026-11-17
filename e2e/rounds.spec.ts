@@ -1,5 +1,5 @@
 // Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. Art direction, copy and the judges run on the scripted fake ai (its plan ignores the rules on purpose, so the code that enforces them runs too; its judges score by scenario) and the read-back is the layout's own text, backgrounds and the text layer on the scripted fake Fal and the committed fonts. Scenarios are picked through the campaign occasion ("fake:<scenario>", see lib/round/fake.ts): slow, fail and l1_fail reach the scripted Fal, the others set the judges' scores. The scenarios that reach selection are in rounds-selection.spec.ts. Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { generate, nextAction, roundsOf } from "./confirm-helpers";
 import {
   FAKE_PROVIDERS,
@@ -11,10 +11,12 @@ import {
 } from "./helpers";
 import {
   callsOf,
+  insertRounds,
   judgedCreatives,
   previewFiles,
   roundOf,
   SCREEN_TIMEOUT,
+  tryAgain,
 } from "./round-helpers";
 import { seedWorkspace } from "./seed";
 import { ROUND_TIMERS } from "./timers";
@@ -25,21 +27,6 @@ const NO_PASS =
   "We couldn't make creatives that pass our checks this time. Add more detail or update what you told us, then try again.";
 const DAILY_LIMIT =
   "You've reached today's limit of 20 rounds. Try again tomorrow.";
-const BRIEF_CONTENT = {
-  rules: [],
-  campaign: {},
-  research: [],
-  values: {
-    price: null,
-    wasPrice: null,
-    currency: "USD",
-    rating: null,
-    brandName: null,
-  },
-  exemplarCreativeIds: [],
-  approvedAngles: [],
-};
-
 test.skip(!FAKE_PROVIDERS, "replays committed fixtures");
 test.afterAll(resetTesters);
 test.describe.configure({ mode: "serial" });
@@ -52,38 +39,6 @@ async function briefsOf(workspaceId: string) {
     .order("version");
   return data ?? [];
 }
-
-// A round that is already over, inserted for cases the UI can't reach.
-async function insertRounds(
-  userId: string,
-  workspaceId: string,
-  rounds: Record<string, unknown>[],
-) {
-  await secret.from("briefs").insert({
-    workspace_id: workspaceId,
-    user_id: userId,
-    version: 1,
-    cause: "initial",
-    content: BRIEF_CONTENT,
-  });
-  await secret
-    .from("workspaces")
-    .update({ phase: "rounds" })
-    .eq("id", workspaceId);
-  const { error } = await secret.from("rounds").insert(
-    rounds.map((round) => ({
-      workspace_id: workspaceId,
-      user_id: userId,
-      brief_version: 1,
-      inputs: {},
-      ...round,
-    })),
-  );
-  expect(error).toBeNull();
-}
-
-const tryAgain = (page: Page) =>
-  page.getByRole("button", { name: "Try again" });
 
 test.describe("rounds", () => {
   let a: Awaited<ReturnType<typeof testerContext>>;
@@ -129,8 +84,8 @@ test.describe("rounds", () => {
         timeout: SCREEN_TIMEOUT,
       })
       .toBe("done");
-    await expect(page.getByText("3 creatives ready")).toBeVisible();
-    const previews = page.getByRole("img", { name: /^Creative/ });
+    await expect(page.getByText(/^3 creatives/)).toBeVisible();
+    const previews = page.getByRole("img", { name: /^Creative \d/ });
     await expect(previews).toHaveCount(3);
     await expect
       .poll(() =>

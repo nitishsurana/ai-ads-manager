@@ -16,6 +16,7 @@ import { getEnv } from "@/lib/env";
 import { spendCapReached } from "@/lib/limits";
 import { loadWorkspaceState } from "@/lib/workspace/load";
 import type { Result } from "@/lib/workspace/result";
+import { postRatedDivider } from "./divider";
 import { housekeep } from "./housekeeping";
 import { freezeInputs } from "./inputs";
 import { nextRound } from "./next";
@@ -61,11 +62,8 @@ export async function startRound(
 
   const loaded = await loadWorkspaceState(userId, workspaceId);
   if (!loaded) return { ok: false, code: "not_found" };
-  // Retries reuse their round's brief version; a new round starts from the latest.
-  const briefVersion =
-    latest && next.attempt > 1
-      ? latest.briefVersion
-      : (await ensureBrief(userId, workspaceId)).version;
+  // A retry starts from the latest version too, so rules the tester added since the failed attempt count.
+  const briefVersion = (await ensureBrief(userId, workspaceId)).version;
   const inputs = freezeInputs({
     title: loaded.title,
     sourceUrl: loaded.workspace.sourceUrl,
@@ -94,6 +92,12 @@ export async function startRound(
   if (started.kind === "stale") return { ok: false, code: "save_failed" };
 
   const { roundId } = started;
+  if (next.ratedCheck) {
+    await postRatedDivider(userId, loaded.workspace.threadId, {
+      id: next.ratedCheck,
+      n: next.n - 1,
+    });
+  }
   try {
     await start(roundWorkflow, [{ userId, workspaceId, roundId }]);
   } catch (error) {

@@ -13,6 +13,7 @@ export async function ChatPane({ threadId }: { threadId: string }) {
     <ChatSession
       threadId={threadId}
       mode={pane.mode}
+      statusLabel={pane.status}
       name={name}
       empty={pane.rows.length === 0}
       knownIds={pane.rows.map((row) => row.id)}

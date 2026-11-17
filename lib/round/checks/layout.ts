@@ -16,11 +16,9 @@ import { LOGO_MAX_HEIGHT } from "@/lib/render/canvas";
 import { contrast, deltaE, fromHex } from "@/lib/render/colour";
 import { brandColours, wordmarkName } from "../compose/inputs";
 import { COPY_WORDS, CTA_WORDS, HEADLINE_CHARS, HEADLINE_WORDS } from "../copy";
+import { squash, wordCount as words } from "../copy/limits";
 import type { RoundInputs } from "../inputs";
 import type { Candidate } from "../types";
-
-const words = (text: string) => text.split(/\s+/).filter(Boolean).length;
-const squash = (text: string) => text.replace(/\s+/g, " ").trim();
 
 type Subject = Pick<Candidate, "supportingElement" | "offerFactId" | "copy">;
 

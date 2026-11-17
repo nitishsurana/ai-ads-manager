@@ -2,7 +2,9 @@ import "server-only";
 import {
   findOpenThreadId,
   createThread,
+  getLatestBrief,
   getLatestIntake,
+  getLatestRound,
   getThread,
   getWorkspacePhase,
   listFacts,
@@ -24,6 +26,31 @@ async function confirmHref(userId: string, workspaceId: string) {
     : `/w/${workspaceId}#facts`;
 }
 
+const STATUS = {
+  empty: "New workspace",
+  reading: "Reading…",
+  failed: "Couldn’t read link",
+  confirm: "Step 1 · Confirm",
+} as const;
+
+// A workspace's chat follows its latest round: making it, or rating it with the brief it was made from.
+async function workspaceMode(userId: string, workspaceId: string) {
+  if ((await getWorkspacePhase(userId, workspaceId)) !== "rounds") {
+    return { mode: "confirm" as const, status: STATUS.confirm };
+  }
+  const [round, brief] = await Promise.all([
+    getLatestRound(userId, workspaceId),
+    getLatestBrief(userId, workspaceId),
+  ]);
+  if (!round) return { mode: "confirm" as const, status: STATUS.confirm };
+  return round.status === "queued" || round.status === "running"
+    ? { mode: "generating" as const, status: `Round ${round.n} · making` }
+    : {
+        mode: "round" as const,
+        status: `Round ${round.n} · brief v${brief?.version ?? round.briefVersion}`,
+      };
+}
+
 export async function loadChatPane(userId: string, threadId: string) {
   const thread = await getThread(userId, threadId);
   if (!thread) return null;
@@ -40,18 +67,20 @@ export async function loadChatPane(userId: string, threadId: string) {
       ? ((await readIntake(userId, latest.id)) ?? latest)
       : latest;
 
-  const mode: ChatMode = thread.workspaceId
-    ? "confirm"
-    : intake?.status === "reading"
-      ? "reading"
-      : intake?.status === "failed"
-        ? "failed"
-        : "empty";
+  const { mode, status }: { mode: ChatMode; status: string } =
+    thread.workspaceId
+      ? await workspaceMode(userId, thread.workspaceId)
+      : intake?.status === "reading"
+        ? { mode: "reading", status: STATUS.reading }
+        : intake?.status === "failed"
+          ? { mode: "failed", status: STATUS.failed }
+          : { mode: "empty", status: STATUS.empty };
   return {
     rows,
     facts,
     campaign,
     mode,
+    status,
     confirmHref: thread.workspaceId
       ? await confirmHref(userId, thread.workspaceId)
       : null,

@@ -6,6 +6,7 @@ import {
   setRoundDeadline,
 } from "@/lib/db/queries";
 import { getEnv } from "@/lib/env";
+import type { CostEntry } from "@/lib/intake";
 import { roundInputsSchema } from "../inputs";
 import {
   checkAndSelect,
@@ -17,6 +18,7 @@ import {
 import type { Candidate, RoundContext } from "../types";
 import { recordCosts } from "./costs";
 import { finishAndClean, type Finish } from "./finish";
+import { createRoundAi } from "./deps";
 import { guardStage } from "./guard";
 import { createProgressWriter } from "./progress";
 import type { RoundRun, Spend, StageResult } from "./types";
@@ -38,13 +40,15 @@ export async function claimRoundStep(
 }
 claimRoundStep.maxRetries = 0;
 
-// STUB (6a): copies the brief to a new version, once per round number; the Opus rewrite from ratings arrives with Phase 7. It runs once per step, since the real one is paid.
+// The Opus rewrite of the brief, once per round number (a retry finds its version). It runs once per step, since it is paid.
 export async function rewriteBriefStep(
   ctx: RoundContext,
 ): Promise<StageResult<number>> {
   "use step";
+  const costs: CostEntry[] = [];
   try {
     const version = await rewriteBriefForRound(
+      createRoundAi(ctx.inputs, costs),
       ctx.userId,
       ctx.workspaceId,
       ctx.n,
@@ -58,11 +62,11 @@ export async function rewriteBriefStep(
         version,
       ));
     return applied
-      ? { kind: "ok", value: version, costs: [] }
-      : { kind: "abandoned", costs: [] };
+      ? { kind: "ok", value: version, costs }
+      : { kind: "abandoned", costs };
   } catch (error) {
     console.error(`round ${ctx.roundId}: brief rewrite failed`, error);
-    return { kind: "error", costs: [] };
+    return { kind: "error", costs };
   }
 }
 rewriteBriefStep.maxRetries = 0;

@@ -4,12 +4,16 @@ import { createSecretClient } from "@/lib/db/secret";
 const URL_TTL_S = 10 * 60;
 
 // A path whose URL can't be signed is left out, so its image just doesn't show.
-export async function signUrls(bucket: string, paths: string[]) {
+export async function signUrls(
+  bucket: string,
+  paths: string[],
+  ttlS = URL_TTL_S,
+) {
   const urls = new Map<string, string>();
   if (paths.length === 0) return urls;
   const { data, error } = await createSecretClient()
     .storage.from(bucket)
-    .createSignedUrls(paths, URL_TTL_S);
+    .createSignedUrls(paths, ttlS);
   if (error) {
     console.error(`workspace: signing ${bucket} urls failed`, error);
     return urls;

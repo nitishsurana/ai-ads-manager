@@ -1,5 +1,6 @@
 export {
   checkCopy,
+  claimsIn,
   COPY_WORDS,
   CTA_WORDS,
   HEADLINE_CHARS,

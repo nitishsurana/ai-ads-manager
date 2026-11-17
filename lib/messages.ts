@@ -36,6 +36,25 @@ export const messages = {
     "We couldn't make creatives that pass our checks this time. Add more detail or update what you told us, then try again.",
   delete_failed: "We couldn't delete that workspace. Try again.",
 
+  round_running: "A round is still running. Wait for it to finish.",
+  creative_changed:
+    "This creative changed in another window. Reload the page to see it.",
+  brief_changed: "The brief changed in another window. Reload to see it.",
+  reject_reason_required:
+    "Pick a tag or add a note so the next round can improve.",
+  edit_headline_empty: "Add a headline to save.",
+  edit_headline_words: "The headline is over 6 words. Shorten it to save.",
+  edit_headline_chars:
+    "The headline is over 75 characters. Shorten it to save.",
+  edit_combined_words:
+    "The headline and eyebrow together are over 8 words. Shorten the headline to save.",
+  edit_cta_empty: "Add a CTA to save.",
+  edit_cta_words: "The CTA is over 3 words. Shorten it to save.",
+  edit_rejected: "This edit can't be used:",
+  edit_claim: "isn't in the confirmed facts.",
+  edit_lost_element: "would be dropped from the creative.",
+  export_failed: "We couldn't make that download. Try again.",
+
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
   low_resolution: "This photo is low resolution and may look soft.",
   photo_text: "This photo has text on it; photos without text are used first.",

@@ -3,6 +3,7 @@ import { ANGLES, STAGES } from "./types";
 
 export const roundStatusSchema = z.object({
   id: z.string(),
+  campaign: z.string(),
   n: z.number(),
   attempt: z.number(),
   status: z.enum([
@@ -24,13 +25,6 @@ export const roundStatusSchema = z.object({
   runningAt: z.string().nullable(),
   finishedAt: z.string().nullable(),
   retryAt: z.string().nullable(),
-  creatives: z.array(
-    z.object({
-      n: z.number(),
-      angle: z.string(),
-      previewUrl: z.string().nullable(),
-    }),
-  ),
 });
 
 export type RoundStatusView = z.infer<typeof roundStatusSchema>;

@@ -78,3 +78,23 @@ export async function addBriefVersion(
   check(error, "add brief version");
   return z.number().nullable().parse(data);
 }
+
+// Every version's cause and (for a round's rewrite) the round it belongs to, oldest first.
+export async function listBriefVersions(userId: string, workspaceId: string) {
+  const { data, error } = await createSecretClient()
+    .from("briefs")
+    .select("version, cause, content->round")
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", userId)
+    .order("version", { ascending: true });
+  check(error, "list brief versions");
+  return z
+    .array(
+      z.object({
+        version: z.number(),
+        cause: z.enum(["initial", "chat", "round", "tester_edit"]),
+        round: z.number().nullable(),
+      }),
+    )
+    .parse(data ?? []);
+}

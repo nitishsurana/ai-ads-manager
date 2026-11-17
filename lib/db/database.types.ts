@@ -65,14 +65,14 @@ isOneToOne: false
                   ]
                 },"creatives": {
                   Row: {
-                    "angle": string,"background": NonNullable<Json>,"background_path": string | null,"copy": NonNullable<Json>,"created_at": string,"edits": NonNullable<Json>,"id": string,"judge": Json | null,"layout": Json | null,"n": number,"note": string | null,"photo_id": string | null,"preview_path": string,"rating": string | null,"round_id": string,"supporting_element": string | null,"tags": (string)[],"user_id": string
+                    "angle": string,"background": NonNullable<Json>,"background_path": string | null,"copy": NonNullable<Json>,"created_at": string,"edits": NonNullable<Json>,"id": string,"judge": Json | null,"layout": Json | null,"n": number,"note": string | null,"photo_id": string | null,"preview_path": string,"rating": string | null,"rev": number,"round_id": string,"supporting_element": string | null,"tags": (string)[],"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "angle": string,"background": NonNullable<Json>,"background_path"?: string | null,"copy": NonNullable<Json>,"created_at"?: string,"edits"?: NonNullable<Json>,"id"?: string,"judge"?: Json | null,"layout"?: Json | null,"n": number,"note"?: string | null,"photo_id"?: string | null,"preview_path": string,"rating"?: string | null,"round_id": string,"supporting_element"?: string | null,"tags"?: (string)[],"user_id": string
+                    "angle": string,"background": NonNullable<Json>,"background_path"?: string | null,"copy": NonNullable<Json>,"created_at"?: string,"edits"?: NonNullable<Json>,"id"?: string,"judge"?: Json | null,"layout"?: Json | null,"n": number,"note"?: string | null,"photo_id"?: string | null,"preview_path": string,"rating"?: string | null,"rev"?: number,"round_id": string,"supporting_element"?: string | null,"tags"?: (string)[],"user_id": string
                   }
                   Update: {
-                    "angle"?: string,"background"?: NonNullable<Json>,"background_path"?: string | null,"copy"?: NonNullable<Json>,"created_at"?: string,"edits"?: NonNullable<Json>,"id"?: string,"judge"?: Json | null,"layout"?: Json | null,"n"?: number,"note"?: string | null,"photo_id"?: string | null,"preview_path"?: string,"rating"?: string | null,"round_id"?: string,"supporting_element"?: string | null,"tags"?: (string)[],"user_id"?: string
+                    "angle"?: string,"background"?: NonNullable<Json>,"background_path"?: string | null,"copy"?: NonNullable<Json>,"created_at"?: string,"edits"?: NonNullable<Json>,"id"?: string,"judge"?: Json | null,"layout"?: Json | null,"n"?: number,"note"?: string | null,"photo_id"?: string | null,"preview_path"?: string,"rating"?: string | null,"rev"?: number,"round_id"?: string,"supporting_element"?: string | null,"tags"?: (string)[],"user_id"?: string
                   }
                   Relationships: [
                     {

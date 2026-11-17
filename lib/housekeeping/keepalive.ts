@@ -19,8 +19,7 @@ export async function keepAlive() {
   if (error) throw new Error(`cron: count testers: ${error.message}`);
 
   const emptied = await client.storage.emptyBucket(EXPORTS_BUCKET);
-  // The exports bucket is created by a later phase; until then there is nothing to clear.
-  if (emptied.error && emptied.error.statusCode !== "404") {
+  if (emptied.error) {
     console.error("cron: clearing exports failed", emptied.error);
   }
   return { testers: count ?? 0 };

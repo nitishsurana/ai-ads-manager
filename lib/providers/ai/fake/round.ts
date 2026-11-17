@@ -8,7 +8,7 @@ const HEADLINES = [
   "Quietly built to last",
   "Simple, honest, well made",
   "Everyday comfort, upgraded",
-  "A closer look at the details",
+  "A closer look inside",
   "Designed for real life",
 ];
 
@@ -87,10 +87,17 @@ function scripted(
       return {
         candidates: HEADLINES.map((headline, index) => ({
           index,
-          eyebrow: null,
+          eyebrow: "New season picks",
           headline,
           cta: "Shop now",
         })),
+      };
+    case "brief_rewrite":
+      return {
+        rules: [
+          { kind: "do", text: "Keep headlines short and calm" },
+          { kind: "dont", text: "Fill the background with orange" },
+        ],
       };
     case "judge": {
       // The judged creatives are in the prompt's JSON; the fake copy gave candidate i the i-th headline.

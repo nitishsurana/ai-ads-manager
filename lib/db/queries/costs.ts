@@ -52,6 +52,27 @@ export async function insertCosts(
   check(error, "insert costs");
 }
 
+// Calls made after a round ended (an inline edit's read-back) are added to its costs, never replacing them.
+export async function insertRoundCosts(
+  userId: string,
+  roundId: string,
+  workspaceId: string,
+  costs: NewCost[],
+) {
+  if (costs.length === 0) return;
+  const { error } = await createSecretClient()
+    .from("costs")
+    .insert(
+      costs.map((cost) => ({
+        ...cost,
+        user_id: userId,
+        round_id: roundId,
+        workspace_id: workspaceId,
+      })),
+    );
+  check(error, "insert round costs");
+}
+
 // A round's costs are written once, in one step, so a retry replaces them instead of doubling them.
 export async function replaceRoundCosts(
   userId: string,

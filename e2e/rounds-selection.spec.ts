@@ -47,7 +47,7 @@ test.describe("round selection", () => {
     const creatives = await judgedCreatives(roundId);
     expect(creatives).toHaveLength(2);
     expect(creatives.every((creative) => creative.judge?.pass)).toBe(true);
-    await expect(a.page.getByText("2 creatives ready")).toBeVisible();
+    await expect(a.page.getByText(/^2 creatives/)).toBeVisible();
     expect(await previewFiles(roundId)).toHaveLength(2);
   });
 

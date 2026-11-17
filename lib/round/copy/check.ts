@@ -1,10 +1,13 @@
 import type { RoundInputs } from "../inputs";
 import type { Copy } from "../types";
+import {
+  COPY_WORDS,
+  CTA_WORDS,
+  HEADLINE_CHARS,
+  HEADLINE_WORDS,
+} from "./limits";
 
-export const HEADLINE_WORDS = 6;
-export const HEADLINE_CHARS = 75;
-export const CTA_WORDS = 3;
-export const COPY_WORDS = 8;
+export { COPY_WORDS, CTA_WORDS, HEADLINE_CHARS, HEADLINE_WORDS };
 
 const words = (text: string) => text.split(/\s+/).filter(Boolean);
 // Hyphenated and apostrophe compounds stay whole, so "cruelty-free" is not "free".
@@ -50,7 +53,7 @@ export function sourceText(inputs: RoundInputs) {
     .join("\n");
 }
 
-function claimsIn(text: string, inputs: RoundInputs) {
+export function claimsIn(text: string, inputs: RoundInputs) {
   const source = sourceText(inputs);
   const sourceTokens = tokens(source);
   const sourceWords = new Set(sourceTokens);
