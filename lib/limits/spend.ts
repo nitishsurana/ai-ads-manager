@@ -1,6 +1,7 @@
 import "server-only";
+import { getSpendTodayUsd } from "@/lib/db/queries";
+import { getEnv } from "@/lib/env";
 
-// Stub with the signature of the spend-cap branch's export; the merge replaces this file.
 export async function spendCapReached() {
-  return false;
+  return (await getSpendTodayUsd()) >= getEnv().SPEND_CAP_USD_DAILY;
 }

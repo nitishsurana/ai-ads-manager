@@ -7,7 +7,12 @@ export {
 export type { NewMessage } from "./messages";
 export { completeIntakeWithWorkspace } from "./complete";
 export type { CompletedIntake, NewPhoto } from "./complete";
-export { insertCosts, replaceIntakeCosts, replaceRoundCosts } from "./costs";
+export {
+  getSpendTodayUsd,
+  insertCosts,
+  replaceIntakeCosts,
+  replaceRoundCosts,
+} from "./costs";
 export type { NewCost } from "./costs";
 export {
   completeIntake,

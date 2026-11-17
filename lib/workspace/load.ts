@@ -1,6 +1,7 @@
 import "server-only";
 import { getWorkspace, listFacts, listWorkspacePhotos } from "@/lib/db/queries";
 import { parseCampaign } from "@/lib/chat/campaign";
+import { spendCapReached } from "@/lib/limits";
 import { isLocked } from "./rounds";
 import { buildConfirmState } from "./state";
 import { signUrls } from "./urls";
@@ -19,7 +20,7 @@ export async function loadConfirmScreen(userId: string, id: string) {
   if (!loaded) return null;
   const { workspace, state, photos, variants, title } = loaded;
 
-  const [facts, thumbs, logos, locked] = await Promise.all([
+  const [facts, thumbs, logos, locked, spendCapped] = await Promise.all([
     listFacts(userId, workspace.threadId),
     signUrls(
       "photos",
@@ -27,6 +28,7 @@ export async function loadConfirmScreen(userId: string, id: string) {
     ),
     signUrls("logos", state.logo?.pngPath ? [state.logo.pngPath] : []),
     isLocked(userId, workspace),
+    spendCapReached(),
   ]);
 
   return {
@@ -47,6 +49,7 @@ export async function loadConfirmScreen(userId: string, id: string) {
     campaign: parseCampaign(workspace.campaign),
     facts,
     locked,
+    spendCapped,
   };
 }
 

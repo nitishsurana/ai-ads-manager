@@ -10,6 +10,7 @@ import {
   type Thread,
 } from "@/lib/db/queries";
 import { proposeBriefChange } from "@/lib/brief";
+import { spendCapReached } from "@/lib/limits";
 import type { Researcher } from "@/lib/providers/ai";
 import { campaignPatchSchema, mergeCampaign } from "./campaign";
 import type { Research } from "./types";
@@ -62,6 +63,12 @@ export function createChatTools({
       inputSchema: z.object({ topic: z.string().trim().min(1).max(120) }),
       execute: async ({ topic }, { toolCallId }) => {
         try {
+          if (await spendCapReached()) {
+            return {
+              topic,
+              error: "Spend limit reached for today. Answer without research.",
+            };
+          }
           const result = await researcher.research(topic);
           await insertCosts(
             userId,

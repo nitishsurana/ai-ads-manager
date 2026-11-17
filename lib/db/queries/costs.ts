@@ -77,3 +77,10 @@ export async function replaceRoundCosts(
   );
   check(error, "insert round costs");
 }
+
+// Across all testers on purpose: the spend cap is one budget for the whole test.
+export async function getSpendTodayUsd() {
+  const { data, error } = await createSecretClient().rpc("spend_today_usd");
+  check(error, "spend today");
+  return Number(data ?? 0);
+}

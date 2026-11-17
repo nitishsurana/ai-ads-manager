@@ -1,4 +1,5 @@
 import { variantNeedsConfirmation, type ConfirmState } from "@/lib/confirm";
+import { messages } from "@/lib/messages";
 import { plural } from "@/lib/utils";
 
 type Note = { text: string; tone: "muted" | "warning" | "error" };
@@ -6,8 +7,14 @@ type Note = { text: string; tone: "muted" | "warning" | "error" };
 // What the bottom bar says, most blocking first. The blocking cases mirror canGenerate, plus a currency switch still waiting for its price.
 export function generateNote(
   state: ConfirmState,
-  options: { switching: string | null; pendingFacts: number; edit: boolean },
+  options: {
+    switching: string | null;
+    pendingFacts: number;
+    edit: boolean;
+    spendCapped: boolean;
+  },
 ): Note {
+  if (options.spendCapped) return { tone: "error", text: messages.spend_cap };
   if (!state.photos.some((photo) => photo.selected)) {
     return { tone: "error", text: "Select at least one photo to continue." };
   }

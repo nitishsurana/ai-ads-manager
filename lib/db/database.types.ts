@@ -260,6 +260,9 @@ isOneToOne: false
                            },"start_round":
 { Args: { "p_attempt": number,"p_brief_version": number,"p_inputs": Json,"p_n": number,"p_now": string,"p_updated_at": string,"p_user_id": string,"p_workspace_id": string }; Returns: string
                            }
+            "spend_today_usd":
+{ Args: never; Returns: number
+                           }
           }
           Enums: {
             [_ in never]: never
