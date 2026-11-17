@@ -113,9 +113,7 @@ test.describe("chat", () => {
         ),
     ).toBeVisible({ timeout: FAILED_INTAKE_TIMEOUT });
     await expect(
-      page.getByRole("heading", {
-        name: "That doesn't look like a valid link. Check it and try again.",
-      }),
+      page.getByRole("heading", { name: "We couldn’t read this product" }),
     ).toBeVisible();
   });
 

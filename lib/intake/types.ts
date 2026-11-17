@@ -22,7 +22,12 @@ export type IntakeDeps = {
   findWorkspace(productKey: string): Promise<string | null>;
 };
 
-export type IntakeProgress = PhotosProgress;
+export type ProductProgress = {
+  stage: "product";
+  product: { title: string; price: string | null };
+};
+
+export type IntakeProgress = PhotosProgress | ProductProgress;
 
 export type IntakeFailure = { ok: false; code: Step1FailureCode };
 

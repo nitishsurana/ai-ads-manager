@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { CostEntry } from "../photos";
 
 // Everything here crosses step boundaries, so it stays plain data.
@@ -14,10 +15,15 @@ export type Spend = { costs: CostEntry[]; firecrawlRenders: string[] };
 export type StageResult<T> = Spend &
   ({ kind: "ok"; value: T } | { kind: "error" } | { kind: "abandoned" });
 
-export type ProgressState = {
-  stage: "photos" | "brand";
-  phase?: "reading" | "checking";
-  done?: number;
-  total?: number;
-  photos: { position: number; thumbPath: string }[];
-};
+export const progressSchema = z.object({
+  stage: z.enum(["product", "photos", "brand"]),
+  phase: z.enum(["reading", "checking"]).optional(),
+  done: z.number().optional(),
+  total: z.number().optional(),
+  product: z
+    .object({ title: z.string(), price: z.string().nullable() })
+    .optional(),
+  photos: z.array(z.object({ position: z.number(), thumbPath: z.string() })),
+});
+
+export type ProgressState = z.infer<typeof progressSchema>;

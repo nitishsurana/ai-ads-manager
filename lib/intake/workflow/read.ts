@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { z } from "zod";
 import { failStaleIntake, getIntake } from "@/lib/db/queries";
 import { INTAKE_STALE_MS } from "@/lib/config";
 import { failAndCleanUp, isCleaned } from "./cleanup";
@@ -9,6 +10,7 @@ export const readIntake = cache(async function readIntake(
   userId: string,
   intakeId: string,
 ) {
+  if (!z.uuid().safeParse(intakeId).success) return null;
   let intake = await getIntake(userId, intakeId);
   if (!intake) return null;
 

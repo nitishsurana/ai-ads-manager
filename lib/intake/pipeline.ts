@@ -66,6 +66,11 @@ export async function runIntakeUntilBrand(
   if (failure) return { ok: false, code: failure };
   if (product.images.length === 0) return { ok: false, code: "no_photos" };
 
+  await deps.progress({
+    stage: "product",
+    product: { title: product.title, price: page.price },
+  });
+
   const photos = await runPhotos(
     { intakeId: input.intakeId, images: product.images },
     deps,

@@ -32,7 +32,13 @@ export async function readBrandStep(
   const thumbs = ready.result.photos.photos
     .filter((photo) => photo.selected)
     .map(({ position, thumbPath }) => ({ position, thumbPath }));
-  const progress = createProgressWriter(run, thumbs);
+  const progress = createProgressWriter(run, {
+    photos: thumbs,
+    product: {
+      title: ready.result.product.title,
+      price: ready.result.page.price,
+    },
+  });
   return guardStage(run, progress, async (deps) => {
     await progress.setStage("brand");
     return runIntakeBrand(

@@ -42,3 +42,16 @@ export async function sendMessage(page: Page, text: string) {
 export function intakeIdOf(page: Page) {
   return /\/r\/([0-9a-f-]{36})$/.exec(page.url())?.[1] ?? "";
 }
+
+export async function removeIntakeFiles(intakeIds: Iterable<string>) {
+  for (const id of intakeIds) {
+    for (const bucket of ["photos", "cutouts", "logos"]) {
+      const { data } = await secret.storage.from(bucket).list(id);
+      if (data?.length) {
+        await secret.storage
+          .from(bucket)
+          .remove(data.map((file) => `${id}/${file.name}`));
+      }
+    }
+  }
+}

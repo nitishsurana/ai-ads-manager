@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Check, CircleAlert, Info, TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,19 +30,37 @@ const tones = {
 type AlertProps = {
   tone: keyof typeof tones;
   message: string;
+  detail?: string;
+  children?: ReactNode;
 };
 
-export function Alert({ tone, message }: AlertProps) {
+// With a detail or an action the alert stacks them under the message.
+export function Alert({ tone, message, detail, children }: AlertProps) {
+  const stacked = Boolean(detail || children);
+
   return (
     <div
       role={tone === "error" ? "alert" : undefined}
       className={cn(
-        "flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 font-sans",
+        "flex w-full gap-3 rounded-lg border font-sans",
+        stacked ? "items-start p-4" : "items-center px-3 py-2.5",
         tones[tone].root,
       )}
     >
-      <span className="flex shrink-0">{tones[tone].icon}</span>
-      <p className="m-0 flex-1 text-[13.5px]">{message}</p>
+      <span className={cn("flex shrink-0", stacked && "mt-0.5")}>
+        {tones[tone].icon}
+      </span>
+      {stacked ? (
+        <div className="flex flex-1 flex-col gap-2.5">
+          <p className="m-0 text-[15px] font-medium">{message}</p>
+          {detail && (
+            <p className="m-0 text-[13px] text-foreground">{detail}</p>
+          )}
+          {children && <div>{children}</div>}
+        </div>
+      ) : (
+        <p className="m-0 flex-1 text-[13.5px]">{message}</p>
+      )}
     </div>
   );
 }

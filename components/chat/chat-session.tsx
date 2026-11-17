@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { examplePrompts } from "@/lib/chat/examples";
 import type { ChatMode, ChatUIMessage } from "@/lib/chat/types";
 import { splitMessage } from "@/lib/chat/url";
@@ -12,8 +12,6 @@ import { AssistantMessage } from "./assistant-message";
 import { ChatComposer } from "./chat-composer";
 import { ExamplePrompt } from "./example-prompt";
 import { UserMessage } from "./user-message";
-
-const POLL_MS = 2_000;
 
 const STATUS: Record<ChatMode, string> = {
   empty: "New workspace",
@@ -95,14 +93,6 @@ export function ChatSession({
     onFinish: afterTurn,
     onError: afterTurn,
   });
-
-  useEffect(() => {
-    if (mode !== "reading") return;
-    const timer = setInterval(() => {
-      if (!document.hidden) router.refresh();
-    }, POLL_MS);
-    return () => clearInterval(timer);
-  }, [mode, router]);
 
   const busy = status === "submitted" || status === "streaming";
   const known = new Set(knownIds);

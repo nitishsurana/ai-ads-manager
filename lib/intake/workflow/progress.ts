@@ -8,9 +8,9 @@ import type { IntakeRun, ProgressState } from "./types";
 // Throttled, serialised writes of intakes.progress. Progress is best effort: a failed write is logged and swallowed, except that a write finding the intake no longer reading throws IntakeAbandonedError, which stops the stage.
 export function createProgressWriter(
   run: IntakeRun,
-  initial: ProgressState["photos"] = [],
+  initial: Pick<ProgressState, "photos" | "product"> = { photos: [] },
 ) {
-  let state: ProgressState = { stage: "photos", photos: initial };
+  let state: ProgressState = { stage: "photos", ...initial };
   let lastWrite = 0;
   let queue: Promise<unknown> = Promise.resolve();
 
@@ -35,10 +35,16 @@ export function createProgressWriter(
 
   return {
     async onProgress(event: IntakeProgress) {
+      if (event.stage === "product") {
+        state = { ...state, stage: "product", product: event.product };
+        await write();
+        return;
+      }
       const photos = event.photo
         ? [...state.photos, event.photo]
         : state.photos;
       state = {
+        product: state.product,
         stage: event.stage,
         phase: event.phase,
         done: event.done,
@@ -48,7 +54,7 @@ export function createProgressWriter(
       if (Date.now() - lastWrite >= PROGRESS_WRITE_INTERVAL_MS) await write();
     },
     async setStage(stage: ProgressState["stage"]) {
-      state = { photos: state.photos, stage };
+      state = { product: state.product, photos: state.photos, stage };
       await write();
     },
     flush: write,

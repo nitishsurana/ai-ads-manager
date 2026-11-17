@@ -42,6 +42,7 @@ export function ChatComposer({
       <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-card py-2 pr-2 pl-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-primary-subtle">
         <textarea
           ref={inputRef}
+          id="chat-composer"
           aria-label="Message"
           rows={2}
           value={value}
