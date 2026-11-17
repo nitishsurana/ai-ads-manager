@@ -351,6 +351,8 @@ test.describe("rounds", () => {
     await tryAgain(page).click();
     await expect(page.getByText(DAILY_LIMIT)).toBeVisible();
     expect(await roundsOf(workspaceId)).toHaveLength(20);
+    // The limit counts every round of the tester today, so later tests must not inherit these.
+    await secret.from("rounds").delete().eq("workspace_id", workspaceId);
   });
 
   test("a running round with no deadline for 60 seconds fails (the brief rewrite never finished)", async () => {
