@@ -81,6 +81,21 @@ export async function listRoundCreatives(
   return (data ?? []).map(toCreative);
 }
 
+export async function listCreativesOfRounds(
+  userId: string,
+  roundIds: string[],
+): Promise<RoundCreative[]> {
+  if (roundIds.length === 0) return [];
+  const { data, error } = await createSecretClient()
+    .from("creatives")
+    .select(COLUMNS)
+    .in("round_id", roundIds)
+    .eq("user_id", userId)
+    .order("n", { ascending: true });
+  check(error, "list creatives of rounds");
+  return (data ?? []).map(toCreative);
+}
+
 export async function getCreative(userId: string, id: string) {
   const { data, error } = await createSecretClient()
     .from("creatives")

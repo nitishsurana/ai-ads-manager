@@ -120,6 +120,19 @@ export async function getDoneRound(
   return data ? toRound(data) : null;
 }
 
+// The finished attempts of a workspace's rounds, newest first.
+export async function listDoneRounds(userId: string, workspaceId: string) {
+  const { data, error } = await createSecretClient()
+    .from("rounds")
+    .select(COLUMNS)
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", userId)
+    .eq("status", "done")
+    .order("n", { ascending: false });
+  check(error, "list done rounds");
+  return (data ?? []).map(toRound);
+}
+
 export async function hasActiveRound(userId: string, workspaceId: string) {
   const { data, error } = await createSecretClient()
     .from("rounds")

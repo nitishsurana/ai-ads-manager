@@ -78,6 +78,7 @@ export type { BriefRow } from "./briefs";
 export {
   countUnratedCreatives,
   getCreative,
+  listCreativesOfRounds,
   listRoundCreatives,
   writeCreativeIf,
 } from "./creatives";
@@ -89,6 +90,7 @@ export {
   finishRound,
   writeJudgeRecords,
   getDoneRound,
+  listDoneRounds,
   getLatestRound,
   getRound,
   hasActiveRound,

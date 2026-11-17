@@ -5,6 +5,8 @@ export { getRoundStatus } from "./status";
 export { editCreative } from "./edit";
 export { exportCreative } from "./export";
 export { rateCreative } from "./feedback";
+export { loadLibrary, ratingFilterSchema, RATING_FILTERS } from "./library";
+export type { LibraryCreative, LibraryRound, RatingFilter } from "./library";
 export { loadRoundView } from "./view";
 export type { CreativeView, RoundView } from "./view";
 export type { RoundScreenData } from "./screen";

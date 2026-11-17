@@ -36,7 +36,7 @@ export type RoundView = {
 };
 
 // The round view stays open while the tester rates, so its images outlive the default.
-const VIEW_URL_TTL_S = 60 * 60;
+export const VIEW_URL_TTL_S = 60 * 60;
 
 const known = new Set(FONT_FAMILIES.map((entry) => entry.family));
 

@@ -54,6 +54,9 @@ export const messages = {
   edit_claim: "isn't in the confirmed facts.",
   edit_lost_element: "would be dropped from the creative.",
   export_failed: "We couldn't make that download. Try again.",
+  library_empty:
+    "No finished rounds yet. Make a round and it will show up here.",
+  library_no_match: "No creatives match this filter.",
 
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
   low_resolution: "This photo is low resolution and may look soft.",

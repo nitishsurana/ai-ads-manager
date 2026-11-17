@@ -1,10 +1,25 @@
-export default async function Page({ params }: PageProps<"/w/[id]/library">) {
-  const { id } = await params;
+import { notFound } from "next/navigation";
+import { LibraryScreen } from "@/components/library/library-screen";
+import { requireTester } from "@/lib/auth";
+import { getWorkspacePhase } from "@/lib/db/queries";
+import { loadLibrary, ratingFilterSchema } from "@/lib/round";
 
+export default async function Page({
+  params,
+  searchParams,
+}: PageProps<"/w/[id]/library">) {
+  const { id } = await params;
+  const { userId } = await requireTester();
+  if (!(await getWorkspacePhase(userId, id))) notFound();
+
+  const filter = ratingFilterSchema.parse((await searchParams).rating);
+  const { hasRounds, rounds } = await loadLibrary(userId, id, filter);
   return (
-    <div className="px-12 py-18">
-      <h1 className="text-[26px] font-semibold tracking-tight">Library</h1>
-      <p className="font-mono text-muted-foreground">{id}</p>
-    </div>
+    <LibraryScreen
+      workspaceId={id}
+      filter={filter}
+      hasRounds={hasRounds}
+      rounds={rounds}
+    />
   );
 }

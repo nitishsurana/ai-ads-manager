@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WorkspaceTabs } from "./workspace-tabs";
 
 type TopBarProps = {
   tester: string;
@@ -23,6 +24,7 @@ export function TopBar({ tester, admin = false }: TopBarProps) {
           {admin ? "ADMIN" : "POC"}
         </span>
       </Link>
+      <WorkspaceTabs />
       <div className="ml-auto flex items-center gap-2">
         {admin ? (
           <span className="inline-flex h-6 items-center rounded-full border border-warning-border bg-warning px-2 text-xs font-medium text-warning-foreground">
