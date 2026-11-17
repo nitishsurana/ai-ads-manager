@@ -2589,5 +2589,8 @@
         }
       }
     }
+  },
+  "malformed-scheme": {
+    "message": "Failure: That doesn't look like a valid link. Check it and try again."
   }
 }

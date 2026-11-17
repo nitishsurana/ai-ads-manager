@@ -1,18 +1,14 @@
 import { createGateway, generateText, Output } from "ai";
-import { z } from "zod";
+import { gatewayCostUsd } from "./cost";
 import type { Ai } from "./types";
 
 const TIMEOUT_MS = 60_000;
 // A transient error is also covered by the photo stage's escalation and skip rules.
 const MAX_RETRIES = 1;
 
-const metadataSchema = z.object({
-  gateway: z.object({ cost: z.coerce.number().optional() }).optional(),
-});
-
 let gateway: ReturnType<typeof createGateway> | undefined;
 
-function gatewayClient() {
+export function gatewayClient() {
   const apiKey = process.env.AI_GATEWAY_API_KEY;
   if (!apiKey) throw new Error("ai: AI_GATEWAY_API_KEY is not set");
   gateway ??= createGateway({ apiKey });
@@ -47,12 +43,9 @@ export function createRealAi(): Ai {
         abortSignal: AbortSignal.timeout(TIMEOUT_MS),
       });
 
-      const metadata = metadataSchema.safeParse(result.providerMetadata);
       return {
         object: result.output,
-        costUsd: metadata.success
-          ? (metadata.data.gateway?.cost ?? null)
-          : null,
+        costUsd: gatewayCostUsd(result.providerMetadata),
       };
     },
   };

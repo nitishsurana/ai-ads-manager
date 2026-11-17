@@ -1,6 +1,7 @@
 import "server-only";
 import { createSecretClient } from "@/lib/db/secret";
 import { findWorkspaceByProductKey } from "@/lib/db/queries";
+import { snapshotDirForUrl } from "@/lib/providers/snapshot";
 import { createSupabaseStorage } from "@/lib/providers/storage";
 import type { Storage } from "@/lib/providers/storage";
 import { createIntakeDeps } from "../deps";
@@ -37,6 +38,7 @@ export function createStepDeps(
       findWorkspaceByProductKey(run.userId, productKey),
     storage: guardedStorage,
     progress: options.progress,
+    snapshotDir: snapshotDirForUrl(run.url),
   });
   return {
     ...deps,

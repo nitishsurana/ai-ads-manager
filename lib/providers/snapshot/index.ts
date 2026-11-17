@@ -15,3 +15,4 @@ export {
   sha256,
   SnapshotError,
 } from "./read";
+export { snapshotDirForUrl } from "./find";

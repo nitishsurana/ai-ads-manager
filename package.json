@@ -17,6 +17,8 @@
     "golden:record": "tsx golden/record.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.105",
+    "@ai-sdk/react": "^4.0.177",
     "@fal-ai/client": "^1.11.0",
     "@resvg/resvg-js": "^2.6.2",
     "@supabase/ssr": "^0.12.7",

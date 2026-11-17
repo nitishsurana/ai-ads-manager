@@ -18,3 +18,19 @@ export type AiResult<T> = { object: T; costUsd: number | null };
 export type Ai = {
   generate<T>(request: AiRequest<T>): Promise<AiResult<T>>;
 };
+
+export type ResearchCost = {
+  provider: "ai" | "firecrawl";
+  model: string | null;
+  usd: number | null;
+};
+
+export type ResearchResult = {
+  notes: string[];
+  sources: { label: string; href: string }[];
+  costs: ResearchCost[];
+};
+
+export type Researcher = {
+  research(topic: string): Promise<ResearchResult>;
+};

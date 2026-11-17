@@ -77,6 +77,22 @@ export async function getIntake(
   return data ? toIntake(data) : null;
 }
 
+export async function getLatestIntake(
+  userId: string,
+  threadId: string,
+): Promise<Intake | null> {
+  const { data, error } = await createSecretClient()
+    .from("intakes")
+    .select(COLUMNS)
+    .eq("user_id", userId)
+    .eq("thread_id", threadId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  check(error, "get latest intake");
+  return data ? toIntake(data) : null;
+}
+
 // Every write below applies only while the intake is still reading, and says whether it did.
 async function updateWhileReading(
   userId: string,

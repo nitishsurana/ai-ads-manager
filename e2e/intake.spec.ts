@@ -1,24 +1,22 @@
-// Needs the step 1 migration applied to the Supabase project in .env.local (npm run db:push) and `npm run dev` under Workflows.
-// INTAKE_E2E_URL names a real Shopify product page for the success case; it spends Firecrawl, AI Gateway and Fal credits.
+// Drives intakes through the chat. Needs the step 1 migration applied to the Supabase project in .env.local (npm run db:push) and `npm run dev` under Workflows.
+// By default the Playwright config runs PROVIDERS=fake, which replays golden/fixtures. The paid success case needs real providers: set PROVIDERS=real and INTAKE_E2E_URL to a real Shopify product page; it spends Firecrawl, AI Gateway and Fal credits.
+import { expect, test } from "@playwright/test";
 import {
-  expect,
-  test,
-  type Browser,
-  type BrowserContext,
-} from "@playwright/test";
-import { createClient } from "@supabase/supabase-js";
+  deleteUsers,
+  FAKE_PROVIDERS,
+  intakeIdOf,
+  secret,
+  sendMessage,
+  signedInContext,
+} from "./helpers";
 
-const TESTER_PASSWORD = process.env.TESTER_PASSWORD ?? "";
 const PRODUCT_URL = process.env.INTAKE_E2E_URL;
+const FAILING_URL = FAKE_PROVIDERS
+  ? "https://plain.example/products/blue-mug"
+  : "https://example.com/products/anything";
 const BUCKETS = ["photos", "cutouts", "logos"];
+const NAVIGATE_TIMEOUT = 30_000;
 
-const secret = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-  process.env.SUPABASE_SECRET_KEY ?? "",
-  { auth: { persistSession: false } },
-);
-
-const userIds = new Set<string>();
 const intakeIds = new Set<string>();
 
 test.afterAll(async () => {
@@ -32,66 +30,46 @@ test.afterAll(async () => {
       }
     }
   }
-  // Deleting the user cascades to its threads, intakes, workspaces, photos and costs.
-  for (const id of userIds) await secret.auth.admin.deleteUser(id);
+  await deleteUsers();
 });
 
-async function signedInContext(browser: Browser) {
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  await page.goto("/sign-in");
-  await page.getByLabel("Your name").fill("Intake test");
-  await page.getByLabel("Tester password").fill(TESTER_PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL("/");
-  const cookie = (await context.cookies()).find((c) => c.name === "tester");
-  const body = (cookie?.value ?? "").split(".")[0] ?? "";
-  const { uid } = JSON.parse(Buffer.from(body, "base64url").toString("utf8"));
-  userIds.add(uid as string);
-  return { context, uid: uid as string };
-}
-
-async function runIntake(context: BrowserContext, url: string) {
-  const started = await context.request.post("/api/dev/start-intake", {
-    data: { url },
+async function runIntake(
+  page: Awaited<ReturnType<typeof signedInContext>>["page"],
+  url: string,
+) {
+  await sendMessage(page, url);
+  await expect(page).toHaveURL(/\/r\/[0-9a-f-]{36}$/, {
+    timeout: NAVIGATE_TIMEOUT,
   });
-  expect(started.status()).toBe(200);
-  const { intakeId, threadId } = (await started.json()) as {
-    intakeId: string;
-    threadId: string;
-  };
+  const intakeId = intakeIdOf(page);
   intakeIds.add(intakeId);
 
-  let intake:
-    | {
-        status: string;
-        failure_code: string | null;
-        workspace_id: string | null;
-      }
-    | undefined;
   await expect
     .poll(
-      async () => {
-        const response = await context.request.get(
-          `/api/dev/intake/${intakeId}`,
-        );
-        intake = await response.json();
-        return intake?.status;
-      },
+      async () =>
+        (
+          await secret
+            .from("intakes")
+            .select("status")
+            .eq("id", intakeId)
+            .single()
+        ).data?.status,
       { timeout: 5 * 60_000, intervals: [2_000] },
     )
     .not.toBe("reading");
-  return { intakeId, threadId, intake: intake! };
+  const { data: intake } = await secret
+    .from("intakes")
+    .select("status, failure_code, workspace_id, thread_id")
+    .eq("id", intakeId)
+    .single();
+  return { intakeId, intake: intake! };
 }
 
 test("a failing URL fails the intake with its message and leaves nothing behind", async ({
   browser,
 }) => {
-  const { context, uid } = await signedInContext(browser);
-  const { intakeId, threadId, intake } = await runIntake(
-    context,
-    "https://example.com/products/anything",
-  );
+  const { context, page, uid } = await signedInContext(browser, "Intake test");
+  const { intakeId, intake } = await runIntake(page, FAILING_URL);
   expect(intake).toMatchObject({
     status: "failed",
     failure_code: "not_shopify",
@@ -105,7 +83,8 @@ test("a failing URL fails the intake with its message and leaves nothing behind"
           await secret
             .from("messages")
             .select("kind, role, parts")
-            .eq("thread_id", threadId)
+            .eq("thread_id", intake.thread_id)
+            .eq("kind", "status")
         ).data,
       { timeout: 30_000 },
     )
@@ -138,12 +117,12 @@ test("a real product becomes a workspace with photos, a summary and costs", asyn
   browser,
 }) => {
   test.setTimeout(6 * 60_000);
-  test.skip(!PRODUCT_URL, "set INTAKE_E2E_URL to run the paid success case");
-  const { context, uid } = await signedInContext(browser);
-  const { intakeId, threadId, intake } = await runIntake(
-    context,
-    PRODUCT_URL ?? "",
+  test.skip(
+    FAKE_PROVIDERS || !PRODUCT_URL,
+    "set PROVIDERS=real and INTAKE_E2E_URL to run the paid success case",
   );
+  const { context, page, uid } = await signedInContext(browser, "Intake test");
+  const { intakeId, intake } = await runIntake(page, PRODUCT_URL ?? "");
   expect(intake.status).toBe("done");
   expect(intake.workspace_id).not.toBeNull();
 
@@ -154,7 +133,7 @@ test("a real product becomes a workspace with photos, a summary and costs", asyn
     .single();
   expect(workspace).toEqual({
     user_id: uid,
-    thread_id: threadId,
+    thread_id: intake.thread_id,
     phase: "confirm",
     confirmed: null,
   });
@@ -162,7 +141,7 @@ test("a real product becomes a workspace with photos, a summary and costs", asyn
   const { data: thread } = await secret
     .from("threads")
     .select("workspace_id")
-    .eq("id", threadId)
+    .eq("id", intake.thread_id)
     .single();
   expect(thread).toEqual({ workspace_id: intake.workspace_id });
 
@@ -179,7 +158,8 @@ test("a real product becomes a workspace with photos, a summary and costs", asyn
   const { data: summary } = await secret
     .from("messages")
     .select("kind")
-    .eq("thread_id", threadId);
+    .eq("thread_id", intake.thread_id)
+    .eq("kind", "summary");
   expect(summary).toEqual([{ kind: "summary" }]);
 
   const { data: costs } = await secret

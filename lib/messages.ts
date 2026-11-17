@@ -17,6 +17,11 @@ export const messages = {
   pre_order:
     "Pre-order products aren't supported yet. Try a product that's available now.",
   intake_failed: "Something went wrong reading this product. Try again.",
+  intake_running:
+    "I'm still reading the last link. Paste another once it's done.",
+  extra_links: "I only read the first link in a message.",
+  try_another_link: "Paste a different product link to try again.",
+  chat_failed: "Something went wrong with that message. Try again.",
 
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
   low_resolution: "This photo is low resolution and may look soft.",

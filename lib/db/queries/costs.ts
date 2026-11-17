@@ -33,3 +33,21 @@ export async function replaceIntakeCosts(
   );
   check(error, "insert intake costs");
 }
+
+export async function insertCosts(
+  userId: string,
+  workspaceId: string | null,
+  costs: NewCost[],
+) {
+  if (costs.length === 0) return;
+  const { error } = await createSecretClient()
+    .from("costs")
+    .insert(
+      costs.map((cost) => ({
+        ...cost,
+        user_id: userId,
+        workspace_id: workspaceId,
+      })),
+    );
+  check(error, "insert costs");
+}

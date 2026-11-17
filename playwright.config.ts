@@ -11,5 +11,6 @@ export default defineConfig({
     command: "npm run dev",
     url: "http://localhost:3000/sign-in",
     reuseExistingServer: true,
+    env: { PROVIDERS: process.env.PROVIDERS ?? "fake" },
   },
 });
