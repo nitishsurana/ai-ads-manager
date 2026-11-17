@@ -85,3 +85,24 @@ export async function setPhotosSelected(
     .eq("dropped", false);
   check(error, "set photos selected");
 }
+
+// The first kept photo of each workspace, a selected one when there is one. The owner filter rides on the join.
+export async function listCoverThumbs(userId: string, workspaceIds: string[]) {
+  const covers = new Map<string, string>();
+  if (workspaceIds.length === 0) return covers;
+  const { data, error } = await createSecretClient()
+    .from("photos")
+    .select("workspace_id, thumb_path, workspaces!inner(user_id)")
+    .in("workspace_id", workspaceIds)
+    .eq("workspaces.user_id", userId)
+    .eq("dropped", false)
+    .order("selected", { ascending: false })
+    .order("position", { ascending: true });
+  check(error, "list cover thumbs");
+  for (const row of data ?? []) {
+    if (row.workspace_id && !covers.has(row.workspace_id)) {
+      covers.set(row.workspace_id, row.thumb_path);
+    }
+  }
+  return covers;
+}

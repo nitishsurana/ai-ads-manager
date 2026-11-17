@@ -40,7 +40,11 @@ export {
   setThreadCampaign,
 } from "./threads";
 export type { Thread } from "./threads";
-export { listWorkspacePhotos, setPhotosSelected } from "./photos";
+export {
+  listCoverThumbs,
+  listWorkspacePhotos,
+  setPhotosSelected,
+} from "./photos";
 export type { WorkspacePhoto } from "./photos";
 export {
   findWorkspaceByProductKey,
@@ -48,9 +52,11 @@ export {
   getWorkspaceCampaign,
   getWorkspacePhase,
   getWorkspaceThreadId,
+  listWorkspaces,
+  softDeleteWorkspace,
   updateWorkspaceIf,
 } from "./workspaces";
-export type { WorkspaceRow } from "./workspaces";
+export type { WorkspaceListItem, WorkspaceRow } from "./workspaces";
 export {
   addBriefVersion,
   findRoundBriefVersion,

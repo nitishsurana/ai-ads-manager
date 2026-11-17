@@ -34,6 +34,7 @@ export const messages = {
   round_timed_out: "This is taking too long. You can retry in 5 minutes.",
   round_no_pass:
     "We couldn't make creatives that pass our checks this time. Add more detail or update what you told us, then try again.",
+  delete_failed: "We couldn't delete that workspace. Try again.",
 
   not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
   low_resolution: "This photo is low resolution and may look soft.",
