@@ -2,7 +2,7 @@ import type { NewCreative } from "@/lib/db/queries";
 import type { Candidate } from "./types";
 
 function creativeRow(candidate: Candidate, n: number): NewCreative {
-  if (!candidate.copy || !candidate.previewPath) {
+  if (!candidate.copy || !candidate.layout || !candidate.previewPath) {
     throw new Error(`candidate ${candidate.index} is not finished`);
   }
   return {
@@ -12,7 +12,7 @@ function creativeRow(candidate: Candidate, n: number): NewCreative {
     background: candidate.background,
     supporting_element: candidate.supportingElement,
     copy: candidate.copy,
-    layout: null,
+    layout: candidate.layout,
     background_path: candidate.backgroundPath,
     preview_path: candidate.previewPath,
   };

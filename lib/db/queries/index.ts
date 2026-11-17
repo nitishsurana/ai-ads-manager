@@ -46,11 +46,13 @@ export {
 } from "./threads";
 export type { Thread } from "./threads";
 export {
+  getRoundPhoto,
   listCoverThumbs,
   listWorkspacePhotos,
+  setPhotoCutout,
   setPhotosSelected,
 } from "./photos";
-export type { WorkspacePhoto } from "./photos";
+export type { RoundPhoto, WorkspacePhoto } from "./photos";
 export {
   findWorkspaceByProductKey,
   getWorkspace,

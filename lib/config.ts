@@ -16,3 +16,13 @@ export const ROUND_DAILY_LIMIT = 20;
 
 // A running round with no deadline this long (the brief rewrite never finished) is failed.
 export const ROUND_REWRITE_S = 60;
+
+// Starting values for the creatives, tuned after the first runs.
+export const LOGO_MAX_WIDTH_SHARE = 0.18;
+export const LOGO_MIN_CONTRAST = 3;
+export const TEXT_MIN_CONTRAST = 4.5;
+export const CTA_MIN_CONTRAST = 4.5;
+export const CTA_MIN_DELTA_E = 20;
+
+// Fal's price for one Bria FIBO 2 edit (checked on the Nov 15, 2026 background test); BiRefNet is recorded as billed.
+export const BRIA_EDIT_USD = 0.04;

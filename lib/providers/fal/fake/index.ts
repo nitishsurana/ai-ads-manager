@@ -8,27 +8,37 @@ import {
 } from "@/lib/providers/snapshot";
 import type { Fal } from "../types";
 
-export function createReplayFal(snapshotDir: string): Fal {
-  // Loaded on first use: rows with no mask check have no fal.json.
-  const load = () => {
-    if (!existsSync(join(snapshotDir, "fal.json"))) {
-      throw new SnapshotError("fal: no fal.json recorded");
+type Snapshot = ReturnType<typeof falSnapshotSchema.parse>;
+
+// Rows with no mask check have no fal.json, so a folder is read on first use. Several folders are searched in order: a round's own recording first, then step 1's.
+export function createReplayFal(...snapshotDirs: string[]): Fal {
+  let loaded: { dir: string; snapshot: Snapshot }[] | undefined;
+  const load = () =>
+    (loaded ??= snapshotDirs
+      .filter((dir) => existsSync(join(dir, "fal.json")))
+      .map((dir) => ({
+        dir,
+        snapshot: readSnapshotJson(dir, "fal.json", falSnapshotSchema),
+      })));
+
+  function find(key: string, what: string) {
+    for (const { dir, snapshot } of load()) {
+      const entry = snapshot[key];
+      if (entry === undefined) continue;
+      if (typeof entry !== "string") throw new Error(entry.error);
+      return readSnapshotBody(dir, entry);
     }
-    return readSnapshotJson(snapshotDir, "fal.json", falSnapshotSchema);
-  };
-  let snapshot: ReturnType<typeof load> | undefined;
+    throw new SnapshotError(`fal: ${what} ${key} was not recorded`);
+  }
 
   return {
     async backgroundMask({ inputSha256 }) {
-      snapshot ??= load();
-      const entry = snapshot[inputSha256];
-      if (!entry) {
-        throw new SnapshotError(
-          `fal: mask for ${inputSha256} was not recorded`,
-        );
-      }
-      if (typeof entry !== "string") throw new Error(entry.error);
-      return readSnapshotBody(snapshotDir, entry);
+      return find(inputSha256, "mask for");
+    },
+    async backgroundEdit({ inputSha256 }) {
+      return find(editSnapshotKey(inputSha256), "edit");
     },
   };
 }
+
+export const editSnapshotKey = (inputSha256: string) => `bria:${inputSha256}`;

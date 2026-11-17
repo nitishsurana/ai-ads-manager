@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Ai } from "@/lib/providers/ai";
 import type { Dns } from "@/lib/providers/dns";
-import type { Fal } from "@/lib/providers/fal";
+import type { MaskFal } from "@/lib/intake";
 import type { Firecrawl } from "@/lib/providers/firecrawl";
 import type { Http, HttpResponse } from "@/lib/providers/http";
 import { aiSnapshotKey } from "@/lib/providers/ai";
@@ -192,7 +192,7 @@ export function createRecorder(dir: string) {
       };
     },
 
-    fal(real: Fal): Fal {
+    fal(real: MaskFal): MaskFal {
       return {
         async backgroundMask(request) {
           const kept = falLog[request.inputSha256];

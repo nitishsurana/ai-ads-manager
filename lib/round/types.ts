@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Box, Layout } from "@/lib/render";
 import type { RoundInputs } from "./inputs";
 
 export const STAGES = [
@@ -40,6 +41,9 @@ export type Candidate = {
   background: Background;
   copy: Copy | null;
   backgroundPath: string | null;
+  // Where the product sits in the 1080x1920 background.
+  product: Box | null;
+  layout: Layout | null;
   previewPath: string | null;
 };
 

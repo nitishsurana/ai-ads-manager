@@ -1,3 +1,4 @@
+import { MASK_MODEL } from "@/lib/providers/fal";
 import { SnapshotError } from "@/lib/providers/snapshot";
 import { checkPhoto } from "./check";
 import { thumbnail, modelCopy } from "./copies";
@@ -17,7 +18,7 @@ import type {
 
 const PHOTOS_BUCKET = "photos";
 const CUTOUTS_BUCKET = "cutouts";
-export const MASK_MODEL = "fal-ai/birefnet/v2";
+export { MASK_MODEL };
 
 // A provider failure skips the photo; a replay or recording problem must still fail loudly.
 async function attempt<T>(

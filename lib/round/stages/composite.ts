@@ -1,37 +1,56 @@
-import sharp from "sharp";
+import { currentVersions, loadFonts } from "@/lib/render";
+import { composeCandidate, readLogo } from "../compose";
 import type { Candidate, RoundContext } from "../types";
 import type { StageDeps } from "./types";
 
-const COLOURS = [
-  "#e11d48",
-  "#2563eb",
-  "#16a34a",
-  "#d97706",
-  "#7c3aed",
-  "#0891b2",
-];
+async function required(
+  storage: StageDeps["storage"],
+  bucket: string,
+  path: string,
+) {
+  const bytes = await storage.get(bucket, path);
+  if (!bytes) throw new Error(`storage: ${bucket}/${path} is missing`);
+  return bytes;
+}
 
-// STUB (6a): the Satori text layer and the real preview JPEG replace this in 6c. Each candidate gets a flat 9:16 placeholder under the round's prefix.
 export async function composite(
   input: RoundContext,
   candidates: Candidate[],
   deps: StageDeps,
 ): Promise<Candidate[]> {
+  const { inputs } = input;
+  const fonts = await loadFonts(
+    currentVersions([
+      inputs.brandKit.fonts.heading.family,
+      inputs.brandKit.fonts.body.family,
+    ]),
+    deps,
+  );
+  const logo = inputs.logo?.pngPath
+    ? await readLogo(
+        await required(deps.storage, "logos", inputs.logo.pngPath),
+        inputs.logo,
+      )
+    : null;
+
   const composed: Candidate[] = [];
   for (const candidate of candidates) {
-    const bytes = await sharp({
-      create: {
-        width: 270,
-        height: 480,
-        channels: 3,
-        background: COLOURS[candidate.index % COLOURS.length] ?? "#e11d48",
+    if (!candidate.backgroundPath) {
+      throw new Error(`candidate ${candidate.index} has no background`);
+    }
+    const { layout, preview } = await composeCandidate(
+      candidate,
+      await required(deps.storage, "backgrounds", candidate.backgroundPath),
+      {
+        inputs,
+        fonts,
+        logo,
+        label: `round ${input.roundId} candidate ${candidate.index}`,
       },
-    })
-      .jpeg()
-      .toBuffer();
+    );
     const path = `${input.roundId}/c${candidate.index}.jpg`;
-    await deps.storage.put("previews", path, bytes, "image/jpeg");
-    composed.push({ ...candidate, previewPath: path });
+    await deps.storage.put("previews", path, preview, "image/jpeg");
+    composed.push({ ...candidate, layout, previewPath: path });
     await deps.progress({
       kind: "stage",
       stage: "compositing",

@@ -12,7 +12,7 @@ import {
   firecrawlSnapshotSchema,
   readSnapshotJson,
 } from "@/lib/providers/snapshot";
-import { createLocalStorage } from "@/lib/providers/storage";
+import { createLocalStorage, type Storage } from "@/lib/providers/storage";
 import type { Outcome } from "./observe";
 import { stubBrand } from "./stub-brand";
 
@@ -42,14 +42,18 @@ export function fullResult(outcome: Outcome): IntakeResult | null {
     : { ...outcome.result, brand: stubBrand };
 }
 
-// Step 1 of a row, replayed from its snapshot.
-export async function replayIntake(name: string, dir: string) {
+// Step 1 of a row, replayed from its snapshot. A caller that passes `storage` keeps the photos and logo it writes.
+export async function replayIntake(
+  name: string,
+  dir: string,
+  storage?: Storage,
+) {
   const { url } = readSnapshotJson(dir, "case.json", caseSchema);
-  const storageDir = mkdtempSync(join(tmpdir(), "golden-"));
+  const storageDir = storage ? null : mkdtempSync(join(tmpdir(), "golden-"));
   try {
     const deps = createIntakeDeps({
       snapshotDir: dir,
-      storage: createLocalStorage(storageDir),
+      storage: storage ?? createLocalStorage(storageDir ?? ""),
       findWorkspace: async () => null,
     });
     const run = hasBrandPages(dir) ? runIntake : runIntakeUntilBrand;
@@ -57,6 +61,6 @@ export async function replayIntake(name: string, dir: string) {
     if (!result) throw new Error(`${name}: step 1 produced no result`);
     return result;
   } finally {
-    rmSync(storageDir, { recursive: true, force: true });
+    if (storageDir) rmSync(storageDir, { recursive: true, force: true });
   }
 }

@@ -21,6 +21,7 @@ import {
 import { absolute } from "./urls";
 
 export { BrandStageError } from "./types";
+export { contrast, fromHex, parseColour, toHex, type Rgb } from "./colour";
 export type {
   BrandKit,
   BrandPage,

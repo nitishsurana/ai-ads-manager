@@ -23,6 +23,7 @@ export const stubBrand: BrandResult = {
   needsBrandName: false,
   logo: {
     source: "wordmark",
+    textRead: null,
     pngPath: null,
     width: null,
     height: null,

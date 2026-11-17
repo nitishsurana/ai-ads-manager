@@ -38,6 +38,8 @@ export type Logo = {
   height: number | null;
   sourceUrl: string | null;
   text: string | null;
+  // The brand text the logo check read in the image, in the image's own casing; null for a wordmark or an older logo.
+  textRead: string | null;
   colourClass: LogoColourClass | null;
   // Solid ink colours only: the currentColor part of an svg is not listed, so the renderer recolours it per creative.
   colours: string[];

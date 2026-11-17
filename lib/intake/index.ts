@@ -1,7 +1,21 @@
 export { createIntakeDeps } from "./deps";
 export { runIntake, runIntakeBrand, runIntakeUntilBrand } from "./pipeline";
-export { BrandStageError } from "./brand";
-export { PhotosStageError, photoWarnings } from "./photos";
+export {
+  BrandStageError,
+  contrast,
+  fromHex,
+  parseColour,
+  toHex,
+  type Rgb,
+} from "./brand";
+export {
+  countMainShapes,
+  makeCutout,
+  mapLimit,
+  MASK_MODEL,
+  PhotosStageError,
+  photoWarnings,
+} from "./photos";
 export type {
   BrandKit,
   BrandResult,
@@ -14,6 +28,7 @@ export type { PageFacts, PageRating, PageVariant, PurchaseState } from "./page";
 export type {
   CostEntry,
   DropReason,
+  MaskFal,
   Photo,
   PhotoChecks,
   PhotosResult,

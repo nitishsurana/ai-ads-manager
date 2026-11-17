@@ -16,7 +16,7 @@ export { aiSnapshotKey } from "./key";
 export { CHAT_MODEL, createChatModel } from "./chat-model";
 export { gatewayCostUsd } from "./cost";
 export { createRealAi };
-export { createScriptedAi, type RoundFault } from "./fake/round";
+export { createScriptedAi } from "./fake/round";
 
 export function createResearcher(): Researcher {
   return process.env.PROVIDERS === "fake"

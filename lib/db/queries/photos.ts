@@ -109,3 +109,88 @@ export async function listCoverThumbs(userId: string, workspaceIds: string[]) {
   }
   return covers;
 }
+
+const bboxSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  w: z.number(),
+  h: z.number(),
+});
+
+const roundPhotoRowSchema = z.object({
+  id: z.string(),
+  sha256: z.string(),
+  work_path: z.string(),
+  mask_path: z.string().nullable(),
+  product_bbox: bboxSchema.nullable(),
+});
+
+export type RoundPhoto = {
+  id: string;
+  // Of the original photo, which keys the replayed Fal masks.
+  sha256: string;
+  workPath: string;
+  maskPath: string | null;
+  // The product's box as fractions (0 to 1) of the work image.
+  productBbox: z.infer<typeof bboxSchema> | null;
+};
+
+// One of the workspace's photos for a round's stages. The owner filter rides on the join, so another tester's photo id returns nothing.
+export async function getRoundPhoto(
+  userId: string,
+  workspaceId: string,
+  photoId: string,
+): Promise<RoundPhoto | null> {
+  const { data, error } = await createSecretClient()
+    .from("photos")
+    .select(
+      "id, sha256, work_path, mask_path, product_bbox, workspaces!inner(user_id)",
+    )
+    .eq("id", photoId)
+    .eq("workspace_id", workspaceId)
+    .eq("workspaces.user_id", userId)
+    .maybeSingle();
+  check(error, "get round photo");
+  if (!data) return null;
+  const row = roundPhotoRowSchema.parse(data);
+  return {
+    id: row.id,
+    sha256: row.sha256,
+    workPath: row.work_path,
+    maskPath: row.mask_path,
+    productBbox: row.product_bbox,
+  };
+}
+
+// Written the first time a round cuts a photo out or measures its product, so later rounds reuse them.
+export async function setPhotoCutout(
+  userId: string,
+  workspaceId: string,
+  photoId: string,
+  cutout: {
+    cutoutPath?: string;
+    maskPath?: string;
+    productBbox: NonNullable<RoundPhoto["productBbox"]>;
+  },
+) {
+  const client = createSecretClient();
+  const { data: owned, error: ownerError } = await client
+    .from("workspaces")
+    .select("id")
+    .eq("id", workspaceId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  check(ownerError, "check workspace owner");
+  if (!owned)
+    throw new Error(`db: workspace ${workspaceId} not found for user`);
+  const { error } = await client
+    .from("photos")
+    .update({
+      ...(cutout.cutoutPath && { cutout_path: cutout.cutoutPath }),
+      ...(cutout.maskPath && { mask_path: cutout.maskPath }),
+      product_bbox: cutout.productBbox,
+    })
+    .eq("id", photoId)
+    .eq("workspace_id", workspaceId);
+  check(error, "set photo cutout");
+}

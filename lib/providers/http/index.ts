@@ -13,6 +13,7 @@ export type {
 } from "./types";
 export { getFollowingRedirects } from "./follow";
 export { createRealHttp };
+export { createFontReplayHttp, FONT_FIXTURES } from "./fake/fonts";
 
 export function createHttp(options: { dns: Dns; snapshotDir?: string }): Http {
   if (process.env.PROVIDERS !== "fake") return createRealHttp(options);

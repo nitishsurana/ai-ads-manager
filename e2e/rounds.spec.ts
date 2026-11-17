@@ -1,4 +1,4 @@
-// Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. Art direction and copy run on the scripted fake ai (its plan ignores the rules on purpose, so the code that enforces them runs too); the other stages are stubs. Faults are injected through the campaign occasion: "fake:slow" and "fake:fail" reach the scripted ai, "fake:no_pass" the stub checks. Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
+// Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. Art direction and copy run on the scripted fake ai (its plan ignores the rules on purpose, so the code that enforces them runs too), backgrounds and the text layer on the scripted fake Fal and the committed fonts; the checks are still a stub. Faults are injected through the campaign occasion: "fake:slow" and "fake:fail" reach the scripted Fal, "fake:no_pass" the stub checks. Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
 import { expect, test, type Page } from "@playwright/test";
 import { generate, nextAction, roundsOf } from "./confirm-helpers";
 import {
@@ -267,6 +267,9 @@ test.describe("rounds", () => {
     await expect(page.getByText(TIMED_OUT)).toBeVisible({
       timeout: (ROUND_TIMERS.deadlineS + 20) * 1000,
     });
+    // Checked first: the fixed retry window starts at the deadline and must not race the rest of the test.
+    await expect(tryAgain(page)).toBeDisabled();
+    expect(await (await replay(workspaceId)).text()).toContain("retry_wait");
     const round = await roundOf(workspaceId);
     expect(round).toMatchObject({ status: "timed_out" });
     expect(new Date(round?.finished_at ?? "").getTime()).toBe(
@@ -283,8 +286,6 @@ test.describe("rounds", () => {
     ).toHaveCount(0);
 
     await page.goto(`/w/${workspaceId}`);
-    await expect(tryAgain(page)).toBeDisabled();
-    expect(await (await replay(workspaceId)).text()).toContain("retry_wait");
     expect(await roundsOf(workspaceId)).toHaveLength(1);
     await expect(page.getByText(TIMED_OUT)).toHaveCount(1);
 

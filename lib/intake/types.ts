@@ -1,13 +1,12 @@
 import type { Step1FailureCode } from "@/lib/messages";
 import type { Ai } from "@/lib/providers/ai";
-import type { Fal } from "@/lib/providers/fal";
 import type { Firecrawl } from "@/lib/providers/firecrawl";
 import type { Http } from "@/lib/providers/http";
 import type { Storage } from "@/lib/providers/storage";
 import type { PageStyles } from "@/lib/providers/firecrawl";
 import type { BrandResult } from "./brand";
 import type { PageFacts } from "./page";
-import type { PhotosProgress, PhotosResult } from "./photos";
+import type { MaskFal, PhotosProgress, PhotosResult } from "./photos";
 import type { ShopifyProduct } from "./product";
 
 export type Market = "US" | "CA" | "GB" | "AU" | "IN" | "DE" | "FR";
@@ -16,7 +15,7 @@ export type IntakeDeps = {
   http: Http;
   firecrawl: Firecrawl;
   ai: Ai;
-  fal: Fal;
+  fal: MaskFal;
   storage: Storage;
   progress(event: IntakeProgress): void | Promise<void>;
   findWorkspace(productKey: string): Promise<string | null>;

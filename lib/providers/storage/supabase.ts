@@ -12,6 +12,15 @@ export function createSupabaseStorage(client: SupabaseClient): Storage {
       if (error)
         throw new Error(`storage: put ${bucket}/${path}: ${error.message}`);
     },
+    async get(bucket, path) {
+      const { data, error } = await client.storage.from(bucket).download(path);
+      if (error) {
+        const status = (error as { status?: number }).status;
+        if (status === 404 || /not found/i.test(error.message)) return null;
+        throw new Error(`storage: get ${bucket}/${path}: ${error.message}`);
+      }
+      return Buffer.from(await data.arrayBuffer());
+    },
     async remove(bucket, paths) {
       const { error } = await client.storage.from(bucket).remove(paths);
       if (error)

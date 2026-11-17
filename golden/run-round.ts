@@ -8,6 +8,12 @@ import { roundInputsSchema } from "@/lib/round/inputs";
 import { expectSchema, roundProblems } from "./round/assert";
 import { briefOf, rowInputs } from "./round/inputs";
 import { ROW_CASES } from "./round/rows";
+import {
+  fixtureRenders,
+  layoutCases,
+  rowRenders,
+  writeContactSheet,
+} from "./round/render-run";
 import { runStages } from "./round/run";
 
 process.env.PROVIDERS = "fake";
@@ -78,6 +84,9 @@ async function main() {
       })),
     );
   }
+  layoutCases(report);
+  await fixtureRenders(report);
+  await writeContactSheet(await rowRenders(report));
   console.log(`${passed} passed, ${failed} failed`);
   if (failed > 0) process.exit(1);
 }

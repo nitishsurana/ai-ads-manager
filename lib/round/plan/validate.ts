@@ -198,6 +198,8 @@ export function validatePlan(
       background: background(candidate, isWholePhoto(photo)),
       copy: null,
       backgroundPath: null,
+      product: null,
+      layout: null,
       previewPath: null,
     };
   });

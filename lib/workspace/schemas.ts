@@ -37,6 +37,7 @@ export const logoSchema = z.object({
   height: z.number().nullable(),
   sourceUrl: z.string().nullable(),
   text: z.string().nullable(),
+  textRead: z.string().nullable().default(null),
   colourClass: z
     .enum(["one_colour", "current_colour", "multi_colour"])
     .nullable(),

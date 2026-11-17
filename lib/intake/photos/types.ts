@@ -1,5 +1,8 @@
 import { z } from "zod";
 import type { Fal } from "@/lib/providers/fal";
+
+// Step 1 only asks Fal for masks.
+export type MaskFal = Pick<Fal, "backgroundMask">;
 import type { Http } from "@/lib/providers/http";
 import type { Ai } from "@/lib/providers/ai";
 import type { Storage } from "@/lib/providers/storage";
@@ -78,7 +81,7 @@ export type PhotosProgress = {
 export type PhotosDeps = {
   http: Http;
   ai: Ai;
-  fal: Fal;
+  fal: MaskFal;
   storage: Storage;
   progress: (event: PhotosProgress) => void | Promise<void>;
 };

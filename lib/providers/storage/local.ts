@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { Storage } from "./types";
 
@@ -9,6 +9,12 @@ export function createLocalStorage(root: string): Storage {
       const file = join(root, bucket, path);
       await mkdir(dirname(file), { recursive: true });
       await writeFile(file, bytes);
+    },
+    async get(bucket, path) {
+      return readFile(join(root, bucket, path)).catch((error: unknown) => {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+        throw error;
+      });
     },
     async remove(bucket, paths) {
       await Promise.all(
