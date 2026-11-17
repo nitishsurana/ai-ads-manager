@@ -25,6 +25,21 @@ export function median(values: number[]) {
 const mean = (values: number[]) =>
   values.reduce((sum, value) => sum + value, 0) / values.length;
 
+export function passes(values: number[]) {
+  return (
+    mean(values) >= JUDGE_PASS_MEAN &&
+    values.every((value) => value !== JUDGE_FAIL_MEDIAN)
+  );
+}
+
+// How many criteria the judges' scores spread across by JUDGE_DISAGREEMENT or more.
+export function disagreements(scores: Scores[]) {
+  return CRITERIA.filter((criterion) => {
+    const each = scores.map((score) => score[criterion]);
+    return Math.max(...each) - Math.min(...each) >= JUDGE_DISAGREEMENT;
+  }).length;
+}
+
 // Medians per criterion, the low-confidence flag, the pass rule and the Borda ranking over every judge's order. One judge alone can't disagree with anyone, so it is flagged.
 export function aggregate(votes: Vote[], count: number): JudgeRecord[] {
   const borda = Array.from({ length: count }, () => 0);
@@ -43,19 +58,12 @@ export function aggregate(votes: Vote[], count: number): JudgeRecord[] {
       ]),
     ) as Scores;
     const values = CRITERIA.map((criterion) => medians[criterion]);
-    const lowConfidence =
-      votes.length < 2 ||
-      CRITERIA.some((criterion) => {
-        const each = scores.map((score) => score[criterion]);
-        return Math.max(...each) - Math.min(...each) >= JUDGE_DISAGREEMENT;
-      });
+    const lowConfidence = votes.length < 2 || disagreements(scores) > 0;
     return {
       medians,
       mean: mean(values),
       lowConfidence,
-      pass:
-        mean(values) >= JUDGE_PASS_MEAN &&
-        values.every((value) => value !== JUDGE_FAIL_MEDIAN),
+      pass: passes(values),
       borda: borda[position] ?? 0,
       rank: 0,
       judges: votes.map((vote) => ({
