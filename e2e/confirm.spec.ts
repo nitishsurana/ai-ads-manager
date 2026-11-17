@@ -4,9 +4,11 @@ import {
   generate,
   nextAction,
   photoSelected,
+  roundsOf,
   workspaceRow,
 } from "./confirm-helpers";
 import {
+  removeRoundFiles,
   resetTesters,
   FAKE_PROVIDERS,
   secret,
@@ -266,14 +268,28 @@ test.describe("confirm", () => {
     );
   });
 
-  test("Generate saves the confirmed values and shows a pending state", async () => {
+  test("Generate saves the confirmed values and starts the first round", async () => {
     const { page } = a;
     await generate(page).click();
-    await expect(generate(page)).toBeEnabled();
+    await expect(page.getByRole("heading", { name: "Round 1" })).toBeVisible();
     await expect
       .poll(async () => (await workspaceRow(workspaceId))?.confirmed)
       .toMatchObject({ currency: "EUR", brandName: { needed: false } });
-    expect((await workspaceRow(workspaceId))?.phase).toBe("confirm");
+    expect((await workspaceRow(workspaceId))?.phase).toBe("rounds");
+
+    // The later tests use this workspace as an unstarted one: let the round end, then undo it.
+    await expect
+      .poll(async () => (await roundsOf(workspaceId))[0]?.status, {
+        timeout: SCREEN_TIMEOUT,
+      })
+      .toBe("done");
+    await removeRoundFiles((await roundsOf(workspaceId)).map((r) => r.id));
+    await secret.from("rounds").delete().eq("workspace_id", workspaceId);
+    await secret.from("briefs").delete().eq("workspace_id", workspaceId);
+    await secret
+      .from("workspaces")
+      .update({ phase: "confirm" })
+      .eq("id", workspaceId);
   });
 
   test("another tester gets 404 on the workspace and their server actions are rejected", async ({

@@ -9,6 +9,7 @@ import {
   listFacts,
   type Thread,
 } from "@/lib/db/queries";
+import { proposeBriefChange } from "@/lib/brief";
 import type { Researcher } from "@/lib/providers/ai";
 import { campaignPatchSchema, mergeCampaign } from "./campaign";
 import type { Research } from "./types";
@@ -26,6 +27,7 @@ export function createChatTools({
   assistantId,
   researcher,
 }: ToolContext) {
+  const workspaceId = thread.workspaceId;
   return {
     set_campaign: tool({
       description:
@@ -91,5 +93,38 @@ export function createChatTools({
         }
       },
     }),
+
+    ...(workspaceId
+      ? {
+          propose_brief_change: tool({
+            description:
+              "Add Do or Don't rules to the workspace's creative brief when the tester gives direction for future rounds, such as 'always show the product outdoors' or 'no pink backgrounds'. Only pass what they said.",
+            inputSchema: z.object({
+              rules: z
+                .array(
+                  z.object({
+                    kind: z.enum(["do", "dont"]),
+                    text: z.string().trim().min(1).max(200),
+                  }),
+                )
+                .min(1)
+                .max(5),
+            }),
+            execute: async ({ rules }) => {
+              const added = await proposeBriefChange(
+                userId,
+                workspaceId,
+                rules,
+              );
+              return {
+                changed: added.map((rule) => ({
+                  label: rule.kind === "do" ? "Do" : "Don't",
+                  text: rule.text,
+                })),
+              };
+            },
+          }),
+        }
+      : {}),
   };
 }

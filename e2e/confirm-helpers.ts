@@ -27,3 +27,13 @@ export function nextAction(page: Page) {
     (r) => r.method() === "POST" && "next-action" in r.headers(),
   );
 }
+
+export async function roundsOf(workspaceId: string) {
+  const { data } = await secret
+    .from("rounds")
+    .select("*")
+    .eq("workspace_id", workspaceId)
+    .order("n")
+    .order("attempt");
+  return data ?? [];
+}

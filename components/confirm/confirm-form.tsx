@@ -103,8 +103,7 @@ export function ConfirmForm({ screen, mode, header }: ConfirmFormProps) {
         )(screen.id);
         report(result);
         if (!result.ok) return;
-        if (edit) router.push(`/w/${screen.id}`);
-        else router.refresh();
+        router.push(`/w/${screen.id}`);
       } catch {
         failed(messages.save_failed);
       }

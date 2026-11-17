@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { ConfirmScreen } from "@/components/confirm/confirm-screen";
 import { Stepper } from "@/components/layout/stepper";
+import { RoundScreen } from "@/components/rounds/round-screen";
 import { requireTester } from "@/lib/auth";
+import { getLatestRoundStatus } from "@/lib/round";
 import { loadConfirmScreen } from "@/lib/workspace";
 
 export default async function Page({ params }: PageProps<"/w/[id]">) {
@@ -14,14 +16,12 @@ export default async function Page({ params }: PageProps<"/w/[id]">) {
     return <ConfirmScreen screen={screen} mode="first" />;
   }
 
-  // Phases 6 and 7 branch here on the latest round: Generating while one is queued or running, else the round view.
+  // Phase 7 replaces RoundScreen with the Generating and Round views.
+  const round = await getLatestRoundStatus(userId, id);
   return (
     <div className="flex flex-col gap-5 px-12 py-6">
       <Stepper step={2} confirmHref={`/w/${id}/confirm`} />
-      <h1 className="m-0 text-[26px] font-semibold tracking-tight">
-        Workspace
-      </h1>
-      <p className="m-0 font-mono text-muted-foreground">{id}</p>
+      {round && <RoundScreen key={round.id} workspaceId={id} initial={round} />}
     </div>
   );
 }

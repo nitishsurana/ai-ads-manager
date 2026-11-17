@@ -5,7 +5,21 @@ export type Database = {
   
   "public": {
           Tables: {
-            "costs": {
+            "briefs": {
+                  Row: {
+                    "cause": string,"content": NonNullable<Json>,"created_at": string,"id": string,"user_id": string,"version": number,"workspace_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cause": string,"content": NonNullable<Json>,"created_at"?: string,"id"?: string,"user_id": string,"version": number,"workspace_id": string
+                  }
+                  Update: {
+                    "cause"?: string,"content"?: NonNullable<Json>,"created_at"?: string,"id"?: string,"user_id"?: string,"version"?: number,"workspace_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"costs": {
                   Row: {
                     "created_at": string,"id": string,"intake_id": string | null,"meta": NonNullable<Json>,"model": string | null,"provider": string,"round_id": string | null,"usd": number | null,"user_id": string,"workspace_id": string | null
                   }
@@ -36,6 +50,20 @@ isOneToOne: false
       referencedRelation: "workspaces"
       referencedColumns: ["id"]
     }
+                  ]
+                },"creatives": {
+                  Row: {
+                    "angle": string,"background": NonNullable<Json>,"background_path": string | null,"copy": NonNullable<Json>,"created_at": string,"edits": NonNullable<Json>,"id": string,"judge": Json | null,"layout": Json | null,"n": number,"note": string | null,"photo_id": string | null,"preview_path": string,"rating": string | null,"round_id": string,"supporting_element": string | null,"tags": string[],"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "angle": string,"background": NonNullable<Json>,"background_path"?: string | null,"copy": NonNullable<Json>,"created_at"?: string,"edits"?: NonNullable<Json>,"id"?: string,"judge"?: Json | null,"layout"?: Json | null,"n": number,"note"?: string | null,"photo_id"?: string | null,"preview_path": string,"rating"?: string | null,"round_id": string,"supporting_element"?: string | null,"tags"?: string[],"user_id": string
+                  }
+                  Update: {
+                    "angle"?: string,"background"?: NonNullable<Json>,"background_path"?: string | null,"copy"?: NonNullable<Json>,"created_at"?: string,"edits"?: NonNullable<Json>,"id"?: string,"judge"?: Json | null,"layout"?: Json | null,"n"?: number,"note"?: string | null,"photo_id"?: string | null,"preview_path"?: string,"rating"?: string | null,"round_id"?: string,"supporting_element"?: string | null,"tags"?: string[],"user_id"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 },"facts": {
                   Row: {
@@ -135,6 +163,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"rounds": {
+                  Row: {
+                    "attempt": number,"brief_version": number,"deadline_at": string | null,"error": string | null,"finished_at": string | null,"id": string,"inputs": NonNullable<Json>,"n": number,"progress": NonNullable<Json>,"running_at": string | null,"stage": string | null,"started_at": string,"status": string,"user_id": string,"workspace_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "attempt": number,"brief_version": number,"deadline_at"?: string | null,"error"?: string | null,"finished_at"?: string | null,"id"?: string,"inputs": NonNullable<Json>,"n": number,"progress"?: NonNullable<Json>,"running_at"?: string | null,"stage"?: string | null,"started_at": string,"status"?: string,"user_id": string,"workspace_id": string
+                  }
+                  Update: {
+                    "attempt"?: number,"brief_version"?: number,"deadline_at"?: string | null,"error"?: string | null,"finished_at"?: string | null,"id"?: string,"inputs"?: NonNullable<Json>,"n"?: number,"progress"?: NonNullable<Json>,"running_at"?: string | null,"stage"?: string | null,"started_at"?: string,"status"?: string,"user_id"?: string,"workspace_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"testers": {
                   Row: {
                     "created_at": string,"is_golden": boolean,"name": string,"user_id": string
@@ -207,8 +249,16 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "complete_intake":
+            "add_brief_version":
+{ Args: { "p_base_version": number,"p_cause": string,"p_content": Json,"p_user_id": string,"p_workspace_id": string }; Returns: number
+                           },"complete_intake":
 { Args: { "p_intake_id": string,"p_photos": Json,"p_summary": Json,"p_user_id": string,"p_workspace": Json }; Returns: Json
+                           },"finish_round":
+{ Args: { "p_creatives": Json,"p_error": string,"p_now": string,"p_round_id": string,"p_status": string,"p_user_id": string }; Returns: string
+                           },"housekeep_rounds":
+{ Args: { "p_now": string,"p_rewrite_s": number,"p_stale_queued_s": number,"p_user_id": string }; Returns: string[]
+                           },"start_round":
+{ Args: { "p_attempt": number,"p_brief_version": number,"p_inputs": Json,"p_n": number,"p_now": string,"p_updated_at": string,"p_user_id": string,"p_workspace_id": string }; Returns: string
                            }
           }
           Enums: {

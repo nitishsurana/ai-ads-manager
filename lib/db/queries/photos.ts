@@ -4,6 +4,7 @@ import { createSecretClient } from "../secret";
 import { check } from "./error";
 
 const photoRowSchema = z.object({
+  id: z.string(),
   position: z.number(),
   thumb_path: z.string(),
   tier: z.enum(["clean", "clean_low_res", "added_text"]),
@@ -17,6 +18,7 @@ const photoRowSchema = z.object({
 });
 
 export type WorkspacePhoto = {
+  id: string;
   position: number;
   thumbPath: string;
   tier: "clean" | "clean_low_res" | "added_text";
@@ -35,7 +37,7 @@ export async function listWorkspacePhotos(
   const { data, error } = await createSecretClient()
     .from("photos")
     .select(
-      "position, thumb_path, tier, orig_width, orig_height, checks, selected, workspaces!inner(user_id)",
+      "id, position, thumb_path, tier, orig_width, orig_height, checks, selected, workspaces!inner(user_id)",
     )
     .eq("workspace_id", workspaceId)
     .eq("workspaces.user_id", userId)
@@ -46,6 +48,7 @@ export async function listWorkspacePhotos(
     .array(photoRowSchema)
     .parse(data ?? [])
     .map((row) => ({
+      id: row.id,
       position: row.position,
       thumbPath: row.thumb_path,
       tier: row.tier,

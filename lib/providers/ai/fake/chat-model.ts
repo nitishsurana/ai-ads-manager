@@ -7,6 +7,7 @@ const OCCASION = /\b(diwali|mother's day|christmas|black friday)\b/i;
 const AUDIENCE = /\bfor ([a-z ]+?)(?:[.,!]|$)/i;
 const FACT = /\b(\d+% off[^.!]*|free [a-z ]+)/i;
 const RESEARCH = /\bresearch\b/i;
+const BRIEF_RULE = /\bbrief rule: ([^.!]+)/i;
 
 const usage = {
   inputTokens: {
@@ -28,7 +29,7 @@ const toolOutputSchema = z.object({
   }),
 });
 
-type Call = { toolName: string; input: Record<string, string> };
+type Call = { toolName: string; input: Record<string, unknown> };
 
 function capitalise(text: string) {
   const trimmed = text.trim();
@@ -39,6 +40,7 @@ function plan(text: string): Call[] {
   const occasion = OCCASION.exec(text)?.[1];
   const audience = AUDIENCE.exec(text)?.[1];
   const fact = FACT.exec(text)?.[1];
+  const brief = BRIEF_RULE.exec(text)?.[1];
   return [
     ...(occasion
       ? [
@@ -56,6 +58,14 @@ function plan(text: string): Call[] {
           {
             toolName: "add_fact",
             input: { text: capitalise(fact), kind: "offer" },
+          },
+        ]
+      : []),
+    ...(brief
+      ? [
+          {
+            toolName: "propose_brief_change",
+            input: { rules: [{ kind: "do", text: capitalise(brief) }] },
           },
         ]
       : []),

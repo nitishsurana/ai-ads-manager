@@ -10,3 +10,9 @@ export const INTAKE_DEADLINE_MS = 10 * 60_000;
 // Progress writes are throttled; a heartbeat covers stages that report nothing (brand), so a live step never looks stuck.
 export const PROGRESS_WRITE_INTERVAL_MS = 1_500;
 export const INTAKE_HEARTBEAT_MS = 30_000;
+
+// UTC days; an attempt counts once it is running.
+export const ROUND_DAILY_LIMIT = 20;
+
+// A running round with no deadline this long (the brief rewrite never finished) is failed.
+export const ROUND_REWRITE_S = 60;

@@ -208,3 +208,13 @@ export async function markIntakeCleaned(userId: string, id: string) {
     .eq("status", "failed");
   check(updateError, "mark intake cleaned");
 }
+
+export async function listReadingIntakeIds(userId: string) {
+  const { data, error } = await createSecretClient()
+    .from("intakes")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("status", "reading");
+  check(error, "list reading intakes");
+  return (data ?? []).map((row) => row.id);
+}

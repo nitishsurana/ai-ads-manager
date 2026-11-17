@@ -15,6 +15,9 @@ const schema = z
     SUPABASE_DB_URL: z.string().min(1),
     SPEND_CAP_USD_DAILY: z.coerce.number().positive().default(5),
     CRON_SECRET: z.string().min(1),
+    ROUND_DEADLINE_S: z.coerce.number().int().positive().default(180),
+    RETRY_WAIT_S: z.coerce.number().int().positive().default(300),
+    STALE_QUEUED_S: z.coerce.number().int().positive().default(30),
     NODE_ENV: z.string().optional(),
     PROVIDERS: z.string().optional(),
   })

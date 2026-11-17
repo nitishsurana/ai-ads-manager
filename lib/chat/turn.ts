@@ -97,7 +97,9 @@ function assistantParts(parts: ChatUIMessage["parts"]): MessagePart[] {
       return part.text ? [{ type: "text", text: part.text }] : [];
     }
     if (
-      (part.type === "tool-set_campaign" || part.type === "tool-add_fact") &&
+      (part.type === "tool-set_campaign" ||
+        part.type === "tool-add_fact" ||
+        part.type === "tool-propose_brief_change") &&
       "output" in part
     ) {
       const output = changedOutputSchema.safeParse(part.output);

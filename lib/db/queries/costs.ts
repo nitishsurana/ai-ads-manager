@@ -51,3 +51,29 @@ export async function insertCosts(
     );
   check(error, "insert costs");
 }
+
+// A round's costs are written once, in one step, so a retry replaces them instead of doubling them.
+export async function replaceRoundCosts(
+  userId: string,
+  roundId: string,
+  workspaceId: string,
+  costs: NewCost[],
+) {
+  const client = createSecretClient();
+  const { error: deleteError } = await client
+    .from("costs")
+    .delete()
+    .eq("user_id", userId)
+    .eq("round_id", roundId);
+  check(deleteError, "delete round costs");
+  if (costs.length === 0) return;
+  const { error } = await client.from("costs").insert(
+    costs.map((cost) => ({
+      ...cost,
+      user_id: userId,
+      round_id: roundId,
+      workspace_id: workspaceId,
+    })),
+  );
+  check(error, "insert round costs");
+}

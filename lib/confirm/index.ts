@@ -10,4 +10,5 @@ export {
 } from "./logo";
 export { confirmMessages, type ConfirmMessage } from "./messages";
 export { confirmedPrices } from "./prices";
+export { confirmedValues, type ConfirmedValues } from "./values";
 export type { ConfirmPhoto, ConfirmState, ConfirmVariant } from "./types";

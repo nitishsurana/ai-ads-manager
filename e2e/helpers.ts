@@ -12,16 +12,12 @@ export const secret = createClient(
   { auth: { persistSession: false } },
 );
 
-const BUCKETS = ["photos", "cutouts", "logos"];
+const INTAKE_BUCKETS = ["photos", "cutouts", "logos"];
+const ROUND_BUCKETS = ["backgrounds", "previews"];
 
-// Deleting a user cascades its rows but not its Storage objects, which are keyed by intake id; they are listed from the intakes before the rows go.
-export async function removeUserFiles(userId: string) {
-  const { data: intakes } = await secret
-    .from("intakes")
-    .select("id")
-    .eq("user_id", userId);
-  for (const { id } of intakes ?? []) {
-    for (const bucket of BUCKETS) {
+async function removePrefixes(buckets: string[], ids: string[]) {
+  for (const id of ids) {
+    for (const bucket of buckets) {
       const { data } = await secret.storage
         .from(bucket)
         .list(id, { limit: 1000 });
@@ -32,6 +28,26 @@ export async function removeUserFiles(userId: string) {
       }
     }
   }
+}
+
+export const removeRoundFiles = (roundIds: string[]) =>
+  removePrefixes(ROUND_BUCKETS, roundIds);
+
+// Deleting a user cascades its rows but not its Storage objects, which are keyed by intake and round id; they are listed from the rows before those go.
+export async function removeUserFiles(userId: string) {
+  const { data: intakes } = await secret
+    .from("intakes")
+    .select("id")
+    .eq("user_id", userId);
+  await removePrefixes(
+    INTAKE_BUCKETS,
+    (intakes ?? []).map((row) => row.id),
+  );
+  const { data: rounds } = await secret
+    .from("rounds")
+    .select("id")
+    .eq("user_id", userId);
+  await removeRoundFiles((rounds ?? []).map((row) => row.id));
 }
 
 // The shared testers are signed in once per run by global-setup.ts, which saves their browser state here.
