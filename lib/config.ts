@@ -26,3 +26,19 @@ export const CTA_MIN_DELTA_E = 20;
 
 // Fal's price for one Bria FIBO 2 edit (checked on the Nov 15, 2026 background test); BiRefNet is recorded as billed.
 export const BRIA_EDIT_USD = 0.04;
+
+// Starting values for the judge panel, tuned against tester ratings: a creative passes when the mean of its per-criterion medians reaches the mean floor and no criterion median is the failing score. Judges 2 points apart on a criterion make it low confidence.
+export const JUDGE_PASS_MEAN = 3;
+export const JUDGE_FAIL_MEDIAN = 1;
+export const JUDGE_DISAGREEMENT = 2;
+export const JUDGE_MAX_SHOWN = 3;
+
+// Layer 1: the product's pixels in the final creative may differ from the re-derived cut-out by this much (mean absolute channel difference, and the share of pixels differing by more than PRODUCT_PIXEL_DELTA), because backgrounds are stored as JPEG.
+export const PRODUCT_MEAN_TOLERANCE = 4;
+export const PRODUCT_PIXEL_DELTA = 24;
+export const PRODUCT_BAD_SHARE = 0.02;
+export const PNG_MAX_BYTES = 10 * 1024 * 1024;
+
+// A failing candidate is redone this many times, and only while this share of the round's deadline is still left, which is what a Bria call, the checks and the judge panel need (about 60 of 180 s).
+export const MAX_REGENERATIONS = 2;
+export const REGENERATION_RESERVE_SHARE = 1 / 3;

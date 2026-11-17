@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { confirmedValues, type ConfirmState } from "@/lib/confirm";
+import {
+  confirmedLogo,
+  confirmedValues,
+  type ConfirmState,
+} from "@/lib/confirm";
 import { campaignPatchSchema } from "@/lib/chat/campaign-schema";
 import { confirmedValuesSchema } from "@/lib/brief/schema";
 import { brandKitSchema, logoSchema } from "@/lib/workspace/schemas";
@@ -51,7 +55,7 @@ export function freezeInputs(source: {
     sourceUrl: source.sourceUrl,
     values: confirmedValues(state),
     brandKit: state.brandKit,
-    logo: state.logo,
+    logo: confirmedLogo(state),
     photos: source.photos.filter((photo) => selected.has(photo.position)),
     facts: source.facts,
     campaign: source.campaign,

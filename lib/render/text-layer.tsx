@@ -6,6 +6,9 @@ import { fontStack, satoriFonts, type FontSet } from "./fonts";
 import type { Layout, TextLayout } from "./layout";
 import { ROW_GAP, ROW_LINE_HEIGHT } from "./badge";
 
+// What logo.ts sizes the wordmark's box by.
+export const WORDMARK_LINE_HEIGHT = 1.2;
+
 const STAR =
   "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
 
@@ -113,6 +116,7 @@ function Logo({
           key="logo"
           style={{
             ...absolute(logo.box),
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             whiteSpace: "nowrap",
@@ -120,9 +124,14 @@ function Logo({
             fontFamily: fontStack(logo.wordmark.font.family),
             fontWeight: 700,
             fontSize: logo.wordmark.size,
+            lineHeight: WORDMARK_LINE_HEIGHT,
           }}
         >
-          {logo.wordmark.text}
+          {logo.wordmark.lines.map((line, index) => (
+            <div key={`logo:${index}`} style={{ display: "flex" }}>
+              {line}
+            </div>
+          ))}
         </div>
       ) : image ? (
         // eslint-disable-next-line @next/next/no-img-element -- Satori draws plain img elements
@@ -247,6 +256,21 @@ export function nodeProblems(layout: Layout, nodes: NodeBox[]) {
       problems.push(
         `${id}: a line is ${Math.round(widest)} px, the box is ${text.box.w}`,
       );
+    }
+  }
+  const mark = layout.logo?.kind === "wordmark" ? layout.logo : null;
+  if (mark?.wordmark) {
+    const lines = nodes.filter((node) => node.key.startsWith("logo:"));
+    if (lines.length !== mark.wordmark.lines.length) {
+      problems.push(
+        `logo: ${lines.length} lines drawn, ${mark.wordmark.lines.length} planned`,
+      );
+    }
+    if (Math.max(0, ...lines.map((line) => line.w)) > mark.box.w + 2) {
+      problems.push(`logo: a line is wider than the box (${mark.box.w})`);
+    }
+    if (lines.reduce((sum, line) => sum + line.h, 0) > mark.box.h + 2) {
+      problems.push(`logo: the lines are taller than the box (${mark.box.h})`);
     }
   }
   return problems;

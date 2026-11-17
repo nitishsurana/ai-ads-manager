@@ -43,6 +43,8 @@ export type LogoContext = {
   fontFamily: string;
   // Whether the brand font draws the wordmark itself.
   fallback: (text: string) => boolean;
+  // Whether no loaded font has a glyph of the text.
+  unsupported: (text: string) => boolean;
 };
 
 type Corner = LogoLayout["corner"];
@@ -78,21 +80,62 @@ const worstOf = (colours: readonly Rgb[], backdrop: Backdrop) =>
 
 type Wordmark = { layout: LogoLayout } | { reason: string };
 
+// One line at the largest size that fits the cap; a name too wide for that at the smallest legible size is split into two balanced lines instead.
+function fitWordmark(text: string, context: LogoContext) {
+  const lineHeight = (size: number) => Math.ceil(size * 1.2);
+  const widest = (lines: string[], size: number) =>
+    Math.ceil(
+      Math.max(...lines.map((line) => context.measure(line, size, 700))),
+    );
+  const shrink = (lines: string[], from: number) => {
+    let size = from;
+    while (
+      lineHeight(size - 2) >= WORDMARK_MIN_HEIGHT &&
+      widest(lines, size) > LOGO_MAX_WIDTH
+    ) {
+      size -= 2;
+    }
+    return size;
+  };
+  let size = shrink([text], WORDMARK_SIZE);
+  if (widest([text], size) <= LOGO_MAX_WIDTH) {
+    return { lines: [text], size, single: true };
+  }
+
+  const words = text.split(/\s+/);
+  const splits = words
+    .slice(1)
+    .map((_, i) => [
+      words.slice(0, i + 1).join(" "),
+      words.slice(i + 1).join(" "),
+    ]);
+  const best = splits.reduce<string[] | null>(
+    (pick, lines) =>
+      !pick || widest(lines, size) < widest(pick, size) ? lines : pick,
+    null,
+  );
+  if (!best) return { lines: [text], size, single: true };
+  size = shrink(
+    best,
+    Math.min(WORDMARK_SIZE, Math.floor(LOGO_MAX_HEIGHT / 2.4)),
+  );
+  return { lines: best, size, single: false };
+}
+
 function wordmarkLayout(spec: LogoSpec, context: LogoContext): Wordmark {
   const text = spec.wordmark;
   if (!text) return { reason: "there is no wordmark text" };
-  let size = WORDMARK_SIZE;
-  while (
-    Math.ceil(size * 1.2) > WORDMARK_MIN_HEIGHT &&
-    context.measure(text, size, 700) > LOGO_MAX_WIDTH
-  ) {
-    size -= 2;
+  if (context.unsupported(text)) {
+    return { reason: "no font has every glyph of the wordmark" };
   }
-  const w = Math.ceil(context.measure(text, size, 700));
-  const h = Math.ceil(size * 1.2);
+  const { lines, size, single } = fitWordmark(text, context);
+  const w = Math.ceil(
+    Math.max(...lines.map((line) => context.measure(line, size, 700))),
+  );
+  const h = Math.ceil(size * 1.2) * lines.length;
   if (w > LOGO_MAX_WIDTH) {
     return {
-      reason: `the wordmark needs ${w} px, over the ${LOGO_MAX_WIDTH} px cap, at its smallest legible size`,
+      reason: `the wordmark needs ${w} px, over the ${LOGO_MAX_WIDTH} px cap, at its smallest legible size${single ? " (a single word can't be split)" : ", even on two lines"}`,
     };
   }
   const box = cornerBox("bottom_right", w, h);
@@ -120,6 +163,7 @@ function wordmarkLayout(spec: LogoSpec, context: LogoContext): Wordmark {
       panel: null,
       wordmark: {
         text,
+        lines,
         font: {
           family: context.fontFamily,
           weight: 700,

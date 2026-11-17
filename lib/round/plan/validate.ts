@@ -201,6 +201,7 @@ export function validatePlan(
       product: null,
       layout: null,
       previewPath: null,
+      judge: null,
     };
   });
   return { candidates, repairs };

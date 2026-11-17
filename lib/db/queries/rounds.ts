@@ -256,7 +256,28 @@ export type NewCreative = {
   layout: Json;
   background_path: string | null;
   preview_path: string;
+  judge: Json;
 };
+
+// The finish_round function doesn't take the judge column, so the finishing step writes it after the round's files are cleaned; a repeat writes the same records.
+export async function writeJudgeRecords(
+  userId: string,
+  roundId: string,
+  creatives: NewCreative[],
+) {
+  const client = createSecretClient();
+  const results = await Promise.all(
+    creatives.map((creative) =>
+      client
+        .from("creatives")
+        .update({ judge: creative.judge })
+        .eq("round_id", roundId)
+        .eq("user_id", userId)
+        .eq("n", creative.n),
+    ),
+  );
+  for (const { error } of results) check(error, "write judge records");
+}
 
 // See the rounds migration: only a running round changes, and the status after the call comes back, so a repeat is harmless.
 export async function finishRound(

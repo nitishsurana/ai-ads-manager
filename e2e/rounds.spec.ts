@@ -1,4 +1,4 @@
-// Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. Art direction and copy run on the scripted fake ai (its plan ignores the rules on purpose, so the code that enforces them runs too), backgrounds and the text layer on the scripted fake Fal and the committed fonts; the checks are still a stub. Faults are injected through the campaign occasion: "fake:slow" and "fake:fail" reach the scripted Fal, "fake:no_pass" the stub checks. Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
+// Runs against `next dev` with PROVIDERS=fake and the shortened timers of e2e/timers.ts. Art direction, copy and the judges run on the scripted fake ai (its plan ignores the rules on purpose, so the code that enforces them runs too; its judges score by scenario) and the read-back is the layout's own text, backgrounds and the text layer on the scripted fake Fal and the committed fonts. Scenarios are picked through the campaign occasion ("fake:<scenario>", see lib/round/fake.ts): slow, fail and l1_fail reach the scripted Fal, the others set the judges' scores. The scenarios that reach selection are in rounds-selection.spec.ts. Workspaces are seeded (see seed.ts), and some rounds are inserted straight into the database to set up a case.
 import { expect, test, type Page } from "@playwright/test";
 import { generate, nextAction, roundsOf } from "./confirm-helpers";
 import {
@@ -9,10 +9,16 @@ import {
   sendMessage,
   testerContext,
 } from "./helpers";
+import {
+  callsOf,
+  judgedCreatives,
+  previewFiles,
+  roundOf,
+  SCREEN_TIMEOUT,
+} from "./round-helpers";
 import { seedWorkspace } from "./seed";
 import { ROUND_TIMERS } from "./timers";
 
-const SCREEN_TIMEOUT = 60_000;
 const FAILED = "Something went wrong making this round. Try again.";
 const TIMED_OUT = "This is taking too long. You can retry in 5 minutes.";
 const NO_PASS =
@@ -46,14 +52,6 @@ async function briefsOf(workspaceId: string) {
     .order("version");
   return data ?? [];
 }
-
-async function previewFiles(roundId: string) {
-  const { data } = await secret.storage.from("previews").list(roundId);
-  return data?.map((file) => file.name).sort() ?? [];
-}
-
-const roundOf = async (workspaceId: string, index = 0) =>
-  (await roundsOf(workspaceId))[index];
 
 // A round that is already over, inserted for cases the UI can't reach.
 async function insertRounds(
@@ -114,7 +112,7 @@ test.describe("rounds", () => {
       brandPages: true,
     });
 
-  test("Generate runs queued to running to done with stub creatives, and the next round rewrites the brief", async ({
+  test("Generate runs queued to running to done with judged creatives, and the next round rewrites the brief", async ({
     browser,
   }) => {
     test.setTimeout(3 * SCREEN_TIMEOUT);
@@ -176,6 +174,17 @@ test.describe("rounds", () => {
       expect(creative.copy).toMatchObject({ cta: "Shop now" });
       expect(creative.background).toHaveProperty("method");
     }
+    for (const creative of await judgedCreatives(round?.id ?? "")) {
+      expect(creative.judge).toMatchObject({
+        pass: true,
+        lowConfidence: false,
+        mean: 4,
+      });
+      expect(creative.judge?.judges).toHaveLength(3);
+    }
+    // Six backgrounds and one judge panel (three judges): nothing was redone.
+    expect(await callsOf(round?.id ?? "", "background")).toBe(6);
+    expect(await callsOf(round?.id ?? "", "judge")).toBe(3);
 
     const b = await testerContext(browser, "b");
     expect(

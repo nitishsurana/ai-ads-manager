@@ -26,21 +26,17 @@ export function createRealAi(): Ai {
             role: "user",
             content: [
               { type: "text", text: request.prompt },
-              ...(request.image
-                ? [
-                    {
-                      type: "file" as const,
-                      mediaType: "image/jpeg",
-                      data: request.image,
-                    },
-                  ]
-                : []),
+              ...(request.images ?? []).map((data) => ({
+                type: "file" as const,
+                mediaType: "image/jpeg",
+                data,
+              })),
             ],
           },
         ],
         output: Output.object({ schema: request.schema }),
         maxRetries: MAX_RETRIES,
-        abortSignal: AbortSignal.timeout(TIMEOUT_MS),
+        abortSignal: AbortSignal.timeout(request.timeoutMs ?? TIMEOUT_MS),
       });
 
       return {

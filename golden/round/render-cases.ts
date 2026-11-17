@@ -88,6 +88,7 @@ export const candidate = (index: number, spec: Spec): Candidate => ({
   product: null,
   layout: null,
   previewPath: null,
+  judge: null,
 });
 
 export const SPECS: Spec[] = [

@@ -12,6 +12,8 @@ import {
 import { copySchema } from "./schema";
 
 export const COPY_MODEL = "openai/gpt-6.1-sol";
+// Live copy calls took 12 to 14 s.
+export const COPY_TIMEOUT_MS = 30_000;
 
 const SYSTEM = `You write the text for vertical product ads. Each ad has an optional eyebrow, a headline and a button label (CTA). Code draws them over the product photo.
 
@@ -81,6 +83,7 @@ export function copyRequest(
     model: COPY_MODEL,
     system: SYSTEM,
     prompt,
+    timeoutMs: COPY_TIMEOUT_MS,
     schema: copySchema,
   };
 }
@@ -113,6 +116,7 @@ export function rewriteRequest(
     model: COPY_MODEL,
     system: SYSTEM,
     prompt,
+    timeoutMs: COPY_TIMEOUT_MS,
     schema: copySchema,
   };
 }

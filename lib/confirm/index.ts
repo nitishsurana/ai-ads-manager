@@ -5,6 +5,7 @@ export { canGenerate, variantNeedsConfirmation } from "./gate";
 export { initialConfirm, type ConfirmSource } from "./initial";
 export {
   confirmedBrandName,
+  confirmedLogo,
   confirmedLogoSource,
   showsNoLogoWarning,
 } from "./logo";

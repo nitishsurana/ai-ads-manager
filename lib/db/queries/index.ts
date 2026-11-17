@@ -78,6 +78,7 @@ export {
   countRoundsRunningSince,
   failQueuedRound,
   finishRound,
+  writeJudgeRecords,
   getLatestRound,
   getRound,
   hasActiveRound,

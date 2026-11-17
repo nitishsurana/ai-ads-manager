@@ -9,7 +9,10 @@ export type AiRequest<T> = {
   prompt: string;
   // Names how the image was prepared (size, format), so a change re-keys replay entries.
   inputVersion?: string;
-  image?: Uint8Array;
+  // JPEG images, shown to the model in this order after the prompt.
+  images?: Uint8Array[];
+  // Overrides the default call timeout, for calls with a known size.
+  timeoutMs?: number;
   schema: z.ZodType<T>;
 };
 

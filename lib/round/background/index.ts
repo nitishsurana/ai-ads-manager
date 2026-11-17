@@ -2,18 +2,14 @@ import type { Box } from "@/lib/render";
 import type { RoundInputs } from "../inputs";
 import type { StageDeps } from "../stages/types";
 import type { Candidate } from "../types";
-import {
-  briaInstruction,
-  briaSeed,
-  editInputs,
-  editKey,
-  pasteProduct,
-} from "./bria";
+import { briaInstruction, editInputs, editKey, pasteProduct } from "./bria";
+import { briaSeed } from "./seed";
 import { productCutout, type PreparedPhoto } from "./cutout";
 import { fillBackground, fillColour } from "./fills";
 import { cropPhoto } from "./photo-crop";
 
-export { preparePhoto, type PreparedPhoto } from "./cutout";
+export { preparePhoto, productCutout, type PreparedPhoto } from "./cutout";
+export { cropPhoto } from "./photo-crop";
 
 type Deps = Pick<StageDeps, "fal">;
 

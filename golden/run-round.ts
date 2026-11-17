@@ -8,12 +8,12 @@ import { roundInputsSchema } from "@/lib/round/inputs";
 import { expectSchema, roundProblems } from "./round/assert";
 import { briefOf, rowInputs } from "./round/inputs";
 import { ROW_CASES } from "./round/rows";
-import {
-  fixtureRenders,
-  layoutCases,
-  rowRenders,
-  writeContactSheet,
-} from "./round/render-run";
+import { CHECK_CASES } from "./round/check-cases";
+import { JUDGE_TABLES } from "./round/judge-cases";
+import { PIXEL_CASES } from "./round/pixel-cases";
+import { writeContactSheet } from "./round/contact-sheet";
+import { fixtureRenders, layoutCases } from "./round/render-run";
+import { rowRounds } from "./round/rows-run";
 import { runStages } from "./round/run";
 
 process.env.PROVIDERS = "fake";
@@ -85,8 +85,22 @@ async function main() {
     );
   }
   layoutCases(report);
+  for (const { name, run } of [
+    ...JUDGE_TABLES,
+    ...CHECK_CASES,
+    ...PIXEL_CASES,
+  ]) {
+    try {
+      const problem = await run();
+      report(name, problem ? [problem] : []);
+    } catch (error) {
+      report(name, [
+        `threw: ${error instanceof Error ? error.message : error}`,
+      ]);
+    }
+  }
   await fixtureRenders(report);
-  await writeContactSheet(await rowRenders(report));
+  await writeContactSheet(await rowRounds(report));
   console.log(`${passed} passed, ${failed} failed`);
   if (failed > 0) process.exit(1);
 }

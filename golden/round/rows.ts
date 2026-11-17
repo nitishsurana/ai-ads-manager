@@ -9,7 +9,7 @@ export type RowCase = {
   brief: Partial<Pick<BriefContent, "rules" | "research" | "approvedAngles">>;
 };
 
-// Creative-producing rows between them cover price, strike-through, rating, an offer and a campaign. The confirm answers come from each row's expectations.
+// Creative-producing rows between them cover price, strike-through, rating, an offer, a campaign, a typed brand name with no logo, so a text wordmark (G28), and a "My Store" left blank with no logo and eight photos (G29). The confirm answers come from each row's expectations.
 export const ROW_CASES: RowCase[] = [
   {
     row: "G06",
@@ -50,5 +50,17 @@ export const ROW_CASES: RowCase[] = [
     campaign: {},
     facts: [],
     brief: { approvedAngles: ["price"] },
+  },
+  {
+    row: "G28",
+    campaign: { occasion: "Black Friday" },
+    facts: [],
+    brief: {},
+  },
+  {
+    row: "G29",
+    campaign: {},
+    facts: [],
+    brief: {},
   },
 ];

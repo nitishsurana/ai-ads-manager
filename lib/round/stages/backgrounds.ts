@@ -1,46 +1,37 @@
-import {
-  makeBackground,
-  preparePhoto,
-  type PreparedPhoto,
-} from "../background";
 import { mapLimit } from "@/lib/intake";
 import type { Candidate, RoundContext } from "../types";
+import { createBuilder } from "./build";
+import { isFatal } from "./errors";
 import type { StageDeps } from "./types";
 
 // Bria takes about 10 s a call; three at a time keeps six candidates well inside the deadline.
 const CONCURRENCY = 3;
 
+// A candidate whose background fails comes back without one: the checks redo it, like any other failing candidate.
 export async function makeBackgrounds(
   input: RoundContext,
   candidates: Candidate[],
   deps: StageDeps,
 ): Promise<Candidate[]> {
-  const photos = new Map<string, Promise<PreparedPhoto>>();
-  const prepared = (photoId: string) => {
-    const known = photos.get(photoId);
-    if (known) return known;
-    const started = preparePhoto(photoId, deps);
-    photos.set(photoId, started);
-    return started;
-  };
-
+  const builder = createBuilder(input, deps);
   let done = 0;
   return mapLimit(candidates, CONCURRENCY, async (candidate) => {
-    const { bytes, product } = await makeBackground(
-      candidate,
-      await prepared(candidate.photoId),
-      input.inputs,
-      deps,
-      { attempt: input.attempt },
-    );
-    const path = `${input.roundId}/c${candidate.index}.jpg`;
-    await deps.storage.put("backgrounds", path, bytes, "image/jpeg");
+    let made = candidate;
+    try {
+      made = await builder.background(candidate);
+    } catch (error) {
+      if (isFatal(error)) throw error;
+      console.warn(
+        `round ${input.roundId}: candidate ${candidate.index} background failed`,
+        error,
+      );
+    }
     await deps.progress({
       kind: "stage",
       stage: "making_backgrounds",
       done: ++done,
       total: candidates.length,
     });
-    return { ...candidate, backgroundPath: path, product };
+    return made;
   });
 }

@@ -14,6 +14,8 @@ import { planSchema } from "./schema";
 
 export const ART_DIRECTION_MODEL = "anthropic/claude-opus-5.5";
 export const SCENE_PROMPT_MAX_CHARS = 300;
+// Live rounds took 9 to 13 s; the ceiling keeps plan, copy and a rewrite well inside the round's 180 s.
+export const PLAN_TIMEOUT_MS = 45_000;
 
 const SYSTEM = `You are the art director for one round of vertical (9:16) product ads for a Shopify store. Code places the real product photo and draws all text and the badge; you only plan. Never describe the product itself, and never put text, logos, brand names or people in a scene prompt.
 
@@ -59,6 +61,7 @@ export function planRequest(inputs: RoundInputs, brief: BriefContent) {
     model: ART_DIRECTION_MODEL,
     system: SYSTEM,
     prompt,
+    timeoutMs: PLAN_TIMEOUT_MS,
     schema: planSchema,
   };
 }

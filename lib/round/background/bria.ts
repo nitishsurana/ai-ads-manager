@@ -19,10 +19,6 @@ export function briaInstruction(scenePrompt: string) {
   return `Replace the plain grey background with: ${scene}. ${SUFFIX}`;
 }
 
-// A different seed for every attempt and every regeneration of the same candidate, so a redo is a different image.
-export const briaSeed = (index: number, attempt = 1, regeneration = 0) =>
-  100 + index + 1000 * (attempt - 1) + 100_000 * regeneration;
-
 // Keyed by what goes into the canvas, not by the PNG bytes, so an encoder update doesn't orphan the recordings.
 export function editKey(input: {
   photoSha256: string;

@@ -29,7 +29,7 @@ const count = <T>(items: T[], item: T) =>
 const TIERS = ["clean", "clean_low_res", "added_text"] as const;
 
 // Spec, confirm screen: a tier is used only when the tier above has no selected photo; when all have added text, the featured photo (first by position).
-function allowedPhotoIds({ photos }: RoundInputs) {
+export function allowedPhotoIds({ photos }: RoundInputs) {
   const tier = TIERS.find((name) => photos.some((p) => p.tier === name));
   const ofTier = photos
     .filter((photo) => photo.tier === tier)

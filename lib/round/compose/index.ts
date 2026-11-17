@@ -4,6 +4,7 @@ import {
   createMeasure,
   decodePixels,
   fontVersions,
+  missingGlyphs,
   planLayout,
   previewOf,
   renderCreative,
@@ -15,7 +16,13 @@ import {
 import { parseColour } from "@/lib/intake";
 import type { RoundInputs } from "../inputs";
 import type { Candidate } from "../types";
-import { badgeSpec, brandColours, brandInk, parseColours } from "./inputs";
+import {
+  badgeSpec,
+  brandColours,
+  brandInk,
+  parseColours,
+  wordmarkName,
+} from "./inputs";
 
 export type Logo = { png: Buffer; aspect: number };
 
@@ -32,7 +39,7 @@ export async function readLogo(
 function logoSpec(inputs: RoundInputs, logo: Logo | null): LayoutInput["logo"] {
   const source = inputs.logo;
   if (!source) return null;
-  const wordmark = source.textRead ?? source.text ?? inputs.values.brandName;
+  const wordmark = wordmarkName(inputs);
   const header = source.headerBackground
     ? parseColour(source.headerBackground)
     : null;
@@ -67,6 +74,8 @@ export async function planCreative(
     family,
     measure: createMeasure(fonts, family),
     needsFallback: (text: string) => !coveredBy(fonts, family, text),
+    unsupported: (text: string) =>
+      missingGlyphs(fonts, family, text).length > 0,
   });
   const layout = planLayout({
     copy,

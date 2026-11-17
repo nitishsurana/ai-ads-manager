@@ -1,10 +1,10 @@
 import type { BriefContent } from "@/lib/brief/schema";
 import type { Ai } from "@/lib/providers/ai";
 import type { Fal } from "@/lib/providers/fal";
+import type { ReadBack } from "../checks/readback";
 import type { Http } from "@/lib/providers/http";
 import type { Storage } from "@/lib/providers/storage";
 import type { Box } from "@/lib/render";
-import type { Fault } from "../fake";
 import type { Candidate, Stage } from "../types";
 
 export type ProgressEvent =
@@ -31,7 +31,7 @@ export type RoundPhotos = {
   ): Promise<void>;
 };
 
-// The swappable services of a stage. Only the no_pass fault is left here, read by the stub checks until 6d; slow and fail live in the fake Fal.
+// The swappable services of a stage. Faults live in the fakes (slow and fail in Fal, the judge's scores in the scripted ai, the fake read-back in `readBack`).
 export type StageDeps = {
   ai: Ai;
   fal: Fal;
@@ -41,5 +41,7 @@ export type StageDeps = {
   // The brief version the round works from.
   brief: () => Promise<BriefContent>;
   progress: (event: ProgressEvent) => Promise<void>;
-  fault: Fault | null;
+  readBack: ReadBack;
+  // The last moment (epoch milliseconds) a regeneration may start, so the checks and the judge panel still fit before the round's deadline.
+  regenerateUntil: number;
 };

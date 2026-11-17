@@ -33,6 +33,8 @@ export type FaceInput = {
   measure: Measure;
   // Whether the brand font lacks a glyph of the text, so the fallback draws it.
   needsFallback: (text: string) => boolean;
+  // Whether no loaded font has a glyph of the text.
+  unsupported: (text: string) => boolean;
 };
 
 export type LayoutInput = {
@@ -275,6 +277,7 @@ export function planLayout(input: LayoutInput): Layout {
       measure: heading.measure,
       fontFamily: heading.family,
       fallback: heading.needsFallback,
+      unsupported: heading.unsupported,
     });
     logo = placed.logo;
     if (placed.reason) dropped.push({ element: "logo", reason: placed.reason });

@@ -18,7 +18,7 @@ export {
 } from "./fonts";
 export { layoutSchema, boxSchema, type Layout } from "./layout";
 export { logoImage } from "./logo-image";
-export { previewOf, renderCreative } from "./render-creative";
+export { previewOf, renderCreative, underText } from "./render-creative";
 export { scrimSvg, type Scrim } from "./scrim";
 export { placeLogo } from "./logo";
 export {

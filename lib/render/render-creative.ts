@@ -7,6 +7,18 @@ import { nodeProblems, renderTextLayer } from "./text-layer";
 
 const PREVIEW_QUALITY = 78;
 
+// The background as it lies under the text layer: with the scrim over it when the layout has one.
+export async function underText(background: Buffer, layout: Layout) {
+  return layout.scrim
+    ? sharp(background)
+        .composite([
+          { input: scrimSvg(layout.scrim), left: 0, top: layout.scrim.box.y },
+        ])
+        .png()
+        .toBuffer()
+    : background;
+}
+
 // The 1080x1920 creative as PNG, drawn from its stored layout, the stored background and logo file, and fonts loaded at the versions the layout names: the scrim over the background, then the text layer. Planning is not repeated, so an edit or an on-demand download renders what was stored. Problems are Satori's node boxes disagreeing with the plan.
 export async function renderCreative(input: {
   background: Buffer;
@@ -25,14 +37,7 @@ export async function renderCreative(input: {
   if (layout.logo?.kind === "image" && !input.logo) {
     throw new Error("render: the layout has an image logo but no logo file");
   }
-  const base = layout.scrim
-    ? await sharp(background)
-        .composite([
-          { input: scrimSvg(layout.scrim), left: 0, top: layout.scrim.box.y },
-        ])
-        .png()
-        .toBuffer()
-    : background;
+  const base = await underText(background, layout);
   const logo =
     input.logo && layout.logo?.kind === "image"
       ? `data:image/png;base64,${(await logoImage(input.logo, layout.logo)).toString("base64")}`

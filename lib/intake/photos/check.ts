@@ -25,7 +25,7 @@ export async function checkPhoto(
         model,
         system: PHOTO_CHECK_SYSTEM,
         prompt: PHOTO_CHECK_PROMPT,
-        image: input.image,
+        images: [input.image],
         schema: photoChecksSchema,
       });
       costs.push({ provider: "ai", model, usd: costUsd });

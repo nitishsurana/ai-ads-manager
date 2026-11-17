@@ -1,5 +1,9 @@
 import "server-only";
-import { finishRound, type NewCreative } from "@/lib/db/queries";
+import {
+  finishRound,
+  writeJudgeRecords,
+  type NewCreative,
+} from "@/lib/db/queries";
 import type { RoundFile } from "../files";
 import { removeFiles, removeRoundFiles } from "./cleanup";
 import type { RoundRun } from "./types";
@@ -20,6 +24,8 @@ export async function finishAndClean(run: RoundRun, finish: Finish) {
   });
   if (status === "done" && finish.status === "done") {
     await removeFiles(finish.discard);
+    // Last, so a failure here can't leave discarded files behind; the step's retry repeats the whole call.
+    await writeJudgeRecords(run.userId, run.roundId, finish.creatives);
   } else if (status !== "done") {
     await removeRoundFiles(run.roundId);
   }

@@ -16,7 +16,7 @@
     "test:golden": "tsx golden/run-step1.ts",
     "test:rounds": "tsx golden/run-round.ts",
     "golden:record": "tsx golden/record.ts",
-    "golden:record-round": "tsx golden/record-round.ts"
+    "golden:round-live": "tsx golden/round-live.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.105",

@@ -79,39 +79,46 @@ startDeadlineStep.maxRetries = 0;
 // The stage steps run once each: a retry would spend again, and an unexpected error is already turned into a failed round.
 export async function planStep(
   ctx: RoundContext,
+  deadlineAt: number,
 ): Promise<StageResult<Candidate[]>> {
   "use step";
   const progress = createProgressWriter(ctx, {
     stage: "writing_copy",
     candidates: [],
   });
-  return guardStage(ctx, progress, (deps) => planCandidates(ctx, deps));
+  return guardStage(ctx, progress, deadlineAt, (deps) =>
+    planCandidates(ctx, deps),
+  );
 }
 planStep.maxRetries = 0;
 
 export async function copyStep(
   ctx: RoundContext,
   candidates: Candidate[],
+  deadlineAt: number,
 ): Promise<StageResult<Candidate[]>> {
   "use step";
   const progress = createProgressWriter(ctx, {
     stage: "writing_copy",
     candidates,
   });
-  return guardStage(ctx, progress, (deps) => writeCopy(ctx, candidates, deps));
+  return guardStage(ctx, progress, deadlineAt, (deps) =>
+    writeCopy(ctx, candidates, deps),
+  );
 }
 copyStep.maxRetries = 0;
 
 export async function backgroundsStep(
   ctx: RoundContext,
   candidates: Candidate[],
+  deadlineAt: number,
 ): Promise<StageResult<Candidate[]>> {
   "use step";
   const progress = createProgressWriter(ctx, {
     stage: "making_backgrounds",
     candidates,
   });
-  return guardStage(ctx, progress, (deps) =>
+  return guardStage(ctx, progress, deadlineAt, (deps) =>
     makeBackgrounds(ctx, candidates, deps),
   );
 }
@@ -120,26 +127,30 @@ backgroundsStep.maxRetries = 0;
 export async function compositeStep(
   ctx: RoundContext,
   candidates: Candidate[],
+  deadlineAt: number,
 ): Promise<StageResult<Candidate[]>> {
   "use step";
   const progress = createProgressWriter(ctx, {
     stage: "compositing",
     candidates,
   });
-  return guardStage(ctx, progress, (deps) => composite(ctx, candidates, deps));
+  return guardStage(ctx, progress, deadlineAt, (deps) =>
+    composite(ctx, candidates, deps),
+  );
 }
 compositeStep.maxRetries = 0;
 
 export async function checksStep(
   ctx: RoundContext,
   candidates: Candidate[],
+  deadlineAt: number,
 ): Promise<StageResult<Candidate[]>> {
   "use step";
   const progress = createProgressWriter(ctx, {
     stage: "checking_quality",
     candidates,
   });
-  return guardStage(ctx, progress, (deps) =>
+  return guardStage(ctx, progress, deadlineAt, (deps) =>
     checkAndSelect(ctx, candidates, deps),
   );
 }

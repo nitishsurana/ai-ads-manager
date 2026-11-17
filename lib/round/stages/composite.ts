@@ -1,56 +1,30 @@
-import { currentVersions, loadFonts } from "@/lib/render";
-import { composeCandidate, readLogo } from "../compose";
 import type { Candidate, RoundContext } from "../types";
+import { createBuilder } from "./build";
+import { isFatal } from "./errors";
 import type { StageDeps } from "./types";
 
-async function required(
-  storage: StageDeps["storage"],
-  bucket: string,
-  path: string,
-) {
-  const bytes = await storage.get(bucket, path);
-  if (!bytes) throw new Error(`storage: ${bucket}/${path} is missing`);
-  return bytes;
-}
-
+// A candidate with no background, or one the text layer can't be drawn on, comes back without a preview: the checks redo it.
 export async function composite(
   input: RoundContext,
   candidates: Candidate[],
   deps: StageDeps,
 ): Promise<Candidate[]> {
-  const { inputs } = input;
-  const fonts = await loadFonts(
-    currentVersions([
-      inputs.brandKit.fonts.heading.family,
-      inputs.brandKit.fonts.body.family,
-    ]),
-    deps,
-  );
-  const logo = inputs.logo?.pngPath
-    ? await readLogo(
-        await required(deps.storage, "logos", inputs.logo.pngPath),
-        inputs.logo,
-      )
-    : null;
-
+  const builder = createBuilder(input, deps);
   const composed: Candidate[] = [];
   for (const candidate of candidates) {
-    if (!candidate.backgroundPath) {
-      throw new Error(`candidate ${candidate.index} has no background`);
+    let next = candidate;
+    if (candidate.backgroundPath) {
+      try {
+        next = await builder.compose(candidate);
+      } catch (error) {
+        if (isFatal(error)) throw error;
+        console.warn(
+          `round ${input.roundId}: candidate ${candidate.index} composite failed`,
+          error,
+        );
+      }
     }
-    const { layout, preview } = await composeCandidate(
-      candidate,
-      await required(deps.storage, "backgrounds", candidate.backgroundPath),
-      {
-        inputs,
-        fonts,
-        logo,
-        label: `round ${input.roundId} candidate ${candidate.index}`,
-      },
-    );
-    const path = `${input.roundId}/c${candidate.index}.jpg`;
-    await deps.storage.put("previews", path, preview, "image/jpeg");
-    composed.push({ ...candidate, layout, previewPath: path });
+    composed.push(next);
     await deps.progress({
       kind: "stage",
       stage: "compositing",

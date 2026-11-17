@@ -61,3 +61,7 @@ export const brandInk = (inputs: RoundInputs) =>
   parsed(inputs.brandKit.palette.primary);
 
 export type { LayoutInput };
+
+// The text a wordmark logo draws: the logo's own, else the brand name.
+export const wordmarkName = (inputs: RoundInputs) =>
+  inputs.logo?.textRead ?? inputs.logo?.text ?? inputs.values.brandName;

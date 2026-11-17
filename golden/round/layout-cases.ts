@@ -15,6 +15,9 @@ import { fitText } from "@/lib/render/fit";
 import { placeLogo, type LogoSpec } from "@/lib/render/logo";
 import { insideSafe, SAFE_BOX } from "@/lib/render/canvas";
 
+// A stand-in for a font that covers Latin only.
+const noGlyph = (text: string) => /[^\u0000-\u024f]/.test(text);
+
 // A stand-in for font metrics: every character is half the font size wide.
 const measure = (text: string, size: number) => text.length * size * 0.5;
 
@@ -46,6 +49,7 @@ const placed = (spec: LogoSpec, backdrop: Rgb, avoid = []) =>
     measure,
     fontFamily: "Inter",
     fallback: () => false,
+    unsupported: noGlyph,
   });
 
 const decision = (spec: LogoSpec, backdrop: Rgb) => {
@@ -168,6 +172,7 @@ export const LAYOUT_CASES: Case[] = [
           measure,
           fontFamily: "Inter",
           fallback: () => false,
+          unsupported: noGlyph,
         }).logo?.decision ?? null;
       return same([on(logo({})), on(logo({ wordmark: null }))], [null, null]);
     },
@@ -191,6 +196,7 @@ export const LAYOUT_CASES: Case[] = [
         measure,
         fontFamily: "Inter",
         fallback: () => false,
+        unsupported: noGlyph,
       });
       return same(result.logo?.decision, "calmer_corner");
     },
@@ -294,10 +300,35 @@ export const LAYOUT_CASES: Case[] = [
     },
   },
   {
-    name: "a wordmark too long for the 18% cap at 28 px high is dropped with a reason",
+    name: "a wordmark too wide for one line wraps onto two",
     run: () => {
       const result = placed(
-        logo({ kind: "wordmark", wordmark: "A very long store name indeed" }),
+        logo({ kind: "wordmark", wordmark: "Weekend Coffee Co." }),
+        [255, 255, 255],
+      );
+      return same(result.logo?.wordmark?.lines, ["Weekend", "Coffee Co."]);
+    },
+  },
+  {
+    name: "a wordmark with glyphs no font has is dropped with a reason",
+    run: () => {
+      const result = placed(
+        logo({ kind: "wordmark", wordmark: "週末珈琲" }),
+        [255, 255, 255],
+      );
+      return result.logo === null && /glyph/.test(result.reason ?? "")
+        ? null
+        : JSON.stringify(result);
+    },
+  },
+  {
+    name: "a wordmark too long for the 18% cap even on two lines is dropped with a reason",
+    run: () => {
+      const result = placed(
+        logo({
+          kind: "wordmark",
+          wordmark: "A very long store name indeed and then some more words",
+        }),
         [255, 255, 255],
       );
       return result.logo === null && /cap/.test(result.reason ?? "")

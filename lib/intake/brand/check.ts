@@ -48,7 +48,7 @@ export async function checkLogo(
     model: LOGO_MODEL,
     system: SYSTEM,
     prompt: promptFor(input.storeName, input.productTitle),
-    image: input.image,
+    images: [input.image],
     schema: logoCheckSchema,
   });
   costs.push({ provider: "ai", model: LOGO_MODEL, usd: costUsd });

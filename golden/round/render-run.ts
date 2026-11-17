@@ -1,21 +1,5 @@
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
-import sharp from "sharp";
-import { createAi } from "@/lib/providers/ai";
-import { createFal } from "@/lib/providers/fal";
-import { createFontReplayHttp, FONT_FIXTURES } from "@/lib/providers/http";
-import { createLocalStorage } from "@/lib/providers/storage";
 import { renderProblems, type Rendered } from "./assert-render";
-import { briefOf, rowRound } from "./inputs";
 import { LAYOUT_CASES } from "./layout-cases";
-import { memoryPhotos } from "./photos";
 import {
   BASE_INPUTS,
   colourLogo,
@@ -23,12 +7,6 @@ import {
   renderFixture,
   SPECS,
 } from "./render-cases";
-import { ROW_CASES } from "./rows";
-import { runRender, runStages } from "./run";
-
-// Written for checking by eye; set CONTACT_SHEET to put it somewhere else.
-export const CONTACT_SHEET =
-  process.env.CONTACT_SHEET ?? join(tmpdir(), "creatives-6c.jpg");
 
 type Report = (name: string, problems: string[]) => void;
 
@@ -115,85 +93,4 @@ export async function fixtureRenders(report: Report) {
       ]);
     }
   }
-}
-
-// Recorded rows: plan and copy replay from ai.json, backgrounds from the round's fal.json, fonts from the committed files.
-export async function rowRenders(report: Report) {
-  const previews: Buffer[][] = [];
-  for (const row of ROW_CASES) {
-    const dir = join(".golden", row.row, "round");
-    const name = `render: ${row.row}`;
-    if (!existsSync(join(dir, "fal.json"))) {
-      console.log(`SKIP ${name} (no background recording)`);
-      continue;
-    }
-    const storageDir = mkdtempSync(join(tmpdir(), "golden-render-"));
-    try {
-      const storage = createLocalStorage(storageDir);
-      const { inputs, photos } = await rowRound(row, storage);
-      const { copied } = await runStages(
-        row.row,
-        inputs,
-        briefOf(inputs, row.brief),
-        createAi({ snapshotDir: dir }),
-      );
-      const composed = await runRender(row.row, inputs, copied, {
-        fal: createFal({
-          http: { get: async () => ({ ok: false, reason: "blocked" }) },
-          snapshotDir: [dir, join(".golden", row.row)],
-        }),
-        http: createFontReplayHttp(FONT_FIXTURES),
-        storage,
-        photos: memoryPhotos(photos),
-      });
-      const rendered: Rendered[] = await Promise.all(
-        composed.map(async (candidate) => ({
-          candidate,
-          preview:
-            (await storage.get("previews", candidate.previewPath ?? "")) ??
-            Buffer.alloc(0),
-          background:
-            (await storage.get(
-              "backgrounds",
-              candidate.backgroundPath ?? "",
-            )) ?? Buffer.alloc(0),
-        })),
-      );
-      report(name, await allProblems(inputs, rendered));
-      previews.push(rendered.map((one) => one.preview));
-    } catch (error) {
-      report(name, [
-        `threw: ${error instanceof Error ? error.message : error}`,
-      ]);
-    } finally {
-      rmSync(storageDir, { recursive: true, force: true });
-    }
-  }
-  return previews;
-}
-
-// One row of previews per recorded row, for checking by eye.
-export async function writeContactSheet(rows: Buffer[][]) {
-  if (rows.length === 0) return;
-  const tile = { w: 270, h: 480 };
-  const width = Math.max(...rows.map((row) => row.length)) * (tile.w + 6) + 6;
-  const height = rows.length * (tile.h + 6) + 6;
-  const tiles = rows.flatMap((row, r) =>
-    row.map(async (preview, c) => ({
-      input: await sharp(preview).resize(tile.w, tile.h).toBuffer(),
-      left: 6 + c * (tile.w + 6),
-      top: 6 + r * (tile.h + 6),
-    })),
-  );
-  mkdirSync(dirname(CONTACT_SHEET), { recursive: true });
-  writeFileSync(
-    CONTACT_SHEET,
-    await sharp({
-      create: { width, height, channels: 3, background: "#ffffff" },
-    })
-      .composite(await Promise.all(tiles))
-      .jpeg({ quality: 88 })
-      .toBuffer(),
-  );
-  console.log(`contact sheet: ${CONTACT_SHEET}`);
 }

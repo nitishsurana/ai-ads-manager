@@ -56,16 +56,20 @@ export async function roundWorkflow(run: RoundRun) {
       if (deadline === null) return { status: "abandoned" };
       deadlineAt = deadline;
 
-      const planned = settle(await planStep(ctx));
+      const planned = settle(await planStep(ctx, deadlineAt));
       if ("ending" in planned) return planned.ending;
-      const written = settle(await copyStep(ctx, planned.value));
+      const written = settle(await copyStep(ctx, planned.value, deadlineAt));
       if ("ending" in written) return written.ending;
       if (written.value.length === 0) return { status: "no_pass" };
-      const backgrounds = settle(await backgroundsStep(ctx, written.value));
+      const backgrounds = settle(
+        await backgroundsStep(ctx, written.value, deadlineAt),
+      );
       if ("ending" in backgrounds) return backgrounds.ending;
-      const composed = settle(await compositeStep(ctx, backgrounds.value));
+      const composed = settle(
+        await compositeStep(ctx, backgrounds.value, deadlineAt),
+      );
       if ("ending" in composed) return composed.ending;
-      const checked = settle(await checksStep(ctx, composed.value));
+      const checked = settle(await checksStep(ctx, composed.value, deadlineAt));
       if ("ending" in checked) return checked.ending;
 
       const shown: Candidate[] = checked.value;
@@ -74,7 +78,7 @@ export async function roundWorkflow(run: RoundRun) {
         : {
             status: "done",
             creatives: creativeRows(shown),
-            discard: discardedFiles(composed.value, shown),
+            discard: discardedFiles(run.roundId, composed.value, shown),
           };
     } catch (error) {
       console.error(`round ${run.roundId}: workflow failed`, error);
@@ -88,7 +92,7 @@ export async function roundWorkflow(run: RoundRun) {
     try {
       await finishRoundStep(run, ending);
     } catch (error) {
-      // The round stays running until the deadline rule (or the 60 s rewrite rule) ends it; housekeeping then removes its files.
+      // After the step's retries: the round may stay running until the deadline rule (or the 60 s rewrite rule) ends it and housekeeping removes its files, or it is done and only its admin judge records are missing.
       console.error(`round ${run.roundId}: finishing failed`, error);
     }
   }

@@ -92,7 +92,17 @@ export const layoutSchema = z.object({
         .object({ box: boxSchema, colour: hex, radius: number })
         .nullable(),
       wordmark: z
-        .object({ text: z.string(), font: fontSchema, size: number })
+        .object({
+          text: z.string(),
+          // One line, or two when the name is too wide for the cap on one; layouts stored before wrapping have none.
+          lines: z.array(z.string()).optional(),
+          font: fontSchema,
+          size: number,
+        })
+        .transform((wordmark) => ({
+          ...wordmark,
+          lines: wordmark.lines ?? [wordmark.text],
+        }))
         .nullable(),
     })
     .nullable(),

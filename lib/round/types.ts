@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Box, Layout } from "@/lib/render";
 import type { RoundInputs } from "./inputs";
+import type { JudgeRecord } from "./judge/schema";
 
 export const STAGES = [
   "writing_copy",
@@ -45,6 +46,8 @@ export type Candidate = {
   product: Box | null;
   layout: Layout | null;
   previewPath: string | null;
+  // Set by the judge panel; only candidates that passed Layer 1 have one.
+  judge: JudgeRecord | null;
 };
 
 export const progressSchema = z.object({

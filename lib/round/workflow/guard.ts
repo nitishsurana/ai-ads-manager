@@ -15,6 +15,7 @@ type Progress = ReturnType<typeof createProgressWriter>;
 export async function guardStage<T>(
   ctx: RoundContext,
   progress: Progress,
+  deadlineAt: number,
   stage: (deps: StageDeps) => Promise<T>,
 ): Promise<StageResult<T>> {
   const costs: CostEntry[] = [];
@@ -22,6 +23,7 @@ export async function guardStage<T>(
     progress: progress.onProgress,
     isAbandoned: progress.isAbandoned,
     costs,
+    deadlineAt,
   });
   try {
     await progress.flush();

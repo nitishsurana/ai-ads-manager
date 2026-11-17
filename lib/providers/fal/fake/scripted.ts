@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
 import sharp from "sharp";
+import { briaSeed } from "@/lib/round/background/seed";
 import type { Fal } from "../types";
 
-export type FalFault = "slow" | "fail";
+export type FalFault = "slow" | "fail" | "l1_fail";
 
 const MASK_SIDE = 512;
 const BACKGROUND_DISTANCE = 40;
@@ -65,7 +66,21 @@ async function paintBackground(
     .toBuffer();
 }
 
-// Answers the round's Fal calls without a model, for the end-to-end tests and the committed render fixtures. A fault makes the first call overrun, or every call throw, so a round fails or times out in the backgrounds stage.
+const FRAME = 32;
+// The seed of the first candidate's first background (see briaSeed); a redo has another seed, so it comes out clean.
+const FRAMED_SEED = briaSeed(0);
+
+// A flat frame around the image, which Layer 1 must refuse.
+async function withFrame(image: Buffer) {
+  const { width, height } = await sharp(image).metadata();
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="none" stroke="#d0006f" stroke-width="${FRAME}"/></svg>`;
+  return sharp(image)
+    .composite([{ input: Buffer.from(svg) }])
+    .png()
+    .toBuffer();
+}
+
+// Answers the round's Fal calls without a model, for the end-to-end tests and the committed render fixtures. A fault makes the first call overrun, or every call throw, so a round fails or times out in the backgrounds stage; l1_fail frames one candidate's first background, so it is regenerated.
 export function createScriptedFal(options: {
   fault: FalFault | null;
   slowMs: number;
@@ -86,7 +101,13 @@ export function createScriptedFal(options: {
     },
     async backgroundEdit({ canvas, mask, instruction, seed }) {
       await gate();
-      return paintBackground(canvas, mask, `${instruction}:${seed}`);
+      const frame = options.fault === "l1_fail" && seed === FRAMED_SEED;
+      const painted = await paintBackground(
+        canvas,
+        mask,
+        `${instruction}:${seed}`,
+      );
+      return frame ? withFrame(painted) : painted;
     },
   };
 }
