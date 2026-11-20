@@ -12,6 +12,7 @@ export const photoChecksSchema = z.object({
   background: z.enum(["plain", "scene"]),
   person: z.boolean(),
   transparent: z.boolean(),
+  gift_set: z.boolean(),
   has_product: z.boolean(),
   product_count: z.number().int().min(0),
   text_overlaps_product: z.boolean(),
@@ -19,7 +20,11 @@ export const photoChecksSchema = z.object({
   confidence: z.enum(["low", "medium", "high"]),
 });
 
-export type PhotoChecks = z.infer<typeof photoChecksSchema> & { model: string };
+// `backdrop_uniform` is measured in code, not asked of the model: whether one colour runs all round the photo's border.
+export type PhotoChecks = z.infer<typeof photoChecksSchema> & {
+  model: string;
+  backdrop_uniform?: boolean;
+};
 
 export type PhotoTier = "clean" | "clean_low_res" | "added_text";
 

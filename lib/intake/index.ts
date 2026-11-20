@@ -9,10 +9,14 @@ export {
   type Rgb,
 } from "./brand";
 export {
+  backdropMask,
+  chooseMask,
   countMainShapes,
   makeCutout,
   mapLimit,
   MASK_MODEL,
+  maskStats,
+  unionMask,
   PhotosStageError,
   photoWarnings,
 } from "./photos";
@@ -34,6 +38,7 @@ export type {
 export type {
   CostEntry,
   DropReason,
+  MaskChoice,
   MaskFal,
   Photo,
   PhotoChecks,

@@ -15,7 +15,9 @@ export function memoryPhotos(photos: StoredPhoto[]): RoundPhotos {
       byId.set(photoId, {
         ...photo,
         maskPath: cutout.maskPath ?? photo.maskPath,
-        productBbox: cutout.productBbox,
+        backdropPath: cutout.backdropPath ?? photo.backdropPath,
+        maskChoice: cutout.maskChoice ?? photo.maskChoice,
+        productBbox: cutout.productBbox ?? photo.productBbox,
       });
     },
   };

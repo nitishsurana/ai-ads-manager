@@ -1,0 +1,26 @@
+{
+  "photo_check:711ecea9:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "transparent": false,
+    "gift_set": true,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  },
+  "photo_check:711ecea9:9ad40e6418b3a8eb2648b95091b69ff9fa6879b276378196934fdf9f45c42344": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "transparent": false,
+    "gift_set": true,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  }
+}

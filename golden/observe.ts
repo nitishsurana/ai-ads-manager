@@ -49,6 +49,12 @@ export function observe(outcome: Outcome): Record<string, unknown> {
     escalatedPositions: photos.photos
       .filter((photo) => photo.checks.model === ESCALATION_MODEL)
       .map((photo) => photo.position),
+    giftSetPositions: shown
+      .filter((photo) => photo.checks.gift_set)
+      .map((photo) => photo.position),
+    nonUniformBackdropPositions: shown
+      .filter((photo) => photo.checks.backdrop_uniform === false)
+      .map((photo) => photo.position),
     lowResWarning: warns("low_resolution"),
     textWarning: warns("photo_text"),
     transparentWarning: warns("transparent"),

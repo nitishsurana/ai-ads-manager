@@ -25,11 +25,23 @@ export type SupportingElement = "price" | "rating" | "offer";
 
 export type Copy = { eyebrow: string | null; headline: string; cta: string };
 
-// A whole photo (a scene, or a person) has no method for the model to choose. `placement` 2 is the fit-to-width placement; rows without it use the older cover crop. `size` is absent for a normal-size product.
+// A whole photo (a scene, or a person) has no method for the model to choose. `placement` 2 is the fit-to-width placement; rows without it use the older cover crop. `size` is absent for a normal-size product. `cutout` 1 is the recipe version of the mask choice (backdrop or model mask); rows without it use the model mask. `whole` is a gift set placed whole: no cover, no cut-out.
 export type Background =
-  | { method: "bria"; prompt: string; reason: string; size?: "smaller" }
-  | { method: "solid" | "tonal"; reason: string; size?: "smaller" }
-  | { method: "photo"; placement?: 2; isolated?: boolean; gaps?: boolean };
+  | {
+      method: "bria";
+      prompt: string;
+      reason: string;
+      size?: "smaller";
+      cutout?: 1;
+    }
+  | { method: "solid" | "tonal"; reason: string; size?: "smaller"; cutout?: 1 }
+  | {
+      method: "photo";
+      placement?: 2;
+      isolated?: boolean;
+      gaps?: boolean;
+      whole?: true;
+    };
 
 // One planned creative, filled in as the stages run. Plain data: it crosses step boundaries.
 export type Candidate = {

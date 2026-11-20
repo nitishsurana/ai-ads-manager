@@ -1,9 +1,10 @@
 {
-  "photo_check:a30f8009:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
+  "photo_check:711ecea9:b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa": {
     "added_text": false,
     "background": "plain",
     "person": false,
     "transparent": false,
+    "gift_set": false,
     "has_product": true,
     "product_count": 1,
     "text_overlaps_product": false,

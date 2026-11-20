@@ -55,8 +55,17 @@ export function allowedPhotos(photos: FrozenPhoto[]): FrozenPhoto[] {
 export const isWholePhoto = (photo: FrozenPhoto) =>
   photo.background === "scene" || photo.person;
 
+// A gift set on a plain backdrop that is not one colour (a studio gradient): no mask keeps the box and card, so the whole photo is the product. Scene and person photos keep their own placement.
+export const isWholeSet = (photo: FrozenPhoto) =>
+  photo.giftSet &&
+  photo.backdropUniform === false &&
+  photo.background === "plain" &&
+  !photo.person;
+
 // A tester who prefers cut-outs gets one for every photo without a person: people are never cut out.
 export const usesWholePhoto = (
   photo: FrozenPhoto,
   settings: Pick<BriefSettings, "preferCutout">,
-) => isWholePhoto(photo) && !(settings.preferCutout && !photo.person);
+) =>
+  isWholeSet(photo) ||
+  (isWholePhoto(photo) && !(settings.preferCutout && !photo.person));

@@ -1,5 +1,6 @@
 import { MASK_MODEL } from "@/lib/providers/fal";
 import { SnapshotError } from "@/lib/providers/snapshot";
+import { backdropMask } from "./backdrop";
 import { checkPhoto } from "./check";
 import { thumbnail, modelCopy } from "./copies";
 import { makeCutout } from "./cutout";
@@ -60,8 +61,11 @@ export async function processPhoto(
     deps,
   );
   costs.push(...checked.costs);
-  const { checks } = checked;
-  if (!checks) return null;
+  if (!checked.checks) return null;
+  const checks = {
+    ...checked.checks,
+    backdrop_uniform: (await backdropMask(image.work)).uniform,
+  };
 
   let dropReason: DropReason | null = null;
   let mask: { bytes: Buffer; cutout: Buffer } | null = null;

@@ -108,11 +108,66 @@ function measure(
   };
 }
 
-// A whole photo fits the canvas width instead of filling the canvas: bands appear above or below it, and the product is never cropped. A tall enough photo, or one whose product spans it top to bottom, still takes cover. An isolated product (touching no side) sits in the photo zone, shrinking the photo when it is taller than the zone.
+// The photo's rectangle on the canvas, less the blend strip on each side that has a gap.
+export function interior({
+  left,
+  top,
+  width,
+  height,
+  gaps,
+}: Pick<PhotoPlacement, "left" | "top" | "width" | "height" | "gaps">) {
+  const strip = (gap: number) => (gap > 0 ? TOUCH_PX : 0);
+  const [l, t, r, b] = [
+    strip(gaps.left),
+    strip(gaps.top),
+    strip(gaps.right),
+    strip(gaps.bottom),
+  ];
+  return {
+    left: left + l,
+    top: top + t,
+    width: width - l - r,
+    height: height - t - b,
+  };
+}
+
+// A gift set is the product: the whole photo, centred in the photo zone and shrunk to fit it, never cropped. Its product is the part Bria leaves alone.
+function placeWholeSet(image: { width: number; height: number }) {
+  const zone = PHOTO_PRODUCT_ZONE;
+  const scale = Math.min(zone.h / image.height, CANVAS.width / image.width);
+  const width = Math.round(image.width * scale);
+  const height = Math.round(image.height * scale);
+  const left = Math.round((CANVAS.width - width) / 2);
+  const top = Math.round(
+    clamp(zone.y + (zone.h - height) / 2, 0, CANVAS.height - height),
+  );
+  const gaps = {
+    top,
+    bottom: CANVAS.height - top - height,
+    left,
+    right: CANVAS.width - left - width,
+  };
+  const inner = interior({ left, top, width, height, gaps });
+  return {
+    scale: width / image.width,
+    left,
+    top,
+    width,
+    height,
+    product: { x: inner.left, y: inner.top, w: inner.width, h: inner.height },
+    gaps,
+    cover: false,
+    isolated: true,
+  } satisfies PhotoPlacement;
+}
+
+// A whole photo fits the canvas width instead of filling the canvas: bands appear above or below it, and the product is never cropped. A tall enough photo, or one whose product spans it top to bottom, still takes cover. An isolated product (touching no side) sits in the photo zone, shrinking the photo when it is taller than the zone. A whole set skips all of that.
 export function placeWholePhoto(
   image: { width: number; height: number },
   bbox: Box,
+  { whole = false } = {},
 ): PhotoPlacement {
+  if (whole) return placeWholeSet(image);
   const zone = PHOTO_PRODUCT_ZONE;
   const scale = CANVAS.width / image.width;
   let fit = measure(image, scale, bbox);

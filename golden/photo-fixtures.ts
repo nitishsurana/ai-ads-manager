@@ -30,6 +30,7 @@ type Checks = {
   background: "plain" | "scene";
   person: boolean;
   transparent: boolean;
+  gift_set: boolean;
   has_product: boolean;
   product_count: number;
   text_overlaps_product: boolean;
@@ -42,6 +43,7 @@ const clean: Checks = {
   background: "plain",
   person: false,
   transparent: false,
+  gift_set: false,
   has_product: true,
   product_count: 1,
   text_overlaps_product: false,
@@ -333,6 +335,20 @@ async function main() {
   writeFixture("photos-transparent", [
     { file: "glass.png", bytes: blue, checks: { ...clean, transparent: true } },
     { file: "solid.png", bytes: red, checks: clean },
+  ]);
+
+  // A gift set on white (a uniform border) and one on a gradient: the intake measures the backdrop in code and stores it with the model's answers.
+  const gradient = await sharp(
+    Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c1c24"/><stop offset="1" stop-color="#8a8fa8"/></linearGradient></defs><rect width="800" height="800" fill="url(#g)"/><rect x="200" y="250" width="400" height="300" fill="#c23b3b"/></svg>',
+    ),
+  )
+    .png()
+    .toBuffer();
+  const giftSet = { ...clean, gift_set: true };
+  writeFixture("photos-gift-set", [
+    { file: "on-white.png", bytes: blue, checks: giftSet },
+    { file: "on-gradient.png", bytes: gradient, checks: giftSet },
   ]);
 
   writeFixture("photos-heic", [

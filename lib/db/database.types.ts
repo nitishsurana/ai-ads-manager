@@ -163,14 +163,14 @@ isOneToOne: false
                   ]
                 },"photos": {
                   Row: {
-                    "checks": NonNullable<Json>,"created_at": string,"cutout_path": string | null,"drop_reason": string | null,"dropped": boolean,"id": string,"intake_id": string,"mask_path": string | null,"orig_height": number,"orig_width": number,"phash": string,"position": number,"product_bbox": Json | null,"selected": boolean,"sha256": string,"source_url": string,"thumb_path": string,"tier": string,"work_path": string,"workspace_id": string | null
+                    "backdrop_path": string | null,"checks": NonNullable<Json>,"created_at": string,"cutout_path": string | null,"drop_reason": string | null,"dropped": boolean,"id": string,"intake_id": string,"mask_choice": string | null,"mask_path": string | null,"orig_height": number,"orig_width": number,"phash": string,"position": number,"product_bbox": Json | null,"selected": boolean,"sha256": string,"source_url": string,"thumb_path": string,"tier": string,"work_path": string,"workspace_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "checks": NonNullable<Json>,"created_at"?: string,"cutout_path"?: string | null,"drop_reason"?: string | null,"dropped"?: boolean,"id"?: string,"intake_id": string,"mask_path"?: string | null,"orig_height": number,"orig_width": number,"phash": string,"position": number,"product_bbox"?: Json | null,"selected"?: boolean,"sha256": string,"source_url": string,"thumb_path": string,"tier": string,"work_path": string,"workspace_id"?: string | null
+                    "backdrop_path"?: string | null,"checks": NonNullable<Json>,"created_at"?: string,"cutout_path"?: string | null,"drop_reason"?: string | null,"dropped"?: boolean,"id"?: string,"intake_id": string,"mask_choice"?: string | null,"mask_path"?: string | null,"orig_height": number,"orig_width": number,"phash": string,"position": number,"product_bbox"?: Json | null,"selected"?: boolean,"sha256": string,"source_url": string,"thumb_path": string,"tier": string,"work_path": string,"workspace_id"?: string | null
                   }
                   Update: {
-                    "checks"?: NonNullable<Json>,"created_at"?: string,"cutout_path"?: string | null,"drop_reason"?: string | null,"dropped"?: boolean,"id"?: string,"intake_id"?: string,"mask_path"?: string | null,"orig_height"?: number,"orig_width"?: number,"phash"?: string,"position"?: number,"product_bbox"?: Json | null,"selected"?: boolean,"sha256"?: string,"source_url"?: string,"thumb_path"?: string,"tier"?: string,"work_path"?: string,"workspace_id"?: string | null
+                    "backdrop_path"?: string | null,"checks"?: NonNullable<Json>,"created_at"?: string,"cutout_path"?: string | null,"drop_reason"?: string | null,"dropped"?: boolean,"id"?: string,"intake_id"?: string,"mask_choice"?: string | null,"mask_path"?: string | null,"orig_height"?: number,"orig_width"?: number,"phash"?: string,"position"?: number,"product_bbox"?: Json | null,"selected"?: boolean,"sha256"?: string,"source_url"?: string,"thumb_path"?: string,"tier"?: string,"work_path"?: string,"workspace_id"?: string | null
                   }
                   Relationships: [
                     {

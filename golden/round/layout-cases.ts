@@ -379,6 +379,57 @@ export const LAYOUT_CASES: Case[] = [
     },
   },
   {
+    name: "a whole set fits the photo zone: never cover, centred, and its product leaves the blend strips out",
+    run: () => {
+      const bbox = { x: 0.3, y: 0.3, w: 0.4, h: 0.4 };
+      const result = [
+        { width: 800, height: 800 },
+        { width: 1000, height: 2000 },
+        { width: 1600, height: 900 },
+      ].map((image) => {
+        const { scale, ...rest } = placeWholePhoto(image, bbox, {
+          whole: true,
+        });
+        return { scale: Number(scale.toFixed(3)), ...rest };
+      });
+      return same(result, [
+        {
+          scale: 1.21,
+          left: 56,
+          top: 500,
+          width: 968,
+          height: 968,
+          product: { x: 64, y: 508, w: 952, h: 952 },
+          gaps: { top: 500, bottom: 452, left: 56, right: 56 },
+          cover: false,
+          isolated: true,
+        },
+        {
+          scale: 0.484,
+          left: 298,
+          top: 500,
+          width: 484,
+          height: 968,
+          product: { x: 306, y: 508, w: 468, h: 952 },
+          gaps: { top: 500, bottom: 452, left: 298, right: 298 },
+          cover: false,
+          isolated: true,
+        },
+        {
+          scale: 0.675,
+          left: 0,
+          top: 680,
+          width: 1080,
+          height: 608,
+          product: { x: 0, y: 688, w: 1080, h: 592 },
+          gaps: { top: 680, bottom: 632, left: 0, right: 0 },
+          cover: false,
+          isolated: true,
+        },
+      ]);
+    },
+  },
+  {
     name: "a product is cut off only where its bbox did not touch the photo, and never under a top-to-bottom cover",
     run: () => {
       const square = (product: Box, cover = false) => ({

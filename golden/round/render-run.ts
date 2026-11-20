@@ -44,7 +44,7 @@ async function allProblems(inputs: typeof BASE_INPUTS, rendered: Rendered[]) {
 export async function fixtureRenders(report: Report) {
   const cases = [
     {
-      name: "render: no logo, eight variations",
+      name: "render: no logo, nine variations",
       inputs: BASE_INPUTS,
       logo: null,
     },

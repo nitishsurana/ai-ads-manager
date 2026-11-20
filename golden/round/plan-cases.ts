@@ -26,6 +26,31 @@ const PEOPLE: RoundInputs = {
       tier: "clean",
       background: "plain",
       person: true,
+      giftSet: false,
+      backdropUniform: null,
+    },
+  ],
+};
+
+const GIFTS: RoundInputs = {
+  ...BASE_INPUTS,
+  photos: [
+    {
+      ...BASE_INPUTS.photos[0]!,
+      id: "gift-gradient",
+      giftSet: true,
+      backdropUniform: false,
+    },
+    {
+      ...BASE_INPUTS.photos[0]!,
+      id: "gift-white",
+      giftSet: true,
+      backdropUniform: true,
+    },
+    {
+      ...BASE_INPUTS.photos[0]!,
+      id: "set-unmeasured",
+      giftSet: true,
     },
   ],
 };
@@ -132,7 +157,7 @@ export const PLAN_CASES: Case[] = [
             : value,
         ),
         [
-          { method: "tonal", reason: "scene" },
+          { method: "tonal", reason: "scene", cutout: 1 },
           6,
           ["bria", "bria", "bria", "bria"],
           {
@@ -140,6 +165,7 @@ export const PLAN_CASES: Case[] = [
             prompt:
               "A sunlit light-wood table beside a window, soft morning light, warm neutral colours, calm and uncluttered.",
             reason: "flat",
+            cutout: 1,
           },
           6,
           {
@@ -147,6 +173,7 @@ export const PLAN_CASES: Case[] = [
               method: "bria",
               prompt: "A pine table",
               reason: "scene",
+              cutout: 1,
             },
             repairs: [],
           },
@@ -171,13 +198,43 @@ export const PLAN_CASES: Case[] = [
             prompt: "A pine table",
             reason: "scene",
             size: "smaller",
+            cutout: 1,
           },
           { method: "photo", placement: 2 },
           { method: "photo", placement: 2 },
-          { method: "tonal", reason: "flat" },
+          { method: "tonal", reason: "flat", cutout: 1 },
           { method: "photo", placement: 2 },
         ],
       ),
+  },
+  {
+    name: "plan: a gift set on a backdrop that is not one colour is placed whole whatever the tester prefers; on a uniform or unmeasured one it is cut out",
+    run: () => {
+      const backgrounds = [
+        planned("gift-gradient", TONAL, {}, GIFTS),
+        planned("gift-gradient", TONAL, { preferCutout: true }, GIFTS),
+        planned("gift-white", TONAL, { preferCutout: true }, GIFTS),
+        planned("set-unmeasured", TONAL, {}, GIFTS),
+      ].map(({ backgrounds }) => backgrounds[0]);
+      const treatments = JSON.parse(
+        planRequest(
+          GIFTS,
+          briefOf(GIFTS, { settings: settings({ preferCutout: true }) }),
+        ).prompt,
+      ).photos.map((photo: { treatment: string }) => photo.treatment);
+      return same(
+        [backgrounds, treatments],
+        [
+          [
+            { method: "photo", placement: 2, whole: true },
+            { method: "photo", placement: 2, whole: true },
+            { method: "tonal", reason: "flat", cutout: 1 },
+            { method: "tonal", reason: "flat", cutout: 1 },
+          ],
+          ["whole_photo", "cut_out", "cut_out"],
+        ],
+      );
+    },
   },
   {
     name: "plan prompt: settings, their sentence and the cut-out treatment appear only when settings differ from the defaults",
@@ -231,7 +288,21 @@ export const PLAN_CASES: Case[] = [
       });
       const backgrounds = [
         { method: "photo", placement: 2, isolated: true, gaps: true },
-        { method: "bria", prompt: "A table", reason: "r", size: "smaller" },
+        {
+          method: "photo",
+          placement: 2,
+          isolated: true,
+          gaps: true,
+          whole: true,
+        },
+        {
+          method: "bria",
+          prompt: "A table",
+          reason: "r",
+          size: "smaller",
+          cutout: 1,
+        },
+        { method: "tonal", reason: "r", cutout: 1 },
         { method: "photo" },
       ];
       const older = { ...LAYOUT, keepClear: undefined };
@@ -239,9 +310,9 @@ export const PLAN_CASES: Case[] = [
         [
           old.settings,
           backgrounds.map((b) => parseCreative(row(b, LAYOUT)).background),
-          parseCreative(row(backgrounds[2], { ...LAYOUT, keepClear: true }))
+          parseCreative(row(backgrounds[4], { ...LAYOUT, keepClear: true }))
             .layout.keepClear,
-          parseCreative(row(backgrounds[2], older)).layout.keepClear,
+          parseCreative(row(backgrounds[4], older)).layout.keepClear,
         ],
         [DEFAULT_SETTINGS, backgrounds, true, false],
       );

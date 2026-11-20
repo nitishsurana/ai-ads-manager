@@ -15,6 +15,8 @@ const photoRowSchema = z.object({
     background: z.enum(["plain", "scene"]),
     person: z.boolean(),
     transparent: z.boolean().default(false),
+    gift_set: z.boolean().default(false),
+    backdrop_uniform: z.boolean().nullable().default(null),
   }),
   selected: z.boolean(),
 });
@@ -30,6 +32,9 @@ export type WorkspacePhoto = {
   addedText: boolean;
   person: boolean;
   transparent: boolean;
+  giftSet: boolean;
+  // Whether one colour runs all round the photo's border; null for photos checked before it was measured.
+  backdropUniform: boolean | null;
   selected: boolean;
 };
 
@@ -62,6 +67,8 @@ export async function listWorkspacePhotos(
       addedText: row.checks.added_text,
       person: row.checks.person,
       transparent: row.checks.transparent,
+      giftSet: row.checks.gift_set,
+      backdropUniform: row.checks.backdrop_uniform,
       selected: row.selected,
     }));
 }
@@ -125,6 +132,8 @@ const roundPhotoRowSchema = z.object({
   sha256: z.string(),
   work_path: z.string(),
   mask_path: z.string().nullable(),
+  backdrop_path: z.string().nullable(),
+  mask_choice: z.string().nullable(),
   product_bbox: bboxSchema.nullable(),
 });
 
@@ -134,6 +143,9 @@ export type RoundPhoto = {
   sha256: string;
   workPath: string;
   maskPath: string | null;
+  // The cached backdrop mask and the recipe's choice between it and the model's mask; both null until a cut-out first needs them.
+  backdropPath: string | null;
+  maskChoice: string | null;
   // The product's box as fractions (0 to 1) of the work image.
   productBbox: z.infer<typeof bboxSchema> | null;
 };
@@ -147,7 +159,7 @@ export async function getRoundPhoto(
   const { data, error } = await createSecretClient()
     .from("photos")
     .select(
-      "id, sha256, work_path, mask_path, product_bbox, workspaces!inner(user_id)",
+      "id, sha256, work_path, mask_path, backdrop_path, mask_choice, product_bbox, workspaces!inner(user_id)",
     )
     .eq("id", photoId)
     .eq("workspace_id", workspaceId)
@@ -161,6 +173,8 @@ export async function getRoundPhoto(
     sha256: row.sha256,
     workPath: row.work_path,
     maskPath: row.mask_path,
+    backdropPath: row.backdrop_path,
+    maskChoice: row.mask_choice,
     productBbox: row.product_bbox,
   };
 }
@@ -173,7 +187,9 @@ export async function setPhotoCutout(
   cutout: {
     cutoutPath?: string;
     maskPath?: string;
-    productBbox: NonNullable<RoundPhoto["productBbox"]>;
+    backdropPath?: string;
+    maskChoice?: string;
+    productBbox?: NonNullable<RoundPhoto["productBbox"]>;
   },
 ) {
   const client = createSecretClient();
@@ -191,7 +207,9 @@ export async function setPhotoCutout(
     .update({
       ...(cutout.cutoutPath && { cutout_path: cutout.cutoutPath }),
       ...(cutout.maskPath && { mask_path: cutout.maskPath }),
-      product_bbox: cutout.productBbox,
+      ...(cutout.backdropPath && { backdrop_path: cutout.backdropPath }),
+      ...(cutout.maskChoice && { mask_choice: cutout.maskChoice }),
+      ...(cutout.productBbox && { product_bbox: cutout.productBbox }),
     })
     .eq("id", photoId)
     .eq("workspace_id", workspaceId);

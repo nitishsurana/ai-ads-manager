@@ -46,6 +46,8 @@ const BASE: RoundInputs = {
       tier: "clean",
       background: "plain",
       person: false,
+      giftSet: false,
+      backdropUniform: null,
     },
   ],
   facts: [],
@@ -59,7 +61,15 @@ const photo = (
   position: number,
   tier: Photo["tier"],
   background: Photo["background"] = "plain",
-): Photo => ({ id, position, tier, background, person: false });
+): Photo => ({
+  id,
+  position,
+  tier,
+  background,
+  person: false,
+  giftSet: false,
+  backdropUniform: null,
+});
 
 const tonal = { method: "tonal", scenePrompt: null, reason: "flat colour" };
 const bria = (scenePrompt: string) => ({

@@ -18,6 +18,9 @@ export type StoredPhoto = {
   sha256: string;
   workPath: string;
   maskPath: string | null;
+  // The cached backdrop mask and which mask the recipe chose; null until a cut-out first needs them.
+  backdropPath: string | null;
+  maskChoice: string | null;
   // The product's box as fractions (0 to 1) of the work image; null until the photo is first cut out.
   productBbox: Box | null;
 };
@@ -27,7 +30,13 @@ export type RoundPhotos = {
   get(photoId: string): Promise<StoredPhoto>;
   setCutout(
     photoId: string,
-    cutout: { cutoutPath?: string; maskPath?: string; productBbox: Box },
+    cutout: {
+      cutoutPath?: string;
+      maskPath?: string;
+      backdropPath?: string;
+      maskChoice?: string;
+      productBbox?: Box;
+    },
   ): Promise<void>;
 };
 

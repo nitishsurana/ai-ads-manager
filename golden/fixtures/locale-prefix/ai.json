@@ -1,20 +1,22 @@
 {
-  "photo_check:a30f8009:61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237": {
+  "photo_check:711ecea9:61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237": {
     "added_text": false,
     "background": "plain",
     "person": false,
     "transparent": false,
+    "gift_set": false,
     "has_product": true,
     "product_count": 1,
     "text_overlaps_product": false,
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "photo_check:a30f8009:ab882d3da5de35d638e1895109c0305f4c3113e23fbd8f1ab4f8c3194d699416": {
+  "photo_check:711ecea9:ab882d3da5de35d638e1895109c0305f4c3113e23fbd8f1ab4f8c3194d699416": {
     "added_text": false,
     "background": "plain",
     "person": false,
     "transparent": false,
+    "gift_set": false,
     "has_product": true,
     "product_count": 1,
     "text_overlaps_product": false,

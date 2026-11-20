@@ -75,7 +75,11 @@ async function expectedProduct(
     const { bytes, product } = await cropPhoto(photo.work, photo.bbox);
     return { rgba: await pixelsOf(bytes, product), box: product };
   }
-  const { png, box } = await productCutout(photo, background.size);
+  const { png, box } = await productCutout(
+    photo,
+    background.size,
+    background.cutout,
+  );
   return { rgba: await sharp(png).ensureAlpha().raw().toBuffer(), box };
 }
 
@@ -116,10 +120,11 @@ export async function checkCandidate(
     logo: ctx.logo?.png ?? null,
   });
   const photo = await ctx.prepared(candidate.photoId);
+  const planned = candidate.background;
+  const whole = planned.method === "photo" && planned.whole === true;
   const placement =
-    candidate.background.method === "photo" &&
-    candidate.background.placement === 2
-      ? await photoPlacement(photo)
+    planned.method === "photo" && planned.placement === 2
+      ? await photoPlacement(photo, whole)
       : null;
   const [meta, backgroundMeta, backgroundPixels, basePixels, expected] =
     await Promise.all([
@@ -152,7 +157,9 @@ export async function checkCandidate(
     ...(sameBox(expected.box, candidate.product)
       ? []
       : ["product: its box is not where the plan put it"]),
-    ...(placement && isCutOff(placement, photo.bbox) ? [CUT_OFF] : []),
+    ...(placement && !whole && isCutOff(placement, photo.bbox)
+      ? [CUT_OFF]
+      : []),
     ...(await productProblems(png, expected, drawnBoxes(layout))),
   ];
   if (problems.length > 0) return problems;

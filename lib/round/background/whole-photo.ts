@@ -5,8 +5,8 @@ import type { StageDeps } from "../stages/types";
 import { CALM_TOP, GREY, NO_DUPLICATE, NO_TEXT } from "./bria";
 import {
   cropPhoto,
+  interior,
   placeWholePhoto,
-  TOUCH_PX,
   type PhotoPlacement,
 } from "./photo-crop";
 import { EDIT_MARGIN, EDIT_WIDTH } from "./placement";
@@ -50,10 +50,11 @@ export function extendKey(input: {
 
 export async function photoPlacement(
   photo: Pick<PreparedPhoto, "work" | "bbox">,
+  whole = false,
 ) {
   const { width, height } = await sharp(photo.work).metadata();
   if (!width || !height) throw new Error("photo: the photo has no size");
-  return placeWholePhoto({ width, height }, photo.bbox);
+  return placeWholePhoto({ width, height }, photo.bbox, { whole });
 }
 
 export const scaledPhoto = (
@@ -65,23 +66,6 @@ export const scaledPhoto = (
     .resize(width, height, { kernel: "lanczos3" })
     .png()
     .toBuffer();
-
-// The photo's rectangle on the canvas, less the blend strip on each side that has a gap.
-function interior({ left, top, width, height, gaps }: PhotoPlacement) {
-  const strip = (gap: number) => (gap > 0 ? TOUCH_PX : 0);
-  const [l, t, r, b] = [
-    strip(gaps.left),
-    strip(gaps.top),
-    strip(gaps.right),
-    strip(gaps.bottom),
-  ];
-  return {
-    left: left + l,
-    top: top + t,
-    width: width - l - r,
-    height: height - t - b,
-  };
-}
 
 const solid = (width: number, height: number, colour: string) =>
   sharp({ create: { width, height, channels: 3, background: colour } })

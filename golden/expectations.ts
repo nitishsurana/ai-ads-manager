@@ -99,6 +99,9 @@ const expectationSchema = z.strictObject({
   throws: z.string().optional(),
   skippedPositions: z.array(z.number().int()).optional(),
   escalatedPositions: z.array(z.number().int()).optional(),
+  // Kept photos the model called a gift set, and those whose backdrop the code measured as not one colour.
+  giftSetPositions: z.array(z.number().int()).optional(),
+  nonUniformBackdropPositions: z.array(z.number().int()).optional(),
   lowResWarning: z.boolean().optional(),
   textWarning: z.boolean().optional(),
   transparentWarning: z.boolean().optional(),

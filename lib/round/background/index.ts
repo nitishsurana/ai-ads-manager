@@ -32,7 +32,7 @@ export async function makeBackground(
   const { background } = candidate;
   if (background.method === "photo") {
     if (background.placement !== 2) return cropPhoto(photo.work, photo.bbox);
-    const placement = await photoPlacement(photo);
+    const placement = await photoPlacement(photo, background.whole);
     const { bytes, product } = await wholePhotoBackground(
       photo,
       placement,
@@ -56,7 +56,11 @@ export async function makeBackground(
     };
   }
 
-  const { png, box } = await productCutout(photo, background.size);
+  const { png, box } = await productCutout(
+    photo,
+    background.size,
+    background.cutout,
+  );
   if (background.method === "bria") {
     const instruction = briaInstruction(background.prompt);
     const seed = briaSeed(

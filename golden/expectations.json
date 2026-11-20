@@ -2677,6 +2677,23 @@
       }
     }
   },
+  "photos-gift-set": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "rating": null,
+    "warnings": [],
+    "purchase": "purchasable",
+    "uniquePhotos": 2,
+    "shownPhotos": 2,
+    "droppedPositions": [],
+    "giftSetPositions": [1, 2],
+    "nonUniformBackdropPositions": [2],
+    "lowResWarning": false,
+    "textWarning": false,
+    "transparentWarning": false
+  },
   "brand-badge-disc": {
     "message": null,
     "brandPages": ["homepage"],

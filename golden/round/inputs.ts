@@ -47,6 +47,8 @@ export async function rowRound(row: RowCase, storage?: Storage) {
         tier: photo.tier,
         background: photo.checks.background,
         person: photo.checks.person,
+        giftSet: photo.checks.gift_set,
+        backdropUniform: photo.checks.backdrop_uniform ?? null,
       })),
     facts: row.facts,
   });
@@ -57,6 +59,8 @@ export async function rowRound(row: RowCase, storage?: Storage) {
       sha256: photo.sha256,
       workPath: photo.workPath,
       maskPath: photo.maskPath,
+      backdropPath: null,
+      maskChoice: null,
       productBbox: null,
     }));
   return { inputs, photos: stored };

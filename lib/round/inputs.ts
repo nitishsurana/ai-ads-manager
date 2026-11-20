@@ -14,6 +14,8 @@ const frozenPhotoSchema = z.object({
   tier: z.enum(["clean", "clean_low_res", "added_text"]),
   background: z.enum(["plain", "scene"]),
   person: z.boolean(),
+  giftSet: z.boolean().default(false),
+  backdropUniform: z.boolean().nullable().default(null),
 });
 
 export type FrozenPhoto = z.infer<typeof frozenPhotoSchema>;

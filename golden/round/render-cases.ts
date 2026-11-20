@@ -55,6 +55,8 @@ export const BASE_INPUTS: RoundInputs = {
       tier: "clean",
       background: "plain",
       person: false,
+      giftSet: false,
+      backdropUniform: null,
     },
     {
       id: "scene",
@@ -62,6 +64,8 @@ export const BASE_INPUTS: RoundInputs = {
       tier: "clean",
       background: "scene",
       person: false,
+      giftSet: false,
+      backdropUniform: null,
     },
   ],
   facts: [{ id: "offer", text: "Free shipping over $50", kind: "offer" }],
@@ -72,8 +76,10 @@ export const BASE_INPUTS: RoundInputs = {
 type Spec = {
   photoId: "plain" | "scene";
   method: "bria" | "solid" | "tonal" | "photo";
-  // A whole photo is placed (2) unless it stands for a creative stored before placement existed.
+  // A whole photo is placed (2) unless it stands for a creative stored before placement existed; a cut-out carries the mask recipe unless it stands for one stored before it.
   legacy?: boolean;
+  // A gift set: the whole photo is the product.
+  whole?: boolean;
   smaller?: boolean;
   element: Candidate["supportingElement"];
   eyebrow?: string | null;
@@ -94,15 +100,21 @@ export const candidate = (index: number, spec: Spec): Candidate => ({
           prompt: "A sunlit pine table",
           reason: "fixture",
           ...(spec.smaller && { size: "smaller" }),
+          ...(!spec.legacy && { cutout: 1 }),
         }
       : spec.method === "photo"
         ? spec.legacy
           ? { method: "photo" }
-          : { method: "photo", placement: 2 }
+          : {
+              method: "photo",
+              placement: 2,
+              ...(spec.whole && { whole: true }),
+            }
         : {
             method: spec.method,
             reason: "fixture",
             ...(spec.smaller && { size: "smaller" }),
+            ...(!spec.legacy && { cutout: 1 }),
           },
   copy: {
     eyebrow: spec.eyebrow ?? null,
@@ -179,6 +191,14 @@ export const SPECS: Spec[] = [
     headline: "Wrapped, ready",
     cta: "Antidisestablishmentarianism supercalifragilistic extraordinary",
   },
+  {
+    photoId: "scene",
+    method: "photo",
+    whole: true,
+    element: "rating",
+    headline: "Everything in the box",
+    cta: "Shop the set",
+  },
 ];
 
 const photoPath = (id: string) => `fx/${id}-work.jpg`;
@@ -205,6 +225,8 @@ export async function renderFixture(
         sha256: `fixture-${id}`,
         workPath: photoPath(id),
         maskPath: null,
+        backdropPath: null,
+        maskChoice: null,
         productBbox: null,
       });
     }

@@ -8,6 +8,7 @@ import { roundInputsSchema } from "@/lib/round/inputs";
 import { expectSchema, roundProblems } from "./round/assert";
 import { briefOf, rowInputs } from "./round/inputs";
 import { ROW_CASES } from "./round/rows";
+import { BACKDROP_CASES } from "./round/backdrop-cases";
 import { CHECK_CASES } from "./round/check-cases";
 import { COPY_CASES } from "./round/copy-cases";
 import { CTA_CASES } from "./round/cta-cases";
@@ -91,6 +92,7 @@ async function main() {
   }
   layoutCases(report);
   for (const { name, run } of [
+    ...BACKDROP_CASES,
     ...JUDGE_TABLES,
     ...CHECK_CASES,
     ...COPY_CASES,

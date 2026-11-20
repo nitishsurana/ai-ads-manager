@@ -15,17 +15,20 @@ const backgroundJson = z.discriminatedUnion("method", [
     prompt: z.string(),
     reason: z.string(),
     size: z.literal("smaller").optional(),
+    cutout: z.literal(1).optional(),
   }),
   z.object({
     method: z.enum(["solid", "tonal"]),
     reason: z.string(),
     size: z.literal("smaller").optional(),
+    cutout: z.literal(1).optional(),
   }),
   z.object({
     method: z.literal("photo"),
     placement: z.literal(2).optional(),
     isolated: z.boolean().optional(),
     gaps: z.boolean().optional(),
+    whole: z.literal(true).optional(),
   }),
 ]) satisfies z.ZodType<Background>;
 

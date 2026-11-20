@@ -28,7 +28,13 @@ export function createBuilder(
   const prepared = (photoId: string) => {
     const known = photos.get(photoId);
     if (known) return known;
-    const started = preparePhoto(photoId, deps);
+    const frozen = inputs.photos.find((photo) => photo.id === photoId);
+    if (!frozen) {
+      throw new Error(
+        `round ${input.roundId}: photo ${photoId} is not in its inputs`,
+      );
+    }
+    const started = preparePhoto(photoId, deps, frozen);
     photos.set(photoId, started);
     return started;
   };
