@@ -162,4 +162,23 @@ test.describe("history", () => {
       page.getByRole("link", { name: `Open ${mug.title}` }),
     ).toHaveAttribute("href", `/w/${id}`);
   });
+
+  test("a workspace's top bar starts a new workspace; History's has no second button", async () => {
+    const { page } = a;
+    const header = page.getByRole("banner");
+    await page.goto("/history");
+    await expect(
+      header.getByRole("link", { name: "New workspace" }),
+    ).toHaveCount(0);
+
+    await page.goto(`/w/${other.id}`);
+    await header.getByRole("link", { name: "New workspace" }).click();
+    await expect(page).toHaveURL("/");
+    await expect(
+      page.getByRole("heading", { name: "Start with a product link" }),
+    ).toBeVisible();
+    await expect(
+      header.getByRole("link", { name: "New workspace" }),
+    ).toHaveCount(0);
+  });
 });

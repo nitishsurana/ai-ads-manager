@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NewWorkspaceLink } from "./new-workspace-link";
 import { WorkspaceTabs } from "./workspace-tabs";
 
 type TopBarProps = {
@@ -31,38 +32,41 @@ export function TopBar({ tester, admin = false }: TopBarProps) {
             Admin access
           </span>
         ) : (
-          <Link
-            href="/history"
-            className="inline-flex h-8.5 items-center gap-2 rounded-md border border-border bg-card px-3 text-[13px] font-medium text-inherit no-underline hover:bg-muted"
-          >
-            <svg
-              className="size-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+          <>
+            <NewWorkspaceLink />
+            <Link
+              href="/history"
+              className="inline-flex h-8.5 items-center gap-2 rounded-md border border-border bg-card px-3 text-[13px] font-medium text-inherit no-underline hover:bg-muted"
             >
-              <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
-              <path d="M3 3v5h5" />
-              <path d="M12 7v5l3 2" />
-            </svg>
-            History
-            <svg
-              className="size-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </Link>
+              <svg
+                className="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+              History
+              <svg
+                className="size-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </Link>
+          </>
         )}
         <div className="ml-1 flex items-center gap-2 border-l border-border pl-3">
           <span
