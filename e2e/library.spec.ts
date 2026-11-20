@@ -108,7 +108,7 @@ test.describe("library", () => {
       cta: string;
     };
     await rate(roundIds[0] ?? "", 1, { rating: "approve", note: "Love it" });
-    await rate(roundIds[0] ?? "", 2, { rating: "reject", tags: ["Colour"] });
+    await rate(roundIds[0] ?? "", 2, { rating: "reject", tags: ["Color"] });
     await rate(roundIds[0] ?? "", 3, {
       rating: "reject",
       note: "Too busy behind the product",
@@ -159,7 +159,7 @@ test.describe("library", () => {
 
     const tagged = row(page, 1, 2);
     await expect(tagged).toContainText("Rejected");
-    await expect(tagged.getByText("Colour", { exact: true })).toBeVisible();
+    await expect(tagged.getByText("Color", { exact: true })).toBeVisible();
 
     const edited = row(page, 1, 3);
     await expect(edited).toContainText("Rejected");

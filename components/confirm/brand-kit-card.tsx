@@ -127,7 +127,7 @@ export function BrandKitCard({
           )}
           <div>
             <span className="mb-1.5 block text-[13px] font-medium">
-              Colours
+              Colors
             </span>
             <div className="grid grid-cols-2 gap-2">
               {ROLES.map(([role, name]) => (
@@ -159,7 +159,7 @@ export function BrandKitCard({
             </div>
             {badHex && (
               <p role="alert" className="m-0 mt-1.5 text-xs text-destructive">
-                Use a hex colour such as #2f4fd8.
+                Use a hex color such as #2f4fd8.
               </p>
             )}
           </div>

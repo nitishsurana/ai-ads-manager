@@ -2,7 +2,7 @@ export const TAGS = [
   "Copy",
   "Product",
   "Background",
-  "Colour",
+  "Color",
   "CTA",
   "Brand fit",
   "Layout",

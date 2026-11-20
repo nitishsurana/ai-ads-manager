@@ -130,11 +130,11 @@ test.describe("round view", () => {
     await expect(next(page)).toBeDisabled();
     expect((await creativesOf(roundId))[1]?.rating).toBeNull();
 
-    await card(page, 2).getByRole("button", { name: "Colour" }).click();
+    await card(page, 2).getByRole("button", { name: "Color" }).click();
     await expect(page.getByText("1 left to rate")).toBeVisible();
     await expect
       .poll(async () => (await creativesOf(roundId))[1])
-      .toMatchObject({ rating: "reject", tags: ["Colour"] });
+      .toMatchObject({ rating: "reject", tags: ["Color"] });
 
     await card(page, 3).getByRole("button", { name: "Reject" }).click();
     await card(page, 3)
@@ -156,7 +156,7 @@ test.describe("round view", () => {
       card(page, 1).getByRole("button", { name: "Approve" }),
     ).toHaveAttribute("aria-pressed", "true");
     await expect(
-      card(page, 2).getByRole("button", { name: "Colour" }),
+      card(page, 2).getByRole("button", { name: "Color" }),
     ).toHaveAttribute("aria-pressed", "true");
     await expect(card(page, 3).getByLabel("Reason for rejecting")).toHaveValue(
       "Too busy behind the product",

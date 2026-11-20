@@ -307,7 +307,7 @@ export const PLAN_CASES: Case[] = [
           ["CTA higher", "x".repeat(100), "a", "b", "c"],
           "Noted, not adjustable yet: CTA higher · Bigger logo",
           "",
-          "Product smaller · Brand-coloured button",
+          "Product smaller · Brand-colored button",
           "",
         ],
       ),

@@ -19,7 +19,7 @@ const arts = {
         Approve
       </span>
       <span className="inline-flex h-5.5 items-center rounded-full border border-destructive-border bg-destructive-subtle px-2 text-xs font-medium text-destructive">
-        Reject · Colour
+        Reject · Color
       </span>
     </div>
   ),

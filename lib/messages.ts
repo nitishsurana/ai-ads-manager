@@ -67,7 +67,7 @@ export const messages = {
   setting_cutout: "Cut-out preferred",
   setting_plain: "Plain backgrounds",
   setting_scene: "Scene backgrounds",
-  setting_cta_brand: "Brand-coloured button",
+  setting_cta_brand: "Brand-colored button",
   setting_cta_dark: "Dark button",
   setting_cta_light: "Light button",
   not_applied_prefix: "Noted, not adjustable yet:",
