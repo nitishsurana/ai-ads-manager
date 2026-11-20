@@ -46,6 +46,7 @@ export const logoSchema = z.object({
   headerBackground: z.string().nullable(),
   iconOnly: z.boolean(),
   storeBrand: z.boolean(),
+  badge: z.boolean().default(false),
 }) satisfies z.ZodType<Logo>;
 
 const pageFactsSchema = z.object({

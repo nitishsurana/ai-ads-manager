@@ -10,12 +10,12 @@
     "product_cropped_by_frame": false,
     "confidence": "high"
   },
-  "logo_check:67ac4e1a:ade4206625a9ffb7eb851525c655b8528a88855f2403812ecced283fc8e369ad": {
+  "logo_check:3e1a255b:ade4206625a9ffb7eb851525c655b8528a88855f2403812ecced283fc8e369ad": {
     "has_brand_name": true,
     "text_read": "Boxed Goods",
     "is_store_brand": true
   },
-  "logo_check:67ac4e1a:921e4bbdc4ceee938423ae8025cf0782e6fd95f0704ef8cfffb6a1828411af52": {
+  "logo_check:3e1a255b:921e4bbdc4ceee938423ae8025cf0782e6fd95f0704ef8cfffb6a1828411af52": {
     "has_brand_name": false,
     "text_read": "",
     "is_store_brand": false

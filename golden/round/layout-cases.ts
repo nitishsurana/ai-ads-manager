@@ -6,7 +6,6 @@ import {
 } from "@/lib/round/background/photo-crop";
 import { briaInstruction } from "@/lib/round/background/bria";
 import { extendInstruction } from "@/lib/round/background/whole-photo";
-import { AD_NETWORK_COLOURS } from "@/lib/render/ad-network";
 import { planBadge, withSymbol } from "@/lib/render/badge";
 import {
   chooseEdge,
@@ -14,18 +13,17 @@ import {
   contrastUnder,
   scrimOpacityAt,
 } from "@/lib/render/scrim";
-import { flatBackdrop, deltaE, type Rgb } from "@/lib/render/colour";
-import { pickCtaColour, accentHue } from "@/lib/render/cta-colour";
+import { flatBackdrop, type Rgb } from "@/lib/render/colour";
+import type { CtaPreference } from "@/lib/render/cta-colour";
 import { fitText } from "@/lib/render/fit";
-import { placeLogo, type LogoSpec } from "@/lib/render/logo";
 import { insideSafe, overlaps, SAFE_BOX, type Box } from "@/lib/render/canvas";
 import { planLayout, type LayoutInput } from "@/lib/render/plan-layout";
 
 // A stand-in for a font that covers Latin only.
-const noGlyph = (text: string) => /[^\u0000-\u024f]/.test(text);
+export const noGlyph = (text: string) => /[^\u0000-\u024f]/.test(text);
 
 // A stand-in for font metrics: every character is half the font size wide.
-const measure = (text: string, size: number) => text.length * size * 0.5;
+export const measure = (text: string, size: number) => text.length * size * 0.5;
 
 type Case = { name: string; run: () => string | null };
 
@@ -35,18 +33,6 @@ const same = (actual: unknown, expected: unknown) =>
     : `expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`;
 
 const WHITE: Rgb = [255, 255, 255];
-const BLACK: Rgb = [0, 0, 0];
-
-const logo = (overrides: Partial<LogoSpec>): LogoSpec => ({
-  kind: "image",
-  aspect: 3,
-  colourClass: "one_colour",
-  colours: [[34, 34, 34]],
-  headerBackground: null,
-  wordmark: "Acme",
-  brandInk: null,
-  ...overrides,
-});
 
 const face = (family: string) => ({
   family,
@@ -55,8 +41,16 @@ const face = (family: string) => ({
   unsupported: noGlyph,
 });
 
+export const NO_PREFERENCE: CtaPreference = {
+  mode: "auto",
+  primary: null,
+  secondary: null,
+  sceneHue: null,
+  preferred: null,
+};
+
 // A layout for a headline and CTA on a flat light backdrop, with the product and keepClear given.
-const planned = (
+export const planned = (
   copy: { headline: string; cta: string; eyebrow?: string },
   product: Box | null,
   over: Partial<LayoutInput> = {},
@@ -74,24 +68,11 @@ const planned = (
     brandColours: [],
     brandInks: [],
     logo: null,
+    logoGeometry: 2,
+    cta: NO_PREFERENCE,
     sample: () => flatBackdrop(WHITE),
     ...over,
   });
-
-const placed = (spec: LogoSpec, backdrop: Rgb, avoid = []) =>
-  placeLogo(spec, {
-    sample: () => flatBackdrop(backdrop),
-    avoid,
-    measure,
-    fontFamily: "Inter",
-    fallback: () => false,
-    unsupported: noGlyph,
-  });
-
-const decision = (spec: LogoSpec, backdrop: Rgb) => {
-  const { logo: result } = placed(spec, backdrop);
-  return result ? `${result.kind}:${result.decision}:${result.corner}` : null;
-};
 
 export const LAYOUT_CASES: Case[] = [
   {
@@ -138,130 +119,6 @@ export const LAYOUT_CASES: Case[] = [
         { n: 2, fits: true },
       );
     },
-  },
-  ...(
-    [
-      ["blue brand", [[31, 78, 121]]],
-      ["orange brand", [[236, 123, 19]]],
-      ["black and white brand", [BLACK, WHITE]],
-      ["no brand colours", []],
-      [
-        "a brand sitting on the guard blue",
-        [
-          [42, 100, 246],
-          [236, 123, 19],
-        ],
-      ],
-    ] as [string, Rgb[]][]
-  ).map(([name, brand]): Case => ({
-    name: `CTA colour for a ${name} passes the rule`,
-    run: () => {
-      const cta = pickCtaColour({ brand, network: AD_NETWORK_COLOURS });
-      const farthest = Math.min(
-        ...[...brand, ...AD_NETWORK_COLOURS].map((c) =>
-          deltaE(cta.background, c),
-        ),
-      );
-      return cta.contrast >= 4.5 && farthest >= 20
-        ? null
-        : `contrast ${cta.contrast}, ΔE ${farthest}`;
-    },
-  })),
-  {
-    name: "CTA hue starts at the complement of the first chromatic brand colour",
-    run: () => same(Math.round(accentHue([BLACK, [0, 0, 255]])), 60),
-  },
-  {
-    name: "a one-colour logo keeps its ink when it contrasts",
-    run: () =>
-      same(decision(logo({}), [240, 240, 240]), "image:as_is:bottom_right"),
-  },
-  {
-    name: "a one-colour logo is recoloured light on a dark area",
-    run: () =>
-      same(decision(logo({}), [20, 20, 40]), "image:recoloured:bottom_right"),
-  },
-  {
-    name: "a currentColor logo is always drawn in a chosen ink",
-    run: () =>
-      same(
-        decision(
-          logo({ colourClass: "current_colour", colours: [] }),
-          [240, 240, 240],
-        ),
-        "image:recoloured:bottom_right",
-      ),
-  },
-  {
-    name: "an area that is both dark and light drops a one-colour logo and its wordmark when neither reads",
-    run: () => {
-      const busy = {
-        mean: [119, 119, 119] as Rgb,
-        dark: BLACK,
-        light: WHITE,
-        busy: 90,
-      };
-      const on = (spec: LogoSpec) =>
-        placeLogo(spec, {
-          sample: () => busy,
-          avoid: [],
-          measure,
-          fontFamily: "Inter",
-          fallback: () => false,
-          unsupported: noGlyph,
-        }).logo?.decision ?? null;
-      return same([on(logo({})), on(logo({ wordmark: null }))], [null, null]);
-    },
-  },
-  {
-    name: "a multi-colour logo that fails moves to a calmer corner",
-    run: () => {
-      const spec = logo({
-        colourClass: "multi_colour",
-        colours: [
-          [237, 40, 140],
-          [120, 30, 90],
-        ],
-      });
-      const result = placeLogo(spec, {
-        sample: (box) =>
-          flatBackdrop(
-            box.x > 500 && box.y > 1000 ? [237, 40, 140] : [250, 250, 250],
-          ),
-        avoid: [],
-        measure,
-        fontFamily: "Inter",
-        fallback: () => false,
-        unsupported: noGlyph,
-      });
-      return same(result.logo?.decision, "calmer_corner");
-    },
-  },
-  {
-    name: "a multi-colour logo with no calm corner goes on its header-colour panel",
-    run: () =>
-      same(
-        decision(
-          logo({
-            colourClass: "multi_colour",
-            colours: [[237, 40, 140]],
-            headerBackground: [255, 255, 255],
-          }),
-          [237, 40, 140],
-        ),
-        "image:header_panel:bottom_right",
-      ),
-  },
-  {
-    name: "a multi-colour logo with no panel falls back to the wordmark",
-    run: () =>
-      same(
-        decision(
-          logo({ colourClass: "multi_colour", colours: [[237, 40, 140]] }),
-          [237, 40, 140],
-        ),
-        "wordmark:wordmark:bottom_right",
-      ),
   },
   {
     name: "the headline block goes to the side of the product with more room",
@@ -333,43 +190,6 @@ export const LAYOUT_CASES: Case[] = [
         ].map((v) => Math.round(v * 100) / 100),
         [0.6, 0.6, 0.3, 0],
       );
-    },
-  },
-  {
-    name: "a wordmark too wide for one line wraps onto two",
-    run: () => {
-      const result = placed(
-        logo({ kind: "wordmark", wordmark: "Weekend Coffee Co." }),
-        [255, 255, 255],
-      );
-      return same(result.logo?.wordmark?.lines, ["Weekend", "Coffee Co."]);
-    },
-  },
-  {
-    name: "a wordmark with glyphs no font has is dropped with a reason",
-    run: () => {
-      const result = placed(
-        logo({ kind: "wordmark", wordmark: "週末珈琲" }),
-        [255, 255, 255],
-      );
-      return result.logo === null && /glyph/.test(result.reason ?? "")
-        ? null
-        : JSON.stringify(result);
-    },
-  },
-  {
-    name: "a wordmark too long for the 18% cap even on two lines is dropped with a reason",
-    run: () => {
-      const result = placed(
-        logo({
-          kind: "wordmark",
-          wordmark: "A very long store name indeed and then some more words",
-        }),
-        [255, 255, 255],
-      );
-      return result.logo === null && /cap/.test(result.reason ?? "")
-        ? null
-        : JSON.stringify(result);
     },
   },
   {

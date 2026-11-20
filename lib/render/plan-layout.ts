@@ -11,9 +11,10 @@ import {
   right,
   SAFE_BOX,
   type Box,
+  type LogoGeometry,
 } from "./canvas";
 import { DARK_INK, hexOf, LIGHT_INK, type Backdrop, type Rgb } from "./colour";
-import { pickCtaColour } from "./cta-colour";
+import { pickCtaColour, type CtaPreference } from "./cta-colour";
 import { blockSteps, EYEBROW_LINE, HEADLINE_LINE, type Block } from "./block";
 import { fitText, sizeRange, type Fit } from "./fit";
 import type { Layout, TextLayout } from "./layout";
@@ -55,6 +56,9 @@ export type LayoutInput = {
   // Text colours to try first, before white and near-black.
   brandInks: Rgb[];
   logo: LogoSpec | null;
+  // Which logo box and corners to plan with: 2 for a new creative, 1 when an edit re-plans a creative stored before the larger logo.
+  logoGeometry: LogoGeometry;
+  cta: CtaPreference;
   // The pixels behind a box, with the scrim over them when one is given.
   sample: (box: Box, scrim: Scrim | null) => Backdrop;
 };
@@ -129,10 +133,6 @@ export function planLayout(input: LayoutInput): Layout {
     if (single.fits) label = single;
   }
   if (!label.fits) dropped.push({ element: "cta", reason: "does not fit" });
-  const accent = pickCtaColour({
-    brand: input.brandColours,
-    network: AD_NETWORK_COLOURS,
-  });
   const labelWidth = Math.max(
     ...label.lines.map((line) => body.measure(line, label.size, 700)),
   );
@@ -141,18 +141,7 @@ export function planLayout(input: LayoutInput): Layout {
     SAFE_BOX.w,
     Math.ceil(labelWidth + 2 * DESIGN.ctaPadX),
   );
-  const cta: Layout["cta"] = {
-    ...textBlock(label.lines, label.size, CTA_LINE, 0, body, {
-      weight: 700,
-      tracking: 0,
-      colour: accent.label,
-    }),
-    background: hexOf(accent.background),
-    radius: label.lines.length > 1 ? 36 : Math.round(ctaHeight / 2),
-    deltaE: Math.round(accent.deltaE * 10) / 10,
-    contrast: Math.round(accent.contrast * 100) / 100,
-  };
-  cta.box = {
+  const ctaBox: Box = {
     x: centredX(ctaWidth),
     y: CTA_BOTTOM - ctaHeight,
     w: ctaWidth,
@@ -168,7 +157,7 @@ export function planLayout(input: LayoutInput): Layout {
       ? chooseEdge(input.product)
       : "top";
   const topOf = (edge: Edge, block: Block) =>
-    edge === "bottom" ? cta.box.y - 48 - block.height : SAFE_BOX.y;
+    edge === "bottom" ? ctaBox.y - 48 - block.height : SAFE_BOX.y;
   const clears = (edge: Edge, block: Block) =>
     clear !== null &&
     (edge === "top"
@@ -204,6 +193,25 @@ export function planLayout(input: LayoutInput): Layout {
   const scrim: Scrim | null = chosen.scrim
     ? scrimOf(edge, region, chosen.scrim)
     : null;
+  const accent = pickCtaColour({
+    ...input.cta,
+    brand: input.brandColours,
+    network: AD_NETWORK_COLOURS,
+    backdrop: sample(ctaBox, scrim),
+  });
+  const cta: Layout["cta"] = {
+    ...textBlock(label.lines, label.size, CTA_LINE, 0, body, {
+      weight: 700,
+      tracking: 0,
+      colour: accent.label,
+    }),
+    background: hexOf(accent.background),
+    radius: label.lines.length > 1 ? 36 : Math.round(ctaHeight / 2),
+    deltaE: Math.round(accent.deltaE * 10) / 10,
+    contrast: Math.round(accent.contrast * 100) / 100,
+    mode: input.cta.mode,
+    box: ctaBox,
+  };
   const headlineContrast = contrastUnder(ink, raw, chosen.scrim);
   if (headlineContrast < TEXT_MIN_CONTRAST) {
     dropped.push({
@@ -280,6 +288,7 @@ export function planLayout(input: LayoutInput): Layout {
   let logo: Layout["logo"] = null;
   if (input.logo) {
     const placed = placeLogo(input.logo, {
+      geometry: input.logoGeometry,
       sample: (box) => sample(box, scrim),
       avoid,
       measure: heading.measure,
@@ -293,6 +302,7 @@ export function planLayout(input: LayoutInput): Layout {
 
   return {
     version: 1,
+    ...(input.logoGeometry === 2 && { logoGeometry: 2 as const }),
     offerFactId: input.offerFactId,
     fonts: input.fonts,
     method: input.method,

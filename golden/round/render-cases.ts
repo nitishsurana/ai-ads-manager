@@ -13,7 +13,13 @@ import type { StoredPhoto } from "@/lib/round/stages";
 import type { Candidate } from "@/lib/round/types";
 import { memoryPhotos } from "./photos";
 import { roundContext, runRender } from "./run";
-import { colourLogo, darkLogo, plainPhoto, scenePhoto } from "./synthetic";
+import {
+  badgeLogo,
+  colourLogo,
+  darkLogo,
+  plainPhoto,
+  scenePhoto,
+} from "./synthetic";
 
 const typeface = { declared: null, family: "Inter", exact: true };
 
@@ -254,4 +260,4 @@ export async function renderFixture(
   }
 }
 
-export { colourLogo, darkLogo };
+export { badgeLogo, colourLogo, darkLogo };

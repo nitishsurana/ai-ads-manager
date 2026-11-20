@@ -243,6 +243,7 @@ export function validatePlan(
       offerFactId: offer?.id ?? null,
       background: styled.background,
       copy: null,
+      ctaColour: settings.ctaColour,
       backgroundPath: null,
       product: null,
       layout: null,

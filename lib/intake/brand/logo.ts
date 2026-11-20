@@ -141,5 +141,6 @@ export async function storeLogo(
     headerBackground: headerBackgroundFor(input.headerBackground, cleaned),
     iconOnly: verdict.iconOnly,
     storeBrand: verdict.storeBrand,
+    badge: cleaned.badge,
   };
 }

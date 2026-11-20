@@ -1,18 +1,18 @@
 import {
   CTA_MIN_CONTRAST,
   CTA_MIN_DELTA_E,
-  LOGO_MAX_WIDTH_SHARE,
   LOGO_MIN_CONTRAST,
   TEXT_MIN_CONTRAST,
 } from "@/lib/config";
 import {
   AD_NETWORK_COLOURS,
-  CANVAS,
+  insideLogoArea,
   insideSafe,
+  LOGO_LIMITS,
   withSymbol,
 } from "@/lib/render";
 import type { Box, Layout } from "@/lib/render";
-import { LOGO_MAX_HEIGHT, overlaps } from "@/lib/render/canvas";
+import { overlaps } from "@/lib/render/canvas";
 import { contrast, deltaE, fromHex } from "@/lib/render/colour";
 import { brandColours, wordmarkName } from "../compose/inputs";
 import { COPY_WORDS, CTA_WORDS, HEADLINE_CHARS, HEADLINE_WORDS } from "../copy";
@@ -111,13 +111,18 @@ function marginProblems(layout: Layout) {
       ? [["eyebrow", layout.eyebrow.box] as [string, Box]]
       : []),
     ...(layout.badge ? [["badge", layout.badge.box] as [string, Box]] : []),
-    ...(layout.logo
-      ? [["logo", layout.logo.panel?.box ?? layout.logo.box] as [string, Box]]
-      : []),
   ];
-  return boxes
+  const problems = boxes
     .filter(([, box]) => !insideSafe(box))
     .map(([name]) => `margins: the ${name} leaves the safe margins`);
+  const { logo } = layout;
+  if (
+    logo &&
+    !insideLogoArea(logo.panel?.box ?? logo.box, layout.logoGeometry ?? 1)
+  ) {
+    problems.push("margins: the logo leaves the safe margins");
+  }
+  return problems;
 }
 
 function colourProblems(layout: Layout, inputs: RoundInputs) {
@@ -131,7 +136,10 @@ function colourProblems(layout: Layout, inputs: RoundInputs) {
   if (contrast(fromHex(layout.cta.colour), accent) < CTA_MIN_CONTRAST) {
     problems.push(`contrast: the CTA label is under ${CTA_MIN_CONTRAST}`);
   }
-  const avoid = [...brandColours(inputs).brandColours, ...AD_NETWORK_COLOURS];
+  const avoid = [
+    ...(layout.cta.mode === "brand" ? [] : brandColours(inputs).brandColours),
+    ...AD_NETWORK_COLOURS,
+  ];
   if (avoid.some((colour) => deltaE(accent, colour) < CTA_MIN_DELTA_E)) {
     problems.push(
       `cta colour: within ΔE ${CTA_MIN_DELTA_E} of a brand or ad-network colour`,
@@ -163,11 +171,12 @@ function logoProblems(layout: Layout, inputs: RoundInputs) {
       problems.push("logo: the brand name is not drawn as a wordmark");
     }
   }
-  if (
-    logo.box.w > Math.floor(CANVAS.width * LOGO_MAX_WIDTH_SHARE) ||
-    logo.box.h > LOGO_MAX_HEIGHT
-  ) {
+  const limits = LOGO_LIMITS[layout.logoGeometry ?? 1];
+  if (logo.box.w > limits.width || logo.box.h > limits.height) {
     problems.push("logo: over the size cap");
+  }
+  if (logo.decision === "badge" && !inputs.logo?.badge) {
+    problems.push("logo: drawn as a badge although it is not one");
   }
   const moved = logo.corner !== "bottom_right";
   if (
@@ -181,7 +190,10 @@ function logoProblems(layout: Layout, inputs: RoundInputs) {
       `logo: in the ${logo.corner} corner without a contrast reason`,
     );
   }
-  if (logo.contrast < LOGO_MIN_CONTRAST) {
+  const exempt =
+    logo.decision === "badge" ||
+    (logo.decision === "panel" && inputs.logo?.colourClass === "multi_colour");
+  if (!exempt && logo.contrast < LOGO_MIN_CONTRAST) {
     problems.push(
       `contrast: the logo's is ${logo.contrast.toFixed(2)}, under ${LOGO_MIN_CONTRAST}`,
     );

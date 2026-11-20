@@ -60,6 +60,12 @@ export function brandColours(inputs: RoundInputs): {
 export const brandInk = (inputs: RoundInputs) =>
   parsed(inputs.brandKit.palette.primary);
 
+// The brand's own colours for a "brand" button: the palette's primary and secondary, whatever else the CTA must stay away from.
+export const brandButton = (inputs: RoundInputs) => ({
+  primary: parsed(inputs.brandKit.palette.primary),
+  secondary: parsed(inputs.brandKit.palette.secondary),
+});
+
 export type { LayoutInput };
 
 // The text a wordmark logo draws: the logo's own, else the brand name.

@@ -92,6 +92,7 @@ export async function editCreative(
       offerFactId: creative.layout.offerFactId,
       background: creative.background,
       copy,
+      ctaColour: creative.layout.cta.mode,
       backgroundPath,
       product: creative.layout.product,
       layout: null,
@@ -104,6 +105,8 @@ export async function editCreative(
       logo,
       label,
       keepClear: creative.layout.keepClear,
+      logoGeometry: creative.layout.logoGeometry ?? 1,
+      ctaPreferred: creative.layout.cta.background,
     });
 
     const lost = lostElement(creative.layout, layout);

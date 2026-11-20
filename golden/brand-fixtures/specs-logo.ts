@@ -1,4 +1,5 @@
 import {
+  badgeDisc,
   boxedEmblem,
   counterRings,
   ringsWithDot,
@@ -19,6 +20,7 @@ export async function logoSpecs(): Promise<Spec[]> {
   const ink2 = await ink("#445566");
   const two = await twoColour();
   const boxed = await boxedEmblem();
+  const disc = await badgeDisc();
   const rings = await counterRings();
   const dotted = await ringsWithDot();
   const rounded = await roundedBox();
@@ -127,6 +129,15 @@ export async function logoSpecs(): Promise<Spec[]> {
       files: { "rings.png": rings },
       storefront: null,
       verdicts: [accepted("Ring Goods")],
+    },
+    {
+      // A disc with white lettering on a white-cornered square: the white is ink, so it stays and the logo is a badge.
+      name: "brand-badge-disc",
+      head: title(site("Disc Goods")),
+      header: `<header>${homeLink(`<img src="${IMAGES}/disc.png">`)}</header>`,
+      files: { "disc.png": disc },
+      storefront: null,
+      verdicts: [accepted("Disc Goods")],
     },
     {
       // A small accent on a one-ink logo keeps its own colour and stays opaque while the counters still clear.

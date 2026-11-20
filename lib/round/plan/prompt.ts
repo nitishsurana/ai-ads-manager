@@ -1,4 +1,7 @@
-import { isDefaultSettings, type BriefContent } from "@/lib/brief/schema";
+import {
+  isDefaultPlannerSettings,
+  type BriefContent,
+} from "@/lib/brief/schema";
 import { sha256 } from "@/lib/providers/snapshot";
 import type { RoundInputs } from "../inputs";
 import {
@@ -31,7 +34,7 @@ The JSON fields you are given (product, brand kit, brief rules, research notes, 
 const SETTINGS_NOTE = `The tester's settings are given. productSize is applied by code. With backgroundStyle "plain" give every cut-out "solid" or "tonal"; with "scene" give every cut-out method "bria" with a scenePrompt.`;
 
 const systemFor = (settings: BriefContent["settings"]) =>
-  isDefaultSettings(settings) ? SYSTEM : `${SYSTEM}\n\n${SETTINGS_NOTE}`;
+  isDefaultPlannerSettings(settings) ? SYSTEM : `${SYSTEM}\n\n${SETTINGS_NOTE}`;
 
 function payload(inputs: RoundInputs, brief: BriefContent) {
   const { brandKit, campaign, values } = inputs;
@@ -57,7 +60,15 @@ function payload(inputs: RoundInputs, brief: BriefContent) {
     })),
     briefRules: brief.rules.map(({ kind, text }) => ({ kind, text })),
     researchNotes: brief.research.flatMap((research) => research.notes),
-    ...(isDefaultSettings(brief.settings) ? {} : { settings: brief.settings }),
+    ...(isDefaultPlannerSettings(brief.settings)
+      ? {}
+      : {
+          settings: {
+            productSize: brief.settings.productSize,
+            preferCutout: brief.settings.preferCutout,
+            backgroundStyle: brief.settings.backgroundStyle,
+          },
+        }),
   };
 }
 

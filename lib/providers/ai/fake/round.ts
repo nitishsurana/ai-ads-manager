@@ -102,6 +102,7 @@ function scripted(
         ],
         settings: (JSON.parse(request.prompt) as { currentSettings: unknown })
           .currentSettings,
+        notApplied: [],
       };
     case "judge": {
       // The judged creatives are in the prompt's JSON; the fake copy gave candidate i the i-th headline.

@@ -65,6 +65,7 @@ function observeBrand(brand: BrandResult | undefined) {
     logoColourClass: logo?.colourClass ?? null,
     logoTransparent: logo?.transparent ?? null,
     logoColours: logo?.colours ?? [],
+    logoBadge: logo?.badge ?? false,
     logoSize: logo?.width && logo.height ? [logo.width, logo.height] : null,
     headerBackground: logo?.headerBackground ?? null,
     storeName: brand.storeName,

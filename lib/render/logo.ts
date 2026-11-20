@@ -3,23 +3,28 @@ import {
   bestInk,
   contrast,
   DARK_INK,
+  deltaE,
   flatBackdrop,
   LIGHT_INK,
   toHex,
   worstContrast,
+  worstOf,
   type Backdrop,
   type Rgb,
 } from "./colour";
-import {
-  bottom,
-  LOGO_MAX_HEIGHT,
-  LOGO_MAX_WIDTH,
-  overlaps,
-  right,
-  SAFE_BOX,
-  type Box,
-} from "./canvas";
+import { overlaps, type Box, type LogoGeometry } from "./canvas";
 import type { LogoLayout } from "./layout";
+import {
+  CORNERS,
+  cornerBox,
+  imageSize,
+  panelAround,
+  PANEL_RADIUS,
+  round,
+  type Corner,
+} from "./logo-box";
+import { neutralPanel } from "./logo-panel";
+import { wordmarkLayout } from "./logo-wordmark";
 import type { Measure } from "./measure";
 
 export type LogoSpec = {
@@ -29,13 +34,16 @@ export type LogoSpec = {
   colourClass: "one_colour" | "current_colour" | "multi_colour" | null;
   colours: Rgb[];
   headerBackground: Rgb | null;
-  // The text a wordmark falls back to: the logo's own, or the brand name.
+  // A disc or sticker with its own field: drawn as it is, never recoloured or checked for contrast.
+  badge: boolean;
+  // The text a wordmark logo draws, and what an image logo falls back to under geometry 1: the logo's own, or the brand name.
   wordmark: string | null;
   // The brand's primary colour, tried first for a wordmark.
   brandInk: Rgb | null;
 };
 
 export type LogoContext = {
+  geometry: LogoGeometry;
   sample: (box: Box) => Backdrop;
   // Boxes the logo must not cover when it moves to another corner.
   avoid: Box[];
@@ -47,139 +55,10 @@ export type LogoContext = {
   unsupported: (text: string) => boolean;
 };
 
-type Corner = LogoLayout["corner"];
-
-const PANEL_PAD = 14;
-const PANEL_RADIUS = 14;
-const WORDMARK_SIZE = 44;
-// Below this height a wordmark is a smudge; it is dropped instead.
-const WORDMARK_MIN_HEIGHT = 28;
-const CORNERS: readonly Corner[] = [
-  "bottom_right",
-  "bottom_left",
-  "top_right",
-  "top_left",
-];
-
-function imageSize(aspect: number) {
-  const h = Math.min(LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH / aspect);
-  return { w: Math.round(h * aspect), h: Math.round(h) };
-}
-
-function cornerBox(corner: Corner, w: number, h: number): Box {
-  const x = corner.endsWith("right") ? right(SAFE_BOX) - w : SAFE_BOX.x;
-  const y = corner.startsWith("bottom") ? bottom(SAFE_BOX) - h : SAFE_BOX.y;
-  return { x, y, w, h };
-}
-
-const worstOf = (colours: readonly Rgb[], backdrop: Backdrop) =>
-  Math.min(
-    Infinity,
-    ...colours.map((colour) => worstContrast(colour, backdrop)),
-  );
-
-type Wordmark = { layout: LogoLayout } | { reason: string };
-
-// One line at the largest size that fits the cap; a name too wide for that at the smallest legible size is split into two balanced lines instead.
-function fitWordmark(text: string, context: LogoContext) {
-  const lineHeight = (size: number) => Math.ceil(size * 1.2);
-  const widest = (lines: string[], size: number) =>
-    Math.ceil(
-      Math.max(...lines.map((line) => context.measure(line, size, 700))),
-    );
-  const shrink = (lines: string[], from: number) => {
-    let size = from;
-    while (
-      lineHeight(size - 2) >= WORDMARK_MIN_HEIGHT &&
-      widest(lines, size) > LOGO_MAX_WIDTH
-    ) {
-      size -= 2;
-    }
-    return size;
-  };
-  let size = shrink([text], WORDMARK_SIZE);
-  if (widest([text], size) <= LOGO_MAX_WIDTH) {
-    return { lines: [text], size, single: true };
-  }
-
-  const words = text.split(/\s+/);
-  const splits = words
-    .slice(1)
-    .map((_, i) => [
-      words.slice(0, i + 1).join(" "),
-      words.slice(i + 1).join(" "),
-    ]);
-  const best = splits.reduce<string[] | null>(
-    (pick, lines) =>
-      !pick || widest(lines, size) < widest(pick, size) ? lines : pick,
-    null,
-  );
-  if (!best) return { lines: [text], size, single: true };
-  size = shrink(
-    best,
-    Math.min(WORDMARK_SIZE, Math.floor(LOGO_MAX_HEIGHT / 2.4)),
-  );
-  return { lines: best, size, single: false };
-}
-
-function wordmarkLayout(spec: LogoSpec, context: LogoContext): Wordmark {
-  const text = spec.wordmark;
-  if (!text) return { reason: "there is no wordmark text" };
-  if (context.unsupported(text)) {
-    return { reason: "no font has every glyph of the wordmark" };
-  }
-  const { lines, size, single } = fitWordmark(text, context);
-  const w = Math.ceil(
-    Math.max(...lines.map((line) => context.measure(line, size, 700))),
-  );
-  const h = Math.ceil(size * 1.2) * lines.length;
-  if (w > LOGO_MAX_WIDTH) {
-    return {
-      reason: `the wordmark needs ${w} px, over the ${LOGO_MAX_WIDTH} px cap, at its smallest legible size${single ? " (a single word can't be split)" : ", even on two lines"}`,
-    };
-  }
-  const box = cornerBox("bottom_right", w, h);
-  const backdrop = context.sample(box);
-  const own =
-    spec.brandInk &&
-    worstContrast(spec.brandInk, backdrop) >= LOGO_MIN_CONTRAST;
-  const { ink, ratio } = own
-    ? {
-        ink: spec.brandInk as Rgb,
-        ratio: worstContrast(spec.brandInk as Rgb, backdrop),
-      }
-    : bestInk([LIGHT_INK, DARK_INK], backdrop);
-  if (ratio < LOGO_MIN_CONTRAST) {
-    return { reason: "the wordmark lacks contrast" };
-  }
-  return {
-    layout: {
-      kind: "wordmark",
-      box,
-      decision: "wordmark",
-      corner: "bottom_right",
-      ink: toHex(ink),
-      contrast: round(ratio),
-      panel: null,
-      wordmark: {
-        text,
-        lines,
-        font: {
-          family: context.fontFamily,
-          weight: 700,
-          fallback: context.fallback(text),
-        },
-        size,
-      },
-    },
-  };
-}
-
-const round = (value: number) => Math.round(value * 100) / 100;
-
 function oneColour(spec: LogoSpec, context: LogoContext): LogoLayout | null {
-  const { w, h } = imageSize(spec.aspect);
-  const box = cornerBox("bottom_right", w, h);
+  const { geometry } = context;
+  const { w, h } = imageSize(spec.aspect, geometry);
+  const box = cornerBox("bottom_right", w, h, geometry);
   const backdrop = context.sample(box);
   const own = spec.colourClass === "one_colour" ? spec.colours[0] : undefined;
   const ownRatio = own ? worstContrast(own, backdrop) : 0;
@@ -201,10 +80,11 @@ function oneColour(spec: LogoSpec, context: LogoContext): LogoLayout | null {
 }
 
 function multiColour(spec: LogoSpec, context: LogoContext): LogoLayout | null {
-  const { w, h } = imageSize(spec.aspect);
+  const { geometry } = context;
+  const { w, h } = imageSize(spec.aspect, geometry);
   const colours = spec.colours.length > 0 ? spec.colours : [DARK_INK];
   const place = (corner: Corner) => {
-    const box = cornerBox(corner, w, h);
+    const box = cornerBox(corner, w, h, geometry);
     return { corner, box, ratio: worstOf(colours, context.sample(box)) };
   };
   const base = (
@@ -240,50 +120,102 @@ function multiColour(spec: LogoSpec, context: LogoContext): LogoLayout | null {
     panelColour &&
     worstOf(colours, flatBackdrop(panelColour)) >= LOGO_MIN_CONTRAST
   ) {
-    const panelBox = cornerBox(
-      "bottom_right",
-      w + 2 * PANEL_PAD,
-      h + 2 * PANEL_PAD,
-    );
+    const { panel, inner } = panelAround(w, h, geometry);
     return {
       ...base("header_panel", {
         corner: "bottom_right",
-        box: {
-          x: panelBox.x + PANEL_PAD,
-          y: panelBox.y + PANEL_PAD,
-          w,
-          h,
-        },
+        box: inner,
         ratio: Math.min(...colours.map((c) => contrast(c, panelColour))),
       }),
-      panel: {
-        box: panelBox,
-        colour: toHex(panelColour),
-        radius: PANEL_RADIUS,
-      },
+      panel: { box: panel, colour: toHex(panelColour), radius: PANEL_RADIUS },
     };
   }
   return null;
 }
 
-// The chain: the logo as it is or recoloured; then (multi-colour only) another corner, then a header-colour panel; then the wordmark; then nothing. The reason names why the logo itself was not used.
+// Below this the badge's own field is the same colour as what is behind it, so its outline vanishes.
+const BADGE_MIN_DELTA_E = 20;
+
+// A badge keeps its own field, so it is drawn as it is in the home corner unless that field blends into the backdrop; its contrast, the dominant colour against what is behind it, is recorded only for information.
+function badge(spec: LogoSpec, context: LogoContext): LogoLayout {
+  const { geometry } = context;
+  const { w, h } = imageSize(spec.aspect, geometry);
+  const box = cornerBox("bottom_right", w, h, geometry);
+  const backdrop = context.sample(box);
+  const field = spec.colours[0] ?? DARK_INK;
+  if (deltaE(field, backdrop.mean) < BADGE_MIN_DELTA_E) {
+    return neutral(spec, context);
+  }
+  return {
+    kind: "image",
+    box,
+    decision: "badge",
+    corner: "bottom_right",
+    ink: null,
+    contrast: round(worstContrast(field, backdrop)),
+    panel: null,
+    wordmark: null,
+  };
+}
+
+function neutral(spec: LogoSpec, context: LogoContext): LogoLayout {
+  const { geometry } = context;
+  const { w, h } = imageSize(spec.aspect, geometry);
+  const multi = spec.colourClass === "multi_colour";
+  const placed = neutralPanel(
+    w,
+    h,
+    geometry,
+    multi ? (spec.colours.length > 0 ? spec.colours : [DARK_INK]) : null,
+  );
+  return {
+    kind: "image",
+    box: placed.inner,
+    decision: "panel",
+    corner: "bottom_right",
+    ink: placed.ink,
+    contrast: round(placed.contrast),
+    panel: placed.panel,
+    wordmark: null,
+  };
+}
+
+// Geometry 2, an image logo: the logo as it is (a badge always) or recoloured; a multi-colour logo may then move to a calmer corner or take a header-colour panel; a neutral panel last, so an image logo is always drawn and never turns into text.
+function imageLogo(spec: LogoSpec, context: LogoContext): LogoLayout {
+  if (spec.badge && spec.colourClass === "multi_colour") {
+    return badge(spec, context);
+  }
+  const image =
+    spec.colourClass === "multi_colour"
+      ? multiColour(spec, context)
+      : oneColour(spec, context);
+  return image ?? neutral(spec, context);
+}
+
+// Geometry 1 is the chain creatives stored before the larger logo keep: the logo as it is or recoloured; then (multi-colour only) another corner, then a header-colour panel; then the wordmark; then nothing. The reason names why the logo itself was not used.
+function legacyLogo(spec: LogoSpec, context: LogoContext) {
+  const image =
+    spec.colourClass === "multi_colour"
+      ? multiColour(spec, context)
+      : oneColour(spec, context);
+  if (image) return { logo: image, reason: null };
+  const wordmark = wordmarkLayout(spec, context);
+  const why = "the logo lacks contrast anywhere";
+  return "layout" in wordmark
+    ? { logo: wordmark.layout, reason: why }
+    : { logo: null, reason: `${why}; ${wordmark.reason}; no logo is drawn` };
+}
+
 export function placeLogo(
   spec: LogoSpec,
   context: LogoContext,
 ): { logo: LogoLayout | null; reason: string | null } {
-  if (spec.kind === "image") {
-    const image =
-      spec.colourClass === "multi_colour"
-        ? multiColour(spec, context)
-        : oneColour(spec, context);
-    if (image) return { logo: image, reason: null };
+  if (spec.kind === "wordmark") {
+    const wordmark = wordmarkLayout(spec, context);
+    return "layout" in wordmark
+      ? { logo: wordmark.layout, reason: null }
+      : { logo: null, reason: `${wordmark.reason}; no logo is drawn` };
   }
-  const wordmark = wordmarkLayout(spec, context);
-  const why = spec.kind === "image" ? "the logo lacks contrast anywhere; " : "";
-  return "layout" in wordmark
-    ? {
-        logo: wordmark.layout,
-        reason: spec.kind === "image" ? why.replace(/; $/, "") : null,
-      }
-    : { logo: null, reason: `${why}${wordmark.reason}; no logo is drawn` };
+  if (context.geometry === 1) return legacyLogo(spec, context);
+  return { logo: imageLogo(spec, context), reason: null };
 }

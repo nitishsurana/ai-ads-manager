@@ -35,6 +35,7 @@ export const stubBrand: BrandResult = {
     headerBackground: null,
     iconOnly: false,
     storeBrand: true,
+    badge: false,
   },
   brandKit: kit,
   brandKitScraped: kit,

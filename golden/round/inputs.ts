@@ -17,6 +17,7 @@ export function briefOf(
     research: [],
     approvedAngles: [],
     settings: DEFAULT_SETTINGS,
+    notApplied: [],
     ...extra,
     campaign: inputs.campaign,
     values: inputs.values,

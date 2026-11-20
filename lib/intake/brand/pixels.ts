@@ -276,6 +276,49 @@ export function dominantColours(
   return kept.length > 0 ? kept : ranked.slice(0, 1);
 }
 
+// The share of the image that is solid and not near-white. A badge (a disc or sticker with its own field) fills most of its trimmed box; a wordmark fills a third or less.
+export function badgeShare({ data }: Rgba) {
+  let inked = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    if (
+      (data[i + 3] ?? 0) >= SOLID &&
+      Math.min(data[i] ?? 0, data[i + 1] ?? 0, data[i + 2] ?? 0) < NEAR_WHITE
+    ) {
+      inked++;
+    }
+  }
+  return inked / (data.length / 4);
+}
+
+// A removed white box leaves a light JPEG fringe where the flood fill's cut-off stopped: the outer pixel of artwork next to transparency (or the image edge) goes and the next one halves.
+export function featherEdge(image: Rgba): Rgba {
+  const { width, height } = image;
+  const data = Buffer.from(image.data);
+  const count = width * height;
+  const alpha = (p: number) => data[p * 4 + 3] ?? 0;
+  const around = (p: number, test: (q: number) => boolean) => {
+    const x = p % width;
+    return [
+      x > 0 ? p - 1 : -1,
+      x < width - 1 ? p + 1 : -1,
+      p >= width ? p - width : -1,
+      p < count - width ? p + width : -1,
+    ].some(test);
+  };
+  const outer = new Uint8Array(count);
+  for (let p = 0; p < count; p++) {
+    outer[p] =
+      alpha(p) > 0 && around(p, (q) => q < 0 || alpha(q) === 0) ? 1 : 0;
+  }
+  for (let p = 0; p < count; p++) {
+    if (outer[p]) data[p * 4 + 3] = 0;
+    else if (alpha(p) > 0 && around(p, (q) => q >= 0 && outer[q] === 1)) {
+      data[p * 4 + 3] = Math.round(alpha(p) / 2);
+    }
+  }
+  return { data, width, height };
+}
+
 // Flat means the visible border is one colour within a small tolerance (a plain backdrop), or the image is transparent.
 export function hasFlatBackground(image: Rgba) {
   if (transparentShare(image) >= 0.05) return true;

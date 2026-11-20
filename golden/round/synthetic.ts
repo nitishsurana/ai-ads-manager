@@ -53,3 +53,16 @@ export const colourLogo = () =>
   )
     .png()
     .toBuffer();
+
+// A badge: a teal disc with white lettering strokes and two small accents, drawn as it is.
+export const badgeLogo = () =>
+  svg(
+    `<circle cx="130" cy="130" r="126" fill="#1a8f8a"/>
+     <rect x="50" y="112" width="160" height="22" rx="11" fill="#ffffff"/>
+     <rect x="85" y="150" width="90" height="10" fill="#ffffff"/>
+     <circle cx="190" cy="70" r="12" fill="#f2c230"/><circle cx="70" cy="190" r="10" fill="#f08a24"/>`,
+    260,
+    260,
+  )
+    .png()
+    .toBuffer();

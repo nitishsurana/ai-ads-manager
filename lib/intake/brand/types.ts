@@ -48,6 +48,8 @@ export type Logo = {
   headerBackground: string | null;
   iconOnly: boolean;
   storeBrand: boolean;
+  // A disc or sticker with its own field, drawn as it is; false for a logo stored before.
+  badge: boolean;
 };
 
 export type BrandPage = "homepage" | "about";

@@ -19,7 +19,7 @@ const SVG_RENDER_SIDE = 1200;
 const MAX_DENSITY = 7200;
 const MAX_SVG_CHARS = 2_000_000;
 // Part of the model replay key: change the decode or cleanup steps and recorded logo answers stop matching.
-export const LOAD_VERSION = "decode-2048-svg-1200-ink-v4";
+export const LOAD_VERSION = "decode-2048-svg-1200-ink-badge-v5";
 
 export type LoadedLogo = {
   // Hash of the original file (or the svg markup with external references stripped): the model replay key.

@@ -84,6 +84,13 @@ export function worstContrast(ink: Rgb, backdrop: Backdrop) {
   );
 }
 
+export function worstOf(colours: readonly Rgb[], backdrop: Backdrop) {
+  return Math.min(
+    Infinity,
+    ...colours.map((colour) => worstContrast(colour, backdrop)),
+  );
+}
+
 // The candidate with the best worst-case contrast; ties keep the earlier one.
 export function bestInk(candidates: readonly Rgb[], backdrop: Backdrop) {
   let best = { ink: candidates[0] ?? LIGHT_INK, ratio: -1 };

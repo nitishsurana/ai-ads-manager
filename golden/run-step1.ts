@@ -51,11 +51,7 @@ async function runCase(
     }
     const probe = {
       ...(expected.logoProbe && {
-        logoProbe: await probeLogo(
-          outcome,
-          storageDir,
-          "centre" in expected.logoProbe,
-        ),
+        logoProbe: await probeLogo(outcome, storageDir, expected.logoProbe),
       }),
       ...(expected.storedLogoFiles && {
         storedLogoFiles: storedLogoFiles(name, storageDir),

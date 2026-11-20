@@ -68,6 +68,7 @@ export async function ensureBrief(
     exemplarCreativeIds: [],
     approvedAngles: [],
     settings: DEFAULT_SETTINGS,
+    notApplied: [],
   };
   const version = await addBriefVersion(userId, workspaceId, {
     cause: "initial",

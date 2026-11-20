@@ -22,6 +22,16 @@ export const boxedEmblem = () =>
       300,
     ),
   );
+// A square with white corners around a filled teal disc: white script strokes and two small accents sit on the disc, so the white is lettering, not page.
+export const badgeDisc = () =>
+  png(
+    svgOf(
+      '<rect width="300" height="300" fill="#ffffff"/><circle cx="150" cy="150" r="139.2" fill="#1a8f8a"/><rect x="50" y="138" width="200" height="24" rx="12" fill="#ffffff"/><rect x="95" y="190" width="110" height="12" fill="#ffffff"/><circle cx="215" cy="95" r="12" fill="#f2c230"/><circle cx="85" cy="215" r="10" fill="#f08a24"/>',
+      300,
+      300,
+    ),
+  );
+
 export const paymentBadge = () =>
   png(
     svgOf(

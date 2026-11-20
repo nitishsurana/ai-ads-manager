@@ -4,7 +4,7 @@ import { ChevronDown, FileText, Lock, X } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { BriefContext } from "./brief-context";
 import { saveBriefAction } from "@/app/(workspace)/w/[id]/round-actions";
-import { settingsText } from "@/lib/brief/settings-line";
+import { notAppliedText, settingsText } from "@/lib/brief/settings-line";
 import { messages } from "@/lib/messages";
 import type { BriefPanelData } from "@/lib/brief/panel";
 import type { BriefRule } from "@/lib/brief/schema";
@@ -178,6 +178,7 @@ export function BriefPanel({ workspaceId, data }: BriefPanelProps) {
   const doCount = rules.filter((rule) => rule.kind === "do").length;
   const campaignLine = campaignText(campaign);
   const settingsLine = settingsText(data.content.settings);
+  const notAppliedLine = notAppliedText(data.content.notApplied);
 
   return (
     <section className="w-full overflow-hidden rounded-xl border border-border bg-card font-sans text-sm text-foreground shadow-xs">
@@ -239,6 +240,11 @@ export function BriefPanel({ workspaceId, data }: BriefPanelProps) {
           </div>
           {settingsLine && (
             <p className="m-0 text-xs text-muted-foreground">{settingsLine}</p>
+          )}
+          {notAppliedLine && (
+            <p className="m-0 text-xs text-muted-foreground">
+              {notAppliedLine}
+            </p>
           )}
         </div>
       )}

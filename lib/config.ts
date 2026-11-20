@@ -18,11 +18,16 @@ export const ROUND_DAILY_LIMIT = 20;
 export const ROUND_REWRITE_S = 60;
 
 // Starting values for the creatives, tuned after the first runs.
-export const LOGO_MAX_WIDTH_SHARE = 0.18;
+export const LOGO_MAX_WIDTH_SHARE = 0.24;
+// Logo geometry 1, which creatives stored before the 24% cap keep when they are edited.
+export const LEGACY_LOGO_MAX_WIDTH_SHARE = 0.18;
 export const LOGO_MIN_CONTRAST = 3;
 export const TEXT_MIN_CONTRAST = 4.5;
 export const CTA_MIN_CONTRAST = 4.5;
 export const CTA_MIN_DELTA_E = 20;
+// A button stands out from what is behind it by one of these.
+export const CTA_STAND_OUT_CONTRAST = 2;
+export const CTA_STAND_OUT_DELTA_E = 30;
 
 // Fal's price for one Bria FIBO 2 edit (checked on the Nov 15, 2026 background test); BiRefNet is recorded as billed.
 export const BRIA_EDIT_USD = 0.04;

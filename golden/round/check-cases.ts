@@ -195,6 +195,7 @@ const LAYOUT_CHECKS: Case[] = [
         headerBackground: null,
         iconOnly: false,
         storeBrand: true,
+        badge: false,
       };
       const present = { ...BASE_INPUTS, logo: stub };
       return same(
@@ -248,6 +249,7 @@ const LAYOUT_CHECKS: Case[] = [
         headerBackground: null,
         iconOnly: false,
         storeBrand: true,
+        badge: false,
       };
       const inputs = { ...BASE_INPUTS, logo: source };
       const box = { x: 800, y: 1600, w: 190, h: 58 };

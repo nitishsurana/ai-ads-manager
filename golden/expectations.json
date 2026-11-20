@@ -637,6 +637,7 @@
     "droppedPositions": [],
     "brandPages": ["homepage", "about"],
     "logoSource": "storefront",
+    "logoBadge": true,
     "logoTransparent": true,
     "storeName": "Small Batch Jam Co",
     "needsBrandName": false,
@@ -1244,6 +1245,7 @@
     "textWarning": true,
     "brandPages": ["homepage", "about"],
     "logoSource": "header",
+    "logoBadge": true,
     "logoTransparent": true,
     "storeName": "Death Wish Coffee",
     "needsBrandName": false,
@@ -1856,6 +1858,7 @@
     "brandPages": ["homepage", "about"],
     "logoSource": "header",
     "logoColourClass": "multi_colour",
+    "logoBadge": true,
     "logoTransparent": true,
     "storeName": "Lazy Goods",
     "needsBrandName": false,
@@ -1887,6 +1890,7 @@
     "brandPages": ["homepage"],
     "logoSource": "header",
     "logoColourClass": "multi_colour",
+    "logoBadge": true,
     "logoTransparent": true,
     "storeName": "Wrapped Goods",
     "needsBrandName": false,
@@ -1915,6 +1919,7 @@
     "message": null,
     "brandPages": ["homepage"],
     "logoSource": "header",
+    "logoBadge": false,
     "logoTransparent": true,
     "logoProbe": {
       "corner": "clear",
@@ -2039,6 +2044,7 @@
     "brandPages": ["homepage"],
     "logoSource": "header",
     "logoColourClass": "multi_colour",
+    "logoBadge": true,
     "logoTransparent": true,
     "storeName": "Width Goods",
     "needsBrandName": false,
@@ -2048,6 +2054,7 @@
     "message": null,
     "brandPages": ["homepage"],
     "logoSource": "storefront",
+    "logoBadge": false,
     "logoTransparent": true,
     "storeName": "Backed Goods",
     "needsBrandName": false,
@@ -2058,6 +2065,7 @@
     "brandPages": ["homepage"],
     "logoSource": "header",
     "logoColourClass": "one_colour",
+    "logoBadge": false,
     "logoTransparent": true,
     "logoProbe": {
       "corner": "clear",
@@ -2134,6 +2142,7 @@
     "brandPages": ["homepage"],
     "logoSource": "header",
     "logoColourClass": "multi_colour",
+    "logoBadge": true,
     "logoTransparent": true,
     "storeName": "Framed Goods",
     "needsBrandName": false,
@@ -2145,6 +2154,7 @@
     "brandPages": ["homepage"],
     "logoSource": "header",
     "logoColourClass": "one_colour",
+    "logoBadge": false,
     "logoTransparent": true,
     "logoProbe": {
       "corner": "clear",
@@ -2170,6 +2180,7 @@
     "brandPages": ["homepage"],
     "logoSource": "header",
     "logoColourClass": "multi_colour",
+    "logoBadge": true,
     "logoColours": ["#e11111", "#1111ee"],
     "logoTransparent": true,
     "logoProbe": {
@@ -2665,5 +2676,21 @@
         }
       }
     }
+  },
+  "brand-badge-disc": {
+    "message": null,
+    "brandPages": ["homepage"],
+    "logoSource": "header",
+    "logoColourClass": "multi_colour",
+    "logoBadge": true,
+    "logoTransparent": true,
+    "logoProbe": {
+      "corner": "clear",
+      "interior": "white",
+      "edge": "clean"
+    },
+    "storeName": "Disc Goods",
+    "needsBrandName": false,
+    "kitReady": true
   }
 }

@@ -9,15 +9,18 @@ import {
   previewOf,
   renderCreative,
   sampleBackdrop,
+  sceneHue,
   type FontSet,
   type Layout,
   type LayoutInput,
+  type LogoGeometry,
 } from "@/lib/render";
-import { parseColour } from "@/lib/intake";
+import { fromHex, parseColour } from "@/lib/intake";
 import type { RoundInputs } from "../inputs";
 import type { Candidate } from "../types";
 import {
   badgeSpec,
+  brandButton,
   brandColours,
   brandInk,
   parseColours,
@@ -49,6 +52,7 @@ function logoSpec(inputs: RoundInputs, logo: Logo | null): LayoutInput["logo"] {
     colourClass: source.colourClass,
     colours: parseColours(source.colours),
     headerBackground: header,
+    badge: source.badge,
     wordmark,
     brandInk: brandInk(inputs),
   };
@@ -63,8 +67,10 @@ export async function planCreative(
     fonts: FontSet;
     logo: Logo | null;
     label: string;
-    // An edit keeps the stored creative's setting; a new candidate keeps the text clear wherever the product's box can be trusted.
+    // An edit keeps the stored creative's settings; a new candidate keeps the text clear wherever the product's box can be trusted, takes the larger logo and picks its button colour afresh.
     keepClear?: boolean;
+    logoGeometry?: LogoGeometry;
+    ctaPreferred?: string;
   },
 ): Promise<Layout> {
   const { inputs, fonts, logo, label } = context;
@@ -94,6 +100,13 @@ export async function planCreative(
     body: face(inputs.brandKit.fonts.body.family),
     ...brandColours(inputs),
     logo: logoSpec(inputs, logo),
+    logoGeometry: context.logoGeometry ?? 2,
+    cta: {
+      mode: candidate.ctaColour ?? "auto",
+      ...brandButton(inputs),
+      sceneHue: sceneHue(pixels, product),
+      preferred: context.ctaPreferred ? fromHex(context.ctaPreferred) : null,
+    },
     sample: (box, scrim) => sampleBackdrop(pixels, box, scrim),
   });
   for (const { element, reason } of layout.dropped) {

@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
+import type { Expectation } from "./expectations";
 import type { Outcome } from "./observe";
 
 // What was stored for the logo: only a PNG, never an svg.
@@ -12,7 +13,7 @@ export function storedLogoFiles(name: string, storageDir: string) {
 export async function probeLogo(
   outcome: Outcome,
   storageDir: string,
-  withCentre: boolean,
+  wanted: NonNullable<Expectation["logoProbe"]>,
 ) {
   const logo =
     outcome.ok && "result" in outcome
@@ -37,6 +38,15 @@ export async function probeLogo(
       red: (data[i] ?? 0) > 200 && (data[i + 1] ?? 255) < 60,
     };
   };
+  // The first visible pixel down the middle column: a light one is the fringe a removed white box leaves.
+  const middleColumn = Math.floor(info.width / 2);
+  const firstVisible = Array.from({ length: info.height }, (_, y) => {
+    const i = (y * info.width + middleColumn) * 4;
+    return {
+      alpha: data[i + 3] ?? 0,
+      min: Math.min(data[i] ?? 0, data[i + 1] ?? 0, data[i + 2] ?? 0),
+    };
+  }).find((pixel) => pixel.alpha >= 128);
   const corner = at(0, 0);
   const inside = at(0.25, 0.5);
   const middle = at(0.5, 0.5);
@@ -44,8 +54,11 @@ export async function probeLogo(
     corner: corner.alpha < 10 ? "clear" : "opaque",
     interior:
       inside.alpha < 10 ? "clear" : inside.min >= 240 ? "white" : "dark",
-    ...(withCentre && {
+    ...("centre" in wanted && {
       centre: middle.alpha >= 250 && middle.red ? "red" : "other",
+    }),
+    ...("edge" in wanted && {
+      edge: (firstVisible?.min ?? 0) >= 200 ? "light" : "clean",
     }),
   };
 }

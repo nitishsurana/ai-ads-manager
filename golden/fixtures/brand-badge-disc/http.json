@@ -1,0 +1,52 @@
+{
+  "GET https://shop.example/products/blue-mug": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/html",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b",
+    "truncated": false
+  },
+  "GET https://shop.example/products/blue-mug.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/539cbc1ff21122bea0ea0d6fd1bc5c0b45c4041c01fa3feff2ed002ded8264b0",
+    "truncated": false
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/files/photo.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/b9eb8fa0fd8cab053d88fdce356782e446091d17dac9d5e72de55a10717ffefa",
+    "truncated": false
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/files/disc.png": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/d8fced6cd4166e3916260e348e6bc235eea46dc453d357406a1267f26497ec2d",
+    "truncated": false
+  },
+  "GET https://shop.example/api/2026-07/graphql.json?query=%7Bshop%7Bbrand%7Blogo%7Bimage%7Burl%7D%7D%7D%7D%7D": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "powered-by": "Shopify"
+    },
+    "location": null,
+    "body": "bodies/2f865c1d3787b09e59560c9a5ce7eb0e30fe9405f36dcf809ec8aa24fb8b90f9",
+    "truncated": false
+  }
+}

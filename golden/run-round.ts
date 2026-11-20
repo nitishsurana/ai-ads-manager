@@ -10,7 +10,10 @@ import { briefOf, rowInputs } from "./round/inputs";
 import { ROW_CASES } from "./round/rows";
 import { CHECK_CASES } from "./round/check-cases";
 import { COPY_CASES } from "./round/copy-cases";
+import { CTA_CASES } from "./round/cta-cases";
+import { EDIT_CASES } from "./round/edit-cases";
 import { JUDGE_TABLES } from "./round/judge-cases";
+import { LOGO_CASES } from "./round/logo-cases";
 import { PIXEL_CASES } from "./round/pixel-cases";
 import { PLAN_CASES } from "./round/plan-cases";
 import { writeContactSheet } from "./round/contact-sheet";
@@ -91,6 +94,9 @@ async function main() {
     ...JUDGE_TABLES,
     ...CHECK_CASES,
     ...COPY_CASES,
+    ...CTA_CASES,
+    ...EDIT_CASES,
+    ...LOGO_CASES,
     ...PIXEL_CASES,
     ...PLAN_CASES,
   ]) {

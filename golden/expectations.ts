@@ -111,6 +111,7 @@ const expectationSchema = z.strictObject({
     .optional(),
   logoTransparent: z.boolean().optional(),
   logoColours: z.array(z.string()).optional(),
+  logoBadge: z.boolean().optional(),
   // Stored PNG width and height.
   logoSize: z.tuple([z.number().int(), z.number().int()]).nullable().optional(),
   headerBackground: z.string().nullable().optional(),
@@ -128,6 +129,8 @@ const expectationSchema = z.strictObject({
       interior: z.enum(["clear", "white", "dark"]),
       // The pixel at the middle, for a mark that must keep its own colour.
       centre: z.enum(["red", "other"]).optional(),
+      // The first visible pixel down the middle column: "light" is a white-box fringe left on the artwork.
+      edge: z.enum(["clean", "light"]).optional(),
     })
     .optional(),
   // Files stored for the logo (a PNG only; an svg logo is rendered and discarded).

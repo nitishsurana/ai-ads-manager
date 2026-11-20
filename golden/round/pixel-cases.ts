@@ -303,10 +303,12 @@ const WORDMARK_CASES: Case[] = [
             colourClass: null,
             colours: [],
             headerBackground: null,
-            wordmark: "Weekend Coffee Co.",
+            badge: false,
+            wordmark: "Weekend Coffee Roasters Co.",
             brandInk: null,
           },
           {
+            geometry: 2,
             sample: () => flatBackdrop([20, 20, 20]),
             avoid: [],
             measure: createMeasure(fonts, "Poppins"),

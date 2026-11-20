@@ -84,7 +84,9 @@ const BRIEF_CONTENT = {
     productSize: "normal",
     preferCutout: false,
     backgroundStyle: "any",
+    ctaColour: "auto",
   },
+  notApplied: [],
 };
 
 // A round that is already over, inserted for cases the UI can't reach.

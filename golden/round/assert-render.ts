@@ -5,14 +5,20 @@ import {
   TEXT_MIN_CONTRAST,
   CTA_MIN_CONTRAST,
   CTA_MIN_DELTA_E,
-  LOGO_MAX_WIDTH_SHARE,
 } from "@/lib/config";
 import { parseColour } from "@/lib/intake";
 import type { RoundInputs } from "@/lib/round/inputs";
 import type { Candidate } from "@/lib/round/types";
 import { AD_NETWORK_COLOURS } from "@/lib/render/ad-network";
 import { contrast, deltaE, fromHex } from "@/lib/render/colour";
-import { CANVAS, insideSafe, layoutSchema, type Box } from "@/lib/render";
+import {
+  CANVAS,
+  insideLogoArea,
+  insideSafe,
+  layoutSchema,
+  LOGO_LIMITS,
+  type Box,
+} from "@/lib/render";
 import { overlaps } from "@/lib/render/canvas";
 import { brandColours } from "@/lib/round/compose/inputs";
 
@@ -50,15 +56,22 @@ export async function renderProblems(
       ? [["eyebrow", layout.eyebrow.box] as [string, Box]]
       : []),
     ...(layout.badge ? [["badge", layout.badge.box] as [string, Box]] : []),
-    ...(layout.logo
-      ? [["logo", layout.logo.panel?.box ?? layout.logo.box] as [string, Box]]
-      : []),
   ];
+  const geometry = layout.logoGeometry ?? 1;
+  const logoBox = layout.logo
+    ? (["logo", layout.logo.panel?.box ?? layout.logo.box] as [string, Box])
+    : null;
   for (const [name, box] of boxes) {
     check(insideSafe(box), `${name} box leaves the safe margins`);
   }
-  const texts = boxes.filter(([name]) => name !== "logo" && name !== "badge");
-  for (const [name, box] of boxes) {
+  if (logoBox) {
+    check(
+      insideLogoArea(logoBox[1], geometry),
+      "logo box leaves the safe margins",
+    );
+  }
+  const texts = boxes.filter(([name]) => name !== "badge");
+  for (const [name, box] of [...boxes, ...(logoBox ? [logoBox] : [])]) {
     for (const [other, against] of texts) {
       if (
         name !== other &&
@@ -88,18 +101,24 @@ export async function renderProblems(
     contrast(fromHex(layout.cta.colour), accent) >= CTA_MIN_CONTRAST,
     "CTA label contrast is under 4.5",
   );
-  const avoid = [...brandColours(inputs).brandColours, ...AD_NETWORK_COLOURS];
+  const avoid = [
+    ...(layout.cta.mode === "brand" ? [] : brandColours(inputs).brandColours),
+    ...AD_NETWORK_COLOURS,
+  ];
   check(
     avoid.every((colour) => deltaE(accent, colour) >= CTA_MIN_DELTA_E),
     "CTA colour is within ΔE 20 of a brand or ad-network colour",
   );
 
   if (layout.logo) {
-    check(
-      layout.logo.box.w <= Math.floor(CANVAS.width * LOGO_MAX_WIDTH_SHARE),
-      "logo is wider than 18% of the canvas",
-    );
-    check(layout.logo.contrast >= 3, "logo contrast is under 3:1");
+    const limits = LOGO_LIMITS[geometry];
+    check(layout.logo.box.w <= limits.width, "logo is over its width cap");
+    check(layout.logo.box.h <= limits.height, "logo is over its height cap");
+    const exempt =
+      layout.logo.decision === "badge" ||
+      (layout.logo.decision === "panel" &&
+        inputs.logo?.colourClass === "multi_colour");
+    check(exempt || layout.logo.contrast >= 3, "logo contrast is under 3:1");
   }
   check(
     (layout.badge !== null) === (candidate.supportingElement !== null),

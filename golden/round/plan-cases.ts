@@ -1,4 +1,10 @@
-import { briefContentSchema, DEFAULT_SETTINGS } from "@/lib/brief/schema";
+import {
+  briefContentSchema,
+  cleanNotApplied,
+  DEFAULT_SETTINGS,
+  rewriteSettingsSchema,
+} from "@/lib/brief/schema";
+import { notAppliedText, settingsText } from "@/lib/brief/settings-line";
 import type { BriefSettings } from "@/lib/brief/schema";
 import { placeProduct, productLimit } from "@/lib/round/background/placement";
 import { parseCreative } from "@/lib/round/creative";
@@ -200,7 +206,11 @@ export const PLAN_CASES: Case[] = [
             treatments: ["cut_out", "whole_photo", "whole_photo"],
           },
           {
-            settings: settings({ preferCutout: true }),
+            settings: {
+              productSize: "normal",
+              preferCutout: true,
+              backgroundStyle: "any",
+            },
             note: true,
             treatments: ["cut_out", "cut_out", "whole_photo"],
           },
@@ -236,5 +246,70 @@ export const PLAN_CASES: Case[] = [
         [DEFAULT_SETTINGS, backgrounds, true, false],
       );
     },
+  },
+  {
+    name: "brief: a button colour change alone leaves the planner request byte-identical and is still not a default setting",
+    run: () => {
+      const ask = (over: Partial<BriefSettings>) => {
+        const brief = briefOf(BASE_INPUTS, { settings: settings(over) });
+        const { inputSha256, system } = planRequest(BASE_INPUTS, brief);
+        return { inputSha256, system };
+      };
+      return same([ask({ ctaColour: "brand" })], [ask({})]);
+    },
+  },
+  {
+    name: "brief: the rewrite's settings must carry the button colour, and an old brief reads auto and no unapplied notes",
+    run: () => {
+      const { ctaColour, ...without } = DEFAULT_SETTINGS;
+      const old = briefContentSchema.parse({
+        rules: [],
+        campaign: {},
+        research: [],
+        values: BASE_INPUTS.values,
+        exemplarCreativeIds: [],
+        approvedAngles: [],
+        settings: without,
+      });
+      return same(
+        [
+          rewriteSettingsSchema.safeParse(without).success,
+          rewriteSettingsSchema.safeParse({ ...without, ctaColour }).success,
+          [old.settings.ctaColour, old.notApplied],
+        ],
+        [false, true, ["auto", []]],
+      );
+    },
+  },
+  {
+    name: "brief: unapplied notes are trimmed, cut to 100 characters, stripped of blanks and kept to five; the panel lines name them and the button setting",
+    run: () =>
+      same(
+        [
+          cleanNotApplied([
+            "  CTA higher  ",
+            "",
+            "   ",
+            "x".repeat(150),
+            "a",
+            "b",
+            "c",
+            "d",
+          ]),
+          notAppliedText(["CTA higher", "Bigger logo"]),
+          notAppliedText([]),
+          settingsText(
+            settings({ ctaColour: "brand", productSize: "smaller" }),
+          ),
+          settingsText(DEFAULT_SETTINGS),
+        ],
+        [
+          ["CTA higher", "x".repeat(100), "a", "b", "c"],
+          "Noted, not adjustable yet: CTA higher · Bigger logo",
+          "",
+          "Product smaller · Brand-coloured button",
+          "",
+        ],
+      ),
   },
 ];

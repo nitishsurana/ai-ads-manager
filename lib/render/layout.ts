@@ -40,12 +40,20 @@ export const LOGO_DECISIONS = [
   "recoloured",
   "calmer_corner",
   "header_panel",
+  "panel",
+  "badge",
   "wordmark",
 ] as const;
+
+// What the tester asked of the button: "auto" follows the background, "brand" uses the brand's own colour, "dark" and "light" pick a shade.
+export const CTA_MODES = ["auto", "brand", "dark", "light"] as const;
+export type CtaMode = (typeof CTA_MODES)[number];
 
 // What the stored creative is made of. With the background, the logo file and the fonts at the versions named in `fonts`, rendering needs nothing else, so a later edit re-renders from this.
 export const layoutSchema = z.object({
   version: z.literal(1),
+  // Set on layouts planned with the larger logo and its lower corners; without it an edit re-plans with the earlier logo box.
+  logoGeometry: z.literal(2).optional(),
   offerFactId: z.string().nullable(),
   // Every font family drawn, with its Fontsource version, so a later pin bump can't change this creative.
   fonts: z.record(z.string(), z.string()),
@@ -69,6 +77,8 @@ export const layoutSchema = z.object({
     radius: number,
     deltaE: number,
     contrast: number,
+    // Absent on layouts stored before the setting; an edit then treats it as "auto".
+    mode: z.enum(CTA_MODES).optional(),
   }),
   badge: z
     .object({

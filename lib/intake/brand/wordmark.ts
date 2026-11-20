@@ -18,5 +18,6 @@ export function wordmark(
     headerBackground,
     iconOnly: false,
     storeBrand: true,
+    badge: false,
   };
 }

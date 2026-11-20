@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Box, Layout } from "@/lib/render";
+import type { Box, CtaMode, Layout } from "@/lib/render";
 import type { RoundInputs } from "./inputs";
 import type { JudgeRecord } from "./judge/schema";
 
@@ -41,6 +41,8 @@ export type Candidate = {
   offerFactId: string | null;
   background: Background;
   copy: Copy | null;
+  // The tester's button colour setting at planning time; absent means "auto".
+  ctaColour?: CtaMode;
   backgroundPath: string | null;
   // Where the product sits in the 1080x1920 background.
   product: Box | null;

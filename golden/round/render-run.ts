@@ -2,6 +2,7 @@ import { renderProblems, type Rendered } from "./assert-render";
 import { LAYOUT_CASES } from "./layout-cases";
 import {
   BASE_INPUTS,
+  badgeLogo,
   colourLogo,
   darkLogo,
   renderFixture,
@@ -17,7 +18,7 @@ export function layoutCases(report: Report) {
   }
 }
 
-const LOGO_FIXTURE = {
+export const LOGO_FIXTURE = {
   source: "header" as const,
   pngPath: "fx/logo.png",
   width: 260,
@@ -31,6 +32,7 @@ const LOGO_FIXTURE = {
   headerBackground: "#ffffff",
   iconOnly: false,
   storeBrand: true,
+  badge: false,
 };
 
 async function allProblems(inputs: typeof BASE_INPUTS, rendered: Rendered[]) {
@@ -62,6 +64,21 @@ export async function fixtureRenders(report: Report) {
         },
       },
       logo: await colourLogo(),
+    },
+    {
+      name: "render: badge logo",
+      inputs: {
+        ...BASE_INPUTS,
+        logo: {
+          ...LOGO_FIXTURE,
+          width: 260,
+          height: 260,
+          colourClass: "multi_colour" as const,
+          colours: ["#1a8f8a", "#ffffff"],
+          badge: true,
+        },
+      },
+      logo: await badgeLogo(),
     },
     {
       name: "render: wordmark, INR price",
