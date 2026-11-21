@@ -54,7 +54,7 @@ export function readProductPage(input: {
   const orderFlow: OrderFlow =
     purchase.personalize && state === "purchasable" ? "personalize" : "direct";
 
-  const shown = displayedPrice($, section);
+  const shown = displayedPrice($, section, product.variants);
   const currency = detectCurrency(shown?.price ?? null, signal, market);
 
   // No price until a variant is chosen: fall back to the first variant that can be bought.

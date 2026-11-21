@@ -1,5 +1,6 @@
 import type { CheerioAPI } from "cheerio";
 import { parseAmount } from "@/lib/money";
+import type { ShopifyProduct } from "../product";
 import { cleanPrice, PRICE_AT_START } from "./money";
 import type { Node, Scope } from "./section";
 import { textOf } from "./text";
@@ -8,6 +9,8 @@ type PriceNode = {
   token: string;
   amount: number;
   was: boolean;
+  // Styled as a was price but is the variant's full selling price.
+  fullPrice: boolean;
   sale: boolean;
   subscription: boolean;
   hinted: boolean;
@@ -62,6 +65,7 @@ function priceNodes($: CheerioAPI, section: Scope) {
       token: cleanPrice(token),
       amount: parseAmount(token),
       was: $(element).closest("del, s, strike").length > 0 || WAS.test(classes),
+      fullPrice: false,
       sale: SALE.test(classes),
       hinted:
         PRICE_HINT.test(classes) ||
@@ -87,12 +91,37 @@ export type DisplayedPrice = {
   wasPrice: string | null;
 };
 
+// A was-styled price ("price__original") is the current price when it is a variant's selling price, not a compare-at, and no lower price sits beside it.
+function unmarkListedPrices(
+  $: CheerioAPI,
+  nodes: PriceNode[],
+  variants: ShopifyProduct["variants"],
+) {
+  const prices = new Set(variants.map((v) => Number(v.price)));
+  const compareAts = new Set(
+    variants.flatMap((v) =>
+      v.compareAtPrice !== null && Number(v.compareAtPrice) > Number(v.price)
+        ? [Number(v.compareAtPrice)]
+        : [],
+    ),
+  );
+  return nodes.map((n) => {
+    if (!n.was || !prices.has(n.amount) || compareAts.has(n.amount)) return n;
+    const paired = nodes.some(
+      (m) =>
+        !m.was && m.amount < n.amount && (isNear($, n, m) || isNear($, m, n)),
+    );
+    return paired ? n : { ...n, was: false, fullPrice: true };
+  });
+}
+
 // One-time prices win over subscription ones; a lone subscription price still counts.
 export function displayedPrice(
   $: CheerioAPI,
   section: Scope,
+  variants: ShopifyProduct["variants"],
 ): DisplayedPrice | null {
-  const all = priceNodes($, section);
+  const all = unmarkListedPrices($, priceNodes($, section), variants);
   const oneTime = all.filter((n) => !n.subscription);
   const pool = oneTime.length > 0 ? oneTime : all;
 
@@ -106,12 +135,15 @@ export function displayedPrice(
     (n) => n.sale && n.amount < first.amount && isNear($, first, n),
   );
   const current = discounted ?? first;
-  const was = pool.find(
-    (n) =>
-      (n.was || (discounted !== undefined && n === first)) &&
-      n.amount > current.amount &&
-      isNear($, current, n),
-  );
+  // A full price has no was price of its own; a higher one nearby belongs to something else.
+  const was = current.fullPrice
+    ? undefined
+    : pool.find(
+        (n) =>
+          (n.was || (discounted !== undefined && n === first)) &&
+          n.amount > current.amount &&
+          isNear($, current, n),
+      );
   return {
     price: current.token,
     amount: current.amount,

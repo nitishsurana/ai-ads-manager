@@ -966,6 +966,24 @@
   "failure-order-store-before-photos": {
     "message": "Failure: This product is only sold in stores, so we can't make ads for it."
   },
+  "price-sale-not-in-product-data": {
+    "message": null,
+    "price": "$14.40",
+    "wasPrice": "$18.00",
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "price-was-styled-current": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
   "subscription-one-time": {
     "message": null,
     "price": "$30.00",

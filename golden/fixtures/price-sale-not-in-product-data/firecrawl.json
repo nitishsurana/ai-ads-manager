@@ -1,0 +1,7 @@
+{
+  "https://shop.example/products/blue-mug": {
+    "status": 200,
+    "html": "bodies/0ccedf2e8e15a4affde5f88ff24b1f78580c712c0080f34b57c4ffddaa2b122f",
+    "location": "US"
+  }
+}
