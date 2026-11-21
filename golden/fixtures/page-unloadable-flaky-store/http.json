@@ -1,0 +1,16 @@
+{
+  "GET https://flaky-store.myshopify.com/products/blue-mug": {
+    "status": 200,
+    "headers": { "content-type": "text/html", "powered-by": "Shopify" },
+    "location": null,
+    "body": "bodies/11ba944955a05bf57c74fffd7dd856e90194f7f002392590831730515469b51b",
+    "truncated": false
+  },
+  "GET https://flaky-store.myshopify.com/products/blue-mug.json": {
+    "status": 200,
+    "headers": { "content-type": "application/json", "powered-by": "Shopify" },
+    "location": null,
+    "body": "bodies/539cbc1ff21122bea0ea0d6fd1bc5c0b45c4041c01fa3feff2ed002ded8264b0",
+    "truncated": false
+  }
+}

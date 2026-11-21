@@ -1,4 +1,5 @@
 export { createIntakeDeps } from "./deps";
+export { failureCodeOf, IntakeStageError } from "./errors";
 export { runIntake, runIntakeBrand, runIntakeUntilBrand } from "./pipeline";
 export {
   BrandStageError,

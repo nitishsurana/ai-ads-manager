@@ -11,3 +11,6 @@ export function isAbandoned(error: unknown) {
     (error instanceof Error && error.cause instanceof IntakeAbandonedError)
   );
 }
+
+// The thread can't take a new intake: it has a workspace, or an intake is already reading.
+export class IntakeConflictError extends Error {}

@@ -3,6 +3,7 @@
 import { Link2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { z } from "zod";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,11 @@ import { StatusStep } from "./status-step";
 
 const POLL_MS = 2_000;
 const PHOTO_SLOTS = 6;
+
+const retryResponseSchema = z.object({
+  intakeId: z.string().optional(),
+  error: z.string().optional(),
+});
 
 type ReadingScreenProps = { intakeId: string; initial: ReadingStatus };
 
@@ -33,6 +39,27 @@ function keepPhotoUrls(previous: ReadingStatus, next: ReadingStatus) {
 export function ReadingScreen({ intakeId, initial }: ReadingScreenProps) {
   const router = useRouter();
   const [status, setStatus] = useState(initial);
+  const [retrying, setRetrying] = useState(false);
+  const [retryError, setRetryError] = useState<string | null>(null);
+
+  async function retry() {
+    setRetrying(true);
+    setRetryError(null);
+    try {
+      const response = await fetch(`/api/intakes/${intakeId}/retry`, {
+        method: "POST",
+      });
+      const body = retryResponseSchema.safeParse(await response.json());
+      if (response.ok && body.data?.intakeId) {
+        router.replace(`/r/${body.data.intakeId}`);
+        return;
+      }
+      setRetryError(body.data?.error ?? messages.retry_failed);
+    } catch {
+      setRetryError(messages.retry_failed);
+    }
+    setRetrying(false);
+  }
 
   useEffect(() => {
     if (status.status !== "reading") return;
@@ -140,15 +167,22 @@ export function ReadingScreen({ intakeId, initial }: ReadingScreenProps) {
         <Alert
           tone="error"
           message={status.failure?.message ?? messages.intake_failed}
-          detail="Nothing was saved from this attempt."
+          detail={retryError ?? "Nothing was saved from this attempt."}
         >
-          <Button
-            variant="outline"
-            className="text-foreground"
-            onClick={() => document.getElementById("chat-composer")?.focus()}
-          >
-            Try another link
-          </Button>
+          <div className="flex gap-2">
+            {status.canRetry && (
+              <Button onClick={retry} disabled={retrying}>
+                Try again
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              className="text-foreground"
+              onClick={() => document.getElementById("chat-composer")?.focus()}
+            >
+              Try another link
+            </Button>
+          </div>
         </Alert>
       )}
     </div>

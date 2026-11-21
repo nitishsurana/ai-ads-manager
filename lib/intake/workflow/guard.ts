@@ -1,5 +1,7 @@
 import "server-only";
 import { SnapshotError } from "@/lib/providers/snapshot";
+import { BrandStageError } from "../brand";
+import { failureCodeOf } from "../errors";
 import type { IntakeDeps } from "../types";
 import type { CostEntry } from "../photos";
 import { removeIntakeFiles } from "./cleanup";
@@ -43,8 +45,11 @@ export async function guardStage<T>(
       );
       return { kind: "abandoned", ...spend };
     }
-    console.error(`intake ${run.intakeId}: stage failed`, error);
-    return { kind: "error", ...spend };
+    const code =
+      failureCodeOf(error) ??
+      (error instanceof BrandStageError ? "brand_failed" : "intake_failed");
+    console.error(`intake ${run.intakeId}: stage failed (${code})`, error);
+    return { kind: "error", code, ...spend };
   } finally {
     heartbeat.stop();
   }

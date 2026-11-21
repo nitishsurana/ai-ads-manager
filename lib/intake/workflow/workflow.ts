@@ -18,7 +18,10 @@ type Ending =
   | { kind: "abandoned" }
   | { kind: "done"; workspaceId: string | null };
 
-const failed = (): Ending => ({ kind: "failed", code: "intake_failed" });
+const failed = (code: Step1FailureCode = "intake_failed"): Ending => ({
+  kind: "failed",
+  code,
+});
 
 export async function intakeWorkflow(run: IntakeRun) {
   "use workflow";
@@ -31,24 +34,29 @@ export async function intakeWorkflow(run: IntakeRun) {
     firecrawlRenders.push(...spend.firecrawlRenders);
   };
 
+  const timedOut = () => {
+    console.error(`intake ${run.intakeId}: past its deadline`);
+    return failed("intake_timed_out");
+  };
+
   const read = async (): Promise<Ending> => {
     try {
       const product = await readProductStep(run);
       add(product);
-      if (product.kind === "error") return failed();
+      if (product.kind === "error") return failed(product.code);
       if (product.kind === "abandoned") return { kind: "abandoned" };
       const outcome = product.value;
       if (!outcome.ok) return { kind: "failed", code: outcome.code };
       if ("existingWorkspaceId" in outcome) {
         return { kind: "existing", workspaceId: outcome.existingWorkspaceId };
       }
-      if (pastDeadline()) return failed();
+      if (pastDeadline()) return timedOut();
 
       const brand = await readBrandStep(run, outcome);
       add(brand);
-      if (brand.kind === "error") return failed();
+      if (brand.kind === "error") return failed(brand.code);
       if (brand.kind === "abandoned") return { kind: "abandoned" };
-      if (pastDeadline()) return failed();
+      if (pastDeadline()) return timedOut();
       return { kind: "success", result: brand.value };
     } catch (error) {
       console.error(`intake ${run.intakeId}: workflow failed`, error);

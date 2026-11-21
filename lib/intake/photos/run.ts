@@ -1,4 +1,5 @@
-import { sha256 } from "@/lib/providers/snapshot";
+import { SnapshotError, sha256 } from "@/lib/providers/snapshot";
+import { isAbandoned } from "../workflow/errors";
 import { findDuplicates } from "./dedup";
 import { fetchOriginal } from "./fetch";
 import { logSwallowed } from "./log";
@@ -6,11 +7,21 @@ import { mapLimit } from "./pool";
 import { processPhoto } from "./process";
 import { prepareImage, UnreadableImageError } from "./prepare";
 import { PhotosStageError } from "./types";
-import type { CostEntry, PhotosDeps, PhotosInput, PhotosResult } from "./types";
+import type {
+  CostEntry,
+  Photo,
+  PhotosDeps,
+  PhotosInput,
+  PhotosResult,
+  SkipReason,
+} from "./types";
 
 const CONCURRENCY = 10;
-// An outage, not bad photos: at least this many failed checks, and more failures than successes among those completed.
-const OUTAGE_FAILURES = 3;
+
+// A replay or recording problem, or an abandoned intake, must stop the stage; any other failure only skips its photo.
+function rethrowFatal(error: unknown) {
+  if (error instanceof SnapshotError || isAbandoned(error)) throw error;
+}
 
 type Duplicate = PhotosResult["duplicates"][number];
 
@@ -61,52 +72,68 @@ async function readAndCheck(
       photo: null,
     });
 
+  const readPhoto = async (sourceUrl: string, position: number) => {
+    const original = await fetchOriginal(sourceUrl, deps);
+    if (!original.ok) {
+      logSwallowed(labelOf(position), "fetch", original.cause);
+      skipped.push({ position, reason: original.reason });
+      await reading();
+      return null;
+    }
+
+    // Hashing the original bytes first lets a copy of an already-seen photo skip decoding.
+    const hash = sha256(original.bytes);
+    const lowest = claimed.get(hash);
+    if (lowest !== undefined && lowest < position) {
+      exactDuplicates.push({ position, duplicateOf: lowest });
+      await reading();
+      return null;
+    }
+    claimed.set(hash, position);
+
+    let prepared;
+    try {
+      prepared = await prepareImage(original.bytes, hash);
+    } catch (error) {
+      if (!(error instanceof UnreadableImageError)) throw error;
+      logSwallowed(labelOf(position), "decode", error.cause);
+      skipped.push({ position, reason: "unreadable" });
+      await reading();
+      return null;
+    }
+    await reading();
+    return { position, sourceUrl, image: prepared };
+  };
+
   const fetched = await mapLimit(
     input.images,
     CONCURRENCY,
     async (image, i) => {
       const position = i + 1;
-      const sourceUrl = image.src;
-      const original = await fetchOriginal(sourceUrl, deps);
-      if (!original.ok) {
-        logSwallowed(labelOf(position), "fetch", original.cause);
-        skipped.push({ position, reason: original.reason });
-        await reading();
-        return null;
-      }
-
-      // Hashing the original bytes first lets a copy of an already-seen photo skip decoding.
-      const hash = sha256(original.bytes);
-      const lowest = claimed.get(hash);
-      if (lowest !== undefined && lowest < position) {
-        exactDuplicates.push({ position, duplicateOf: lowest });
-        await reading();
-        return null;
-      }
-      claimed.set(hash, position);
-
-      let prepared;
       try {
-        prepared = await prepareImage(original.bytes, hash);
+        return await readPhoto(image.src, position);
       } catch (error) {
-        if (!(error instanceof UnreadableImageError)) throw error;
-        logSwallowed(labelOf(position), "decode", error.cause);
-        skipped.push({ position, reason: "unreadable" });
+        rethrowFatal(error);
+        logSwallowed(labelOf(position), "read", error);
+        skipped.push({ position, reason: "processing_failed" });
         await reading();
         return null;
       }
-      await reading();
-      return { position, sourceUrl, image: prepared };
     },
   );
 
-  // A copy of a photo that turned out unreadable is unreadable too, not a duplicate.
-  const unreadable = new Set(
-    skipped.filter((s) => s.reason === "unreadable").map((s) => s.position),
+  // A copy of a photo that was skipped for its own fault or by an unexpected failure shares its fate, rather than counting as a duplicate.
+  const sharedFate = new Map(
+    skipped
+      .filter(
+        (s) => s.reason === "unreadable" || s.reason === "processing_failed",
+      )
+      .map((s) => [s.position, s.reason]),
   );
   const copies = exactDuplicates.filter((d) => {
-    if (!unreadable.has(d.duplicateOf)) return true;
-    skipped.push({ position: d.position, reason: "unreadable" });
+    const reason = sharedFate.get(d.duplicateOf);
+    if (!reason) return true;
+    skipped.push({ position: d.position, reason });
     return false;
   });
 
@@ -123,21 +150,22 @@ async function readAndCheck(
   );
 
   let done = 0;
-  let succeeded = 0;
-  let failed = 0;
   const processed = await mapLimit(unique, CONCURRENCY, async (source) => {
-    const photo = await processPhoto(
-      { intakeId: input.intakeId, source },
-      deps,
-      costs,
-    );
-    if (photo) succeeded++;
-    else {
-      skipped.push({ position: source.position, reason: "check_failed" });
-      if (++failed >= OUTAGE_FAILURES && failed > succeeded) {
-        throw new Error("photo checks are failing");
-      }
+    let photo: Photo | null = null;
+    let failure: SkipReason | null = null;
+    try {
+      photo = await processPhoto(
+        { intakeId: input.intakeId, source },
+        deps,
+        costs,
+      );
+      if (!photo) failure = "check_failed";
+    } catch (error) {
+      rethrowFatal(error);
+      logSwallowed(labelOf(source.position), "process", error);
+      failure = "processing_failed";
     }
+    if (failure) skipped.push({ position: source.position, reason: failure });
     await deps.progress({
       stage: "photos",
       phase: "checking",
@@ -150,10 +178,6 @@ async function readAndCheck(
     });
     return photo;
   });
-  // Checked again once every photo is done, so the outcome doesn't depend on completion order.
-  if (failed >= OUTAGE_FAILURES && failed > succeeded) {
-    throw new Error("photo checks are failing");
-  }
 
   return {
     photos: processed.flatMap((photo) => (photo ? [photo] : [])),

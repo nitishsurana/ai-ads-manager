@@ -16,8 +16,15 @@ export function observe(outcome: Outcome): Record<string, unknown> {
   if ("existingWorkspaceId" in outcome) {
     return { message: null, existingWorkspaceId: outcome.existingWorkspaceId };
   }
-  const { productKey, finalUrl, market, page, photos, warnings } =
-    outcome.result;
+  const {
+    productKey,
+    finalUrl,
+    market,
+    page,
+    photos,
+    photosSkipped,
+    warnings,
+  } = outcome.result;
   const brand = "brand" in outcome.result ? outcome.result.brand : undefined;
   const dropped = photos.photos.filter((photo) => photo.dropped);
   const shown = photos.photos.filter((photo) => photo.selected);
@@ -46,6 +53,7 @@ export function observe(outcome: Outcome): Record<string, unknown> {
     ),
     duplicatePositions: photos.duplicates.map((d) => d.position),
     skippedPositions: photos.skipped.map((s) => s.position),
+    photosSkipped,
     escalatedPositions: photos.photos
       .filter((photo) => photo.checks.model === ESCALATION_MODEL)
       .map((photo) => photo.position),

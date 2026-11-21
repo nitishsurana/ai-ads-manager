@@ -29,13 +29,15 @@ export type ConfirmSource = {
     "storeName" | "needsBrandName" | "logo" | "brandKit"
   >;
   warnings: IntakeResult["warnings"];
+  photosSkipped: IntakeResult["photosSkipped"];
 };
 
 export function initialConfirm(result: ConfirmSource): ConfirmState {
-  const { page, photos, brand, product, warnings } = result;
+  const { page, photos, brand, product, warnings, photosSkipped } = result;
   const variantsById = new Map(product.variants.map((v) => [v.id, v]));
   return {
     notPurchasable: warnings.includes("not_purchasable"),
+    photosSkipped,
     orderFlow: page.orderFlow,
     continuePastFlag: null,
     needsVariantChoice: page.needsVariantChoice,

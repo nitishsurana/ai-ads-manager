@@ -415,7 +415,7 @@ async function main() {
     { file: "c.png", bytes: green, checks: refusal, escalated: refusal },
   ]);
 
-  // Failures with a retryable cause throw; photos that are gone or unreadable end as no_photos.
+  // Photos that could not be read (unreachable, gone or undecodable), or checks that all fail, end the intake with a failure that names which; no_photos is only for photos that were read and all dropped.
   writeFixture("photos-unreachable", [
     { file: "down.png", bytes: Buffer.alloc(0), response: { status: 503 } },
     { file: "garbage.png", bytes: Buffer.from("not an image at all") },
@@ -426,7 +426,7 @@ async function main() {
     { file: "garbage.png", bytes: Buffer.from("not an image at all") },
   ]);
 
-  // One good photo among four failing ones still trips the breaker, whatever the completion order.
+  // One good photo among four failing ones still succeeds, whatever the completion order.
   writeFixture("photos-checks-breaker", [
     { file: "a.png", bytes: blue, checks: refusal, escalated: refusal },
     { file: "b.png", bytes: red, checks: refusal, escalated: refusal },

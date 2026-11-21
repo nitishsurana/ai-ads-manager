@@ -164,6 +164,19 @@ test.describe("confirm states", () => {
     await expect(page.getByText("3 of 3 selected")).toBeVisible();
   });
 
+  test("a product with unreadable photos flags how many were skipped", async () => {
+    const { page, uid } = a;
+    const seeded = await seedWorkspace({
+      userId: uid,
+      fixture: "photos-skipped",
+    });
+    await page.goto(`/w/${seeded.workspaceId}`);
+    await expect(page.getByText("1 thing to check")).toBeVisible();
+    await expect(
+      page.getByText("5 of 6 photos couldn't be read and were skipped."),
+    ).toBeVisible();
+  });
+
   test("edit mode saves without a round, and step 1 links to it", async () => {
     const { page, uid } = a;
     const seeded = await seedWorkspace({

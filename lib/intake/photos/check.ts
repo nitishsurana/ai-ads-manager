@@ -7,6 +7,8 @@ import { PHOTO_CHECK_PROMPT, PHOTO_CHECK_SYSTEM } from "./prompts";
 
 export const PRIMARY_MODEL = "anthropic/claude-haiku-5.5";
 export const ESCALATION_MODEL = "anthropic/claude-sonnet-5.5";
+// Bounds a hanging provider so one photo can't stall the stage; normal checks take at most 11 s.
+const CHECK_TIMEOUT_MS = 30_000;
 
 // A low-confidence answer, or any primary-model failure (refusal, schema miss, timeout), goes to the larger model. A photo the primary model says has added text gets the larger model's answer too, and that answer decides, because the added-text judgement drives the drop rules and the primary model flips on borderline photos. If that second call fails, the primary answer stands.
 // Both failing gives checks: null, with the cost of whatever did answer.
@@ -26,6 +28,7 @@ export async function checkPhoto(
         system: PHOTO_CHECK_SYSTEM,
         prompt: PHOTO_CHECK_PROMPT,
         images: [input.image],
+        timeoutMs: CHECK_TIMEOUT_MS,
         schema: photoChecksSchema,
       });
       costs.push({ provider: "ai", model, usd: costUsd });

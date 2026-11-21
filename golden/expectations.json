@@ -836,10 +836,10 @@
     "message": "Failure: That doesn't look like a valid link. Check it and try again."
   },
   "G35": {
-    "message": "Failure: We couldn't reach this store. Try another product."
+    "message": "Failure: We couldn't reach this store."
   },
   "G36": {
-    "message": "Failure: We couldn't reach this store. Try another product."
+    "message": "Failure: We couldn't reach this store."
   },
   "G37": {
     "message": "Failure: This product has no photos to build ads from."
@@ -904,13 +904,13 @@
     "market": "US"
   },
   "ssrf-private": {
-    "message": "Failure: We couldn't reach this store. Try another product."
+    "message": "Failure: We couldn't reach this store."
   },
   "ssrf-mapped": {
-    "message": "Failure: We couldn't reach this store. Try another product."
+    "message": "Failure: We couldn't reach this store."
   },
   "ssrf-redirect": {
-    "message": "Failure: We couldn't reach this store. Try another product."
+    "message": "Failure: We couldn't reach this store."
   },
   "collection-named-products": {
     "message": null,
@@ -1179,7 +1179,7 @@
     "message": "Failure: We couldn't find that product."
   },
   "bot-refused-dead-cart": {
-    "message": "Failure: We couldn't reach this store. Try another product."
+    "message": "Failure: We couldn't reach this store."
   },
   "bot-refused-not-a-product": {
     "message": "Failure: Paste a link to a single product page."
@@ -1593,7 +1593,8 @@
     "uniquePhotos": 1,
     "shownPhotos": 1,
     "droppedPositions": [],
-    "skippedPositions": [2, 3, 4, 5, 6]
+    "skippedPositions": [2, 3, 4, 5, 6],
+    "photosSkipped": { "skipped": 5, "total": 6 }
   },
   "photos-check-failed": {
     "message": null,
@@ -1607,6 +1608,7 @@
     "shownPhotos": 2,
     "droppedPositions": [],
     "skippedPositions": [2, 4],
+    "photosSkipped": { "skipped": 2, "total": 4 },
     "escalatedPositions": [3],
     "lowResWarning": false,
     "textWarning": false
@@ -1625,19 +1627,21 @@
     "duplicatePositions": [2]
   },
   "photos-checks-down": {
-    "throws": "photo checks are failing",
-    "message": null
+    "message": "Failure: Our photo check isn't responding right now, so no photos could be checked."
   },
   "photos-unreachable": {
-    "throws": "photos could not be read",
-    "message": null
+    "message": "Failure: We couldn't read any of this product's photos."
   },
   "photos-gone": {
-    "message": "Failure: This product has no photos to build ads from."
+    "message": "Failure: We couldn't read any of this product's photos."
   },
   "photos-checks-breaker": {
-    "throws": "photo checks are failing",
-    "message": null
+    "message": null,
+    "uniquePhotos": 1,
+    "shownPhotos": 1,
+    "droppedPositions": [],
+    "skippedPositions": [1, 2, 4, 5],
+    "photosSkipped": { "skipped": 4, "total": 5 }
   },
   "G20": {
     "message": null,

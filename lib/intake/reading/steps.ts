@@ -21,7 +21,12 @@ const FAILED_AT: Partial<Record<Step1FailureCode, number>> = {
   url_malformed: 0,
   not_shopify: 0,
   not_a_product: 0,
+  store_unreachable: 0,
+  page_unreadable: 1,
   no_photos: 2,
+  photos_unreadable: 2,
+  photo_check_down: 2,
+  brand_failed: 3,
 };
 
 function activeDetail({ phase, done, total }: ReadingStatus) {

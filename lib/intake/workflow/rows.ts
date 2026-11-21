@@ -32,6 +32,7 @@ function productJson(result: IntakeResult) {
     storeName: result.brand.storeName,
     needsBrandName: result.brand.needsBrandName,
     warnings: result.warnings,
+    photosSkipped: result.photosSkipped,
   };
 }
 

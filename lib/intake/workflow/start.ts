@@ -8,6 +8,7 @@ import {
   getThread,
 } from "@/lib/db/queries";
 import { INTAKE_DEADLINE_MS } from "@/lib/config";
+import { IntakeConflictError } from "./errors";
 import { intakeWorkflow } from "./workflow";
 
 export async function startIntake(input: {
@@ -18,12 +19,21 @@ export async function startIntake(input: {
   const thread = await getThread(input.userId, input.threadId);
   if (!thread) throw new Error(`thread ${input.threadId} not found`);
   if (thread.workspaceId) {
-    throw new Error(`thread ${input.threadId} already has a workspace`);
+    throw new IntakeConflictError(
+      `thread ${input.threadId} already has a workspace`,
+    );
   }
   if (await findReadingIntakeId(input.userId, input.threadId)) {
-    throw new Error(`thread ${input.threadId} already has a reading intake`);
+    throw new IntakeConflictError(
+      `thread ${input.threadId} already has a reading intake`,
+    );
   }
   const intakeId = await createIntake(input);
+  if (!intakeId) {
+    throw new IntakeConflictError(
+      `thread ${input.threadId} already has a reading intake`,
+    );
+  }
   try {
     await start(intakeWorkflow, [
       { ...input, intakeId, deadlineAt: Date.now() + INTAKE_DEADLINE_MS },

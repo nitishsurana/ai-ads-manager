@@ -92,13 +92,13 @@ export async function processPhoto(
     if (analysed.shapes !== 1) dropReason = "mask_not_one_shape";
   }
 
-  // Storage is written only once every provider call has succeeded, so a skipped photo leaves nothing behind.
+  // Storage is written only once every provider call has succeeded, so a skipped photo leaves nothing behind; a failed write removes what landed.
   const workExt = image.workType === "image/png" ? "png" : "jpg";
   const workPath = `${stem}-work.${workExt}`;
   const thumbPath = `${stem}-thumb.jpg`;
   const maskPath = mask ? `${stem}-mask.png` : null;
   const cutoutPath = mask ? `${stem}-cutout.png` : null;
-  await Promise.all([
+  const writes = await Promise.allSettled([
     storage.put(PHOTOS_BUCKET, workPath, image.work, image.workType),
     thumbnail(image.work).then((thumb) =>
       storage.put(PHOTOS_BUCKET, thumbPath, thumb, "image/jpeg"),
@@ -110,6 +110,16 @@ export async function processPhoto(
         ]
       : []),
   ]);
+  const failed = writes.find((write) => write.status === "rejected");
+  if (failed) {
+    await Promise.allSettled([
+      storage.remove(PHOTOS_BUCKET, [workPath, thumbPath]),
+      ...(maskPath && cutoutPath
+        ? [storage.remove(CUTOUTS_BUCKET, [maskPath, cutoutPath])]
+        : []),
+    ]);
+    throw failed.reason;
+  }
 
   const lowRes = isLowResolution(image.origWidth, image.origHeight);
   const tier: PhotoTier = checks.added_text

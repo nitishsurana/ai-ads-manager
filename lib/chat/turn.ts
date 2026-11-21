@@ -19,7 +19,7 @@ import {
   listFacts,
   type Thread,
 } from "@/lib/db/queries";
-import { startIntake } from "@/lib/intake/workflow";
+import { IntakeConflictError, startIntake } from "@/lib/intake/workflow";
 import { mergeFinishedIntake } from "@/lib/workspace";
 import { messages } from "@/lib/messages";
 import {
@@ -75,7 +75,7 @@ function postStatus(
   });
 }
 
-// A reading intake is told to the tester and left alone; any other start failure reads as the generic intake failure. The caller posts the returned status.
+// A reading intake (including one that won the start race) is told to the tester and left alone; any other start failure reads as the generic intake failure. The caller posts the returned status.
 async function startReading(userId: string, threadId: string, url: string) {
   if (await findReadingIntakeId(userId, threadId)) {
     return { status: messages.intake_running };
@@ -83,6 +83,9 @@ async function startReading(userId: string, threadId: string, url: string) {
   try {
     return { intakeId: await startIntake({ userId, threadId, url }) };
   } catch (error) {
+    if (error instanceof IntakeConflictError) {
+      return { status: messages.intake_running };
+    }
     console.error(
       `chat: starting an intake for thread ${threadId} failed`,
       error,

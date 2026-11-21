@@ -14,6 +14,7 @@ export const readingStatusSchema = z.object({
   failure: z
     .object({ code: z.enum(step1FailureCodes), message: z.string() })
     .nullable(),
+  canRetry: z.boolean(),
   workspaceId: z.string().nullable(),
   photos: z.array(z.object({ position: z.number(), url: z.string() })),
 });

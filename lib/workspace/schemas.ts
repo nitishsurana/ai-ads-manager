@@ -90,6 +90,10 @@ export const productJsonSchema = z.object({
   storeName: z.string().nullable(),
   needsBrandName: z.boolean(),
   warnings: z.array(z.literal("not_purchasable")),
+  photosSkipped: z
+    .object({ skipped: z.number().int(), total: z.number().int() })
+    .nullable()
+    .default(null),
 });
 
 // The tester's answers that have no column of their own: photo selection lives on the photos, the edited brand kit on brand_kit and the campaign on campaign.

@@ -12,5 +12,5 @@ export default async function Page({ params }: PageProps<"/r/[intakeId]">) {
     redirect(`/w/${status.workspaceId}`);
   }
 
-  return <ReadingScreen intakeId={intakeId} initial={status} />;
+  return <ReadingScreen key={intakeId} intakeId={intakeId} initial={status} />;
 }

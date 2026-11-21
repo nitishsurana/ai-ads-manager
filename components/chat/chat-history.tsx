@@ -2,7 +2,11 @@ import type { Campaign } from "@/lib/chat/campaign";
 import type { ChatRow } from "@/lib/chat/types";
 import { splitMessage } from "@/lib/chat/url";
 import type { Fact } from "@/lib/db/queries";
-import { messages, step1FailureCodes } from "@/lib/messages";
+import {
+  messages,
+  retryableFailureCodes,
+  step1FailureCodes,
+} from "@/lib/messages";
 import { AssistantMessage } from "./assistant-message";
 import { BriefSummary } from "./brief-summary";
 import { ChatDivider } from "./chat-divider";
@@ -12,6 +16,17 @@ import { UserMessage } from "./user-message";
 const failureTexts = new Set<string>(
   step1FailureCodes.map((code) => messages[code]),
 );
+
+const retryableTexts = new Set<string>(
+  retryableFailureCodes.map((code) => messages[code]),
+);
+
+function noteFor(text: string) {
+  if (!failureTexts.has(text)) return "";
+  return retryableTexts.has(text)
+    ? messages.retry_note
+    : messages.try_another_link;
+}
 
 function textOf(row: ChatRow) {
   return row.parts
@@ -74,7 +89,7 @@ function Row({
         <AssistantMessage
           text={text}
           tone={failed ? "error" : "default"}
-          note={failed ? messages.try_another_link : ""}
+          note={noteFor(text)}
         />
       );
     }

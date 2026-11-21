@@ -56,9 +56,13 @@ export type Photo = {
   warnings: PhotoWarning[];
 };
 
-// fetch_failed (any fetch failure other than gone or too big) and check_failed mean a retry may work; unavailable (gone, or over the size cap) and unreadable are the photo's own fault.
+// fetch_failed (any fetch failure other than gone or too big), check_failed and processing_failed (an unexpected throw while reading or storing the photo) mean a retry may work; unavailable (gone, or over the size cap) and unreadable are the photo's own fault.
 export type SkipReason =
-  "fetch_failed" | "unavailable" | "unreadable" | "check_failed";
+  | "fetch_failed"
+  | "unavailable"
+  | "unreadable"
+  | "check_failed"
+  | "processing_failed";
 
 export type CostEntry = {
   provider: "ai" | "fal";

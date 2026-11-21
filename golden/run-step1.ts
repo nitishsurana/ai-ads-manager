@@ -10,6 +10,7 @@ import { runConfirm } from "./confirm-check";
 import { loadExpectations, type Expectation } from "./expectations";
 import type { Outcome } from "./observe";
 import { fullResult, hasBrandPages, snapshotDirOf } from "./replay";
+import { PHOTOS_CASES } from "./photos-cases";
 import { probeLogo, storedLogoFiles } from "./probe";
 
 process.env.PROVIDERS = "fake";
@@ -19,8 +20,6 @@ type CaseResult = {
   actual: Record<string, unknown>;
   unpinned: string[];
 };
-
-const noDiffs: CaseResult = { diffs: [], actual: {}, unpinned: [] };
 
 async function runCase(
   name: string,
@@ -37,18 +36,6 @@ async function runCase(
   try {
     const run = hasBrandPages(dir) ? runIntake : runIntakeUntilBrand;
     const outcome: Outcome = await run({ url, intakeId: name }, deps);
-    if (expected.throws) {
-      return {
-        diffs: [
-          {
-            field: "throws",
-            text: `expected a throw containing "${expected.throws}"`,
-          },
-        ],
-        actual: {},
-        unpinned: [],
-      };
-    }
     const probe = {
       ...(expected.logoProbe && {
         logoProbe: await probeLogo(outcome, storageDir, expected.logoProbe),
@@ -62,7 +49,6 @@ async function runCase(
     return mismatches(expected, outcome, probe, confirmed);
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error);
-    if (expected.throws && text.includes(expected.throws)) return noDiffs;
     return {
       diffs: [{ field: "threw", text: `threw: ${text}` }],
       actual: {},
@@ -122,6 +108,17 @@ async function main() {
     if (unpinned.length > 0 && dir.startsWith(".golden")) {
       console.log(`  SKIP photo fields not pinned: ${unpinned.join(", ")}`);
     }
+  }
+  for (const { name, run } of PHOTOS_CASES) {
+    let problem: string | null;
+    try {
+      problem = await run();
+    } catch (error) {
+      problem = `threw: ${error instanceof Error ? error.message : error}`;
+    }
+    if (problem) failed++;
+    else passed++;
+    console.log(problem ? `FAIL ${name}\n  ${problem}` : `PASS ${name}`);
   }
   console.log(`${passed} passed, ${triaged} triage, ${failed} failed`);
   if (failed > 0) process.exit(1);

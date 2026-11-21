@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Step1FailureCode } from "@/lib/messages";
 import type { CostEntry } from "../photos";
 
 // Everything here crosses step boundaries, so it stays plain data.
@@ -13,7 +14,11 @@ export type IntakeRun = {
 export type Spend = { costs: CostEntry[]; firecrawlRenders: string[] };
 
 export type StageResult<T> = Spend &
-  ({ kind: "ok"; value: T } | { kind: "error" } | { kind: "abandoned" });
+  (
+    | { kind: "ok"; value: T }
+    | { kind: "error"; code: Step1FailureCode }
+    | { kind: "abandoned" }
+  );
 
 export const progressSchema = z.object({
   stage: z.enum(["product", "photos", "brand"]),

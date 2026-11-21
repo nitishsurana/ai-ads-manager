@@ -53,6 +53,7 @@ export async function getReadingStatus(
     failure: intake.failureCode
       ? { code: intake.failureCode, message: messages[intake.failureCode] }
       : null,
+    canRetry: intake.canRetry,
     workspaceId: intake.workspaceId,
     photos:
       intake.status === "reading" && progress

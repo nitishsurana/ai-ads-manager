@@ -95,9 +95,12 @@ const expectationSchema = z.strictObject({
   droppedPositions: z.array(z.number().int()).optional(),
   dropReasons: z.record(z.string(), z.string()).optional(),
   duplicatePositions: z.array(z.number().int()).optional(),
-  // The intake is expected to throw (the tester sees the generic retry message) with this text in the error.
-  throws: z.string().optional(),
   skippedPositions: z.array(z.number().int()).optional(),
+  // The confirm screen's count of photos that couldn't be read; null when none were skipped.
+  photosSkipped: z
+    .strictObject({ skipped: z.number().int(), total: z.number().int() })
+    .nullable()
+    .optional(),
   escalatedPositions: z.array(z.number().int()).optional(),
   // Kept photos the model called a gift set, and those whose backdrop the code measured as not one colour.
   giftSetPositions: z.array(z.number().int()).optional(),

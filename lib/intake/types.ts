@@ -40,6 +40,8 @@ export type IntakeResult = {
   product: ShopifyProduct;
   page: PageFacts;
   photos: PhotosResult;
+  // Null when no photo was skipped; duplicates and drops aren't skips.
+  photosSkipped: { skipped: number; total: number } | null;
   brand: BrandResult;
   warnings: IntakeWarning[];
 };

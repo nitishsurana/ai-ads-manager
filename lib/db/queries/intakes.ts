@@ -44,6 +44,9 @@ function toIntake(row: unknown): Intake {
   };
 }
 
+const UNIQUE_VIOLATION = "23505";
+
+// Null when the thread already has a reading intake: the unique index decided the race.
 export async function createIntake(input: {
   userId: string;
   threadId: string;
@@ -58,6 +61,7 @@ export async function createIntake(input: {
     })
     .select("id")
     .single();
+  if (error?.code === UNIQUE_VIOLATION) return null;
   check(error, "create intake");
   if (!data) throw new Error("db: create intake returned no row");
   return data.id;
@@ -150,7 +154,7 @@ export function failStaleIntake(userId: string, id: string, staleMs: number) {
   return updateWhileReading(
     userId,
     id,
-    { status: "failed", failure_code: "intake_failed" },
+    { status: "failed", failure_code: "intake_timed_out" },
     new Date(Date.now() - staleMs),
   );
 }

@@ -36,6 +36,7 @@ export function buildConfirmState(
     product: product.shopify,
     page: product.page,
     warnings: product.warnings,
+    photosSkipped: product.photosSkipped,
     photos: {
       photos: photos.map((photo) => ({
         position: photo.position,

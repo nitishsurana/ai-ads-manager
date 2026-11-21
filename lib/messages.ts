@@ -7,7 +7,7 @@ export const messages = {
   not_a_product: "Paste a link to a single product page.",
   product_not_found: "We couldn't find that product.",
   store_password: "This store is password-protected, so we can't read it.",
-  store_unreachable: "We couldn't reach this store. Try another product.",
+  store_unreachable: "We couldn't reach this store.",
   no_photos: "This product has no photos to build ads from.",
   price_missing: "Only products with a price above $0 are supported.",
   store_only:
@@ -17,10 +17,20 @@ export const messages = {
   pre_order:
     "Pre-order products aren't supported yet. Try a product that's available now.",
   intake_failed: "Something went wrong reading this product. Try again.",
+  page_unreadable:
+    "We couldn't load this product page. The store may be blocking automated visits or responded too slowly.",
+  brand_failed: "We couldn't build this store's brand kit.",
+  intake_timed_out: "Reading this product took too long or stopped responding.",
+  photos_unreadable: "We couldn't read any of this product's photos.",
+  photo_check_down:
+    "Our photo check isn't responding right now, so no photos could be checked.",
   intake_running:
     "I'm still reading the last link. Paste another once it's done.",
   extra_links: "I only read the first link in a message.",
   try_another_link: "Paste a different product link to try again.",
+  retry_note: "Paste the link again to retry, or try a different product.",
+  retry_failed:
+    "We couldn't start another try. Paste the link in the chat instead.",
   chat_failed: "Something went wrong with that message. Try again.",
   confirm_locked:
     "A round is still running. Wait for it to finish, then save your changes.",
@@ -73,6 +83,9 @@ export const messages = {
   not_applied_prefix: "Noted, not adjustable yet:",
   low_resolution: "This photo is low resolution and may look soft.",
   photo_text: "This photo has text on it; photos without text are used first.",
+  photos_skipped:
+    "{skipped} of {total} photos couldn't be read and were skipped.",
+  photo_skipped: "1 of {total} photos couldn't be read and was skipped.",
   no_logo:
     "We couldn't find a logo for this store, so these ads won't include one.",
 } as const;
@@ -92,6 +105,22 @@ export const step1FailureCodes = [
   "not_sold_online",
   "pre_order",
   "intake_failed",
+  "page_unreadable",
+  "brand_failed",
+  "intake_timed_out",
+  "photos_unreadable",
+  "photo_check_down",
 ] as const satisfies readonly MessageCode[];
 
 export type Step1FailureCode = (typeof step1FailureCodes)[number];
+
+// Failures a second attempt at the same link can get past.
+export const retryableFailureCodes = [
+  "store_unreachable",
+  "page_unreadable",
+  "brand_failed",
+  "intake_timed_out",
+  "photos_unreadable",
+  "photo_check_down",
+  "intake_failed",
+] as const satisfies readonly Step1FailureCode[];

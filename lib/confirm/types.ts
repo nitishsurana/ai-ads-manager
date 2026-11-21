@@ -23,6 +23,8 @@ export type ConfirmVariant = PageVariant & {
 
 export type ConfirmState = {
   notPurchasable: boolean;
+  // Photos that couldn't be read; null when none were skipped.
+  photosSkipped: { skipped: number; total: number } | null;
   orderFlow: OrderFlow;
   // null until the tester answers the not-purchasable flag.
   continuePastFlag: boolean | null;

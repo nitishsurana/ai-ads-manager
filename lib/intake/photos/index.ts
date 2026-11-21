@@ -5,6 +5,7 @@ export { backdropMask, chooseMask, maskStats, unionMask } from "./backdrop";
 export type { MaskChoice } from "./backdrop";
 export { countMainShapes } from "./mask";
 export { mapLimit } from "./pool";
+export { photosFailure } from "./failure";
 export { runPhotos } from "./run";
 export { PhotosStageError } from "./types";
 export { photoWarnings } from "./warnings";

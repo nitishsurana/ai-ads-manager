@@ -1,7 +1,8 @@
 import { SnapshotError } from "@/lib/providers/snapshot";
 import { BrandStageError, runBrand } from "./brand";
+import { IntakeStageError } from "./errors";
 import { pageFailure, readProductPage } from "./page";
-import { type CostEntry, PhotosStageError, runPhotos } from "./photos";
+import { type CostEntry, photosFailure, runPhotos } from "./photos";
 import { fetchProduct } from "./product";
 import { marketOf, productKeyOf } from "./product-key";
 import { checkStore } from "./store";
@@ -50,13 +51,23 @@ export async function runIntakeUntilBrand(
 
   // The page is rendered without the query string, so ?variant= can't change what shows on load.
   const renderUrl = new URL(store.finalUrl.pathname, store.finalUrl.origin);
-  const rendered = await deps.firecrawl.scrapePage(renderUrl.href, {
-    country: market,
-    waitForWidgets: true,
-    captureStyles: { variantIds: product.variants.map((v) => String(v.id)) },
-  });
+  const rendered = await deps.firecrawl
+    .scrapePage(renderUrl.href, {
+      country: market,
+      waitForWidgets: true,
+      captureStyles: { variantIds: product.variants.map((v) => String(v.id)) },
+    })
+    .catch((error: unknown) => {
+      if (error instanceof SnapshotError) throw error;
+      throw new IntakeStageError(
+        "page_unreadable",
+        `Product page ${renderUrl.href} could not be rendered`,
+        { cause: error },
+      );
+    });
   if (rendered.status >= 400) {
-    throw new Error(
+    throw new IntakeStageError(
+      "page_unreadable",
       `Product page ${renderUrl.href} returned ${rendered.status}`,
     );
   }
@@ -75,17 +86,8 @@ export async function runIntakeUntilBrand(
     { intakeId: input.intakeId, images: product.images },
     deps,
   );
-  if (!photos.photos.some((photo) => photo.selected)) {
-    // no_photos is for photos that were really dropped, gone or unreadable; a transient fetch or provider failure is retryable.
-    const transient = ["fetch_failed", "check_failed"];
-    if (photos.skipped.some((s) => transient.includes(s.reason))) {
-      throw new PhotosStageError(
-        "photos could not be read: fetches or checks failed",
-        photos.costs,
-      );
-    }
-    return { ok: false, code: "no_photos" };
-  }
+  const photosCode = photosFailure(photos);
+  if (photosCode) return { ok: false, code: photosCode };
 
   return {
     ok: true,
@@ -97,6 +99,9 @@ export async function runIntakeUntilBrand(
       product,
       page,
       photos,
+      photosSkipped: photos.skipped.length
+        ? { skipped: photos.skipped.length, total: product.images.length }
+        : null,
       warnings: page.purchase === "not_purchasable" ? ["not_purchasable"] : [],
     },
     productPage: {

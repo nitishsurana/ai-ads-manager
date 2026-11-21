@@ -6,6 +6,7 @@ import { resetTesters, secret, sendMessage, testerContext } from "./helpers";
 
 const SUCCESS_URL = "https://shopabc.myshopify.com/products/blue-mug";
 const FAILING_URL = "https://plain.example/products/blue-mug";
+const FLAKY_URL = "https://flaky-store.myshopify.com/products/blue-mug";
 const NAVIGATE_TIMEOUT = 30_000;
 const SCREEN_TIMEOUT = 60_000;
 
@@ -51,9 +52,47 @@ test("an unreadable product shows the failure with its exact message", async ({
       .getByRole("log", { name: "Conversation" })
       .getByText("Only Shopify product pages are supported for now."),
   ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Try again" })).toHaveCount(0);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.getByRole("button", { name: "Try another link" }).click();
   await expect(page.getByLabel("Message")).toBeFocused();
+  await context.close();
+});
+
+test("a transient failure can be retried in the same thread", async ({
+  browser,
+}) => {
+  const { context, page, uid } = await testerContext(browser, "a");
+  await startIntake(page, FLAKY_URL);
+  const firstUrl = page.url();
+
+  await expect(
+    page
+      .getByRole("main")
+      .getByRole("alert")
+      .filter({ hasText: "We couldn't load this product page." }),
+  ).toBeVisible({ timeout: SCREEN_TIMEOUT });
+  const readingStep = page
+    .locator("section > div")
+    .filter({ hasText: "Reading the product" });
+  await expect(readingStep).toContainText("Failed");
+  await expect(readingStep).toContainText("Couldn’t continue");
+  await page.getByRole("button", { name: "Try again" }).click();
+  await expect(page).not.toHaveURL(firstUrl);
+  await expect(page).toHaveURL(/\/r\/[0-9a-f-]{36}$/);
+
+  const { data: intakes } = await secret
+    .from("intakes")
+    .select("thread_id")
+    .eq("user_id", uid);
+  expect(intakes).toHaveLength(2);
+  expect(new Set(intakes?.map((row) => row.thread_id)).size).toBe(1);
+  const { data: userMessages } = await secret
+    .from("messages")
+    .select("id")
+    .eq("thread_id", intakes?.[0]?.thread_id ?? "")
+    .eq("role", "user");
+  expect(userMessages).toHaveLength(1);
   await context.close();
 });
 
@@ -139,13 +178,13 @@ test("the reading screen follows progress and the stuck rule, and only its owner
     .eq("id", id);
   await expect(
     page.getByRole("main").getByRole("alert").filter({
-      hasText: "Something went wrong reading this product. Try again.",
+      hasText: "Reading this product took too long or stopped responding.",
     }),
   ).toBeVisible({ timeout: 15_000 });
   await expect(
     page
       .getByRole("log", { name: "Conversation" })
-      .getByText("Something went wrong reading this product. Try again."),
+      .getByText("Reading this product took too long or stopped responding."),
   ).toBeVisible();
 
   await owner.context.close();

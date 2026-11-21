@@ -34,10 +34,12 @@ export function FlagsSection({
   const [firstTransparent] = transparent;
   const purchase = found.find((message) => message.code === "not_purchasable");
   const personalize = found.find((message) => message.code === "personalize");
+  const skipped = found.find((message) => message.code === "photos_skipped");
   const needsVariant = state.needsVariantChoice;
 
   const count =
-    [purchase, personalize, needsVariant, noLogo].filter(Boolean).length +
+    [purchase, personalize, skipped, needsVariant, noLogo].filter(Boolean)
+      .length +
     [addedText, lowRes, transparent].filter((photos) => photos.length > 0)
       .length;
   if (count === 0) return null;
@@ -81,6 +83,7 @@ export function FlagsSection({
           />
         ))}
       {personalize && <Alert tone="info" message={personalize.text} />}
+      {skipped && <Alert tone="warning" message={skipped.text} />}
       {needsVariant && (
         <VariantFlag
           state={state}
