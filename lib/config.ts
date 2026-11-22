@@ -12,7 +12,7 @@ export const PROGRESS_WRITE_INTERVAL_MS = 1_500;
 export const INTAKE_HEARTBEAT_MS = 30_000;
 
 // UTC days; an attempt counts once it is running.
-export const ROUND_DAILY_LIMIT = 20;
+export const ROUND_DAILY_LIMIT = 50;
 
 // A running round with no deadline this long (the brief rewrite never finished) is failed.
 export const ROUND_REWRITE_S = 60;

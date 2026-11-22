@@ -26,7 +26,7 @@ const TIMED_OUT = "This is taking too long. You can retry in 5 minutes.";
 const NO_PASS =
   "We couldn't make creatives that pass our checks this time. Add more detail or update what you told us, then try again.";
 const DAILY_LIMIT =
-  "You've reached today's limit of 20 rounds. Try again tomorrow.";
+  "You've reached today's limit of 50 rounds. Try again tomorrow.";
 test.skip(!FAKE_PROVIDERS, "replays committed fixtures");
 test.afterAll(resetTesters);
 test.describe.configure({ mode: "serial" });
@@ -300,14 +300,14 @@ test.describe("rounds", () => {
     });
   }
 
-  test("the 20th round of the day is the last: the next start shows the limit message", async () => {
+  test("the 50th round of the day is the last: the next start shows the limit message", async () => {
     const { page, uid } = a;
     const { workspaceId } = await seed();
     const now = new Date().toISOString();
     await insertRounds(
       uid,
       workspaceId,
-      Array.from({ length: 20 }, (_, index) => ({
+      Array.from({ length: 50 }, (_, index) => ({
         n: 1,
         attempt: index + 1,
         status: "failed",
@@ -319,7 +319,7 @@ test.describe("rounds", () => {
     await page.goto(`/w/${workspaceId}`);
     await tryAgain(page).click();
     await expect(page.getByText(DAILY_LIMIT)).toBeVisible();
-    expect(await roundsOf(workspaceId)).toHaveLength(20);
+    expect(await roundsOf(workspaceId)).toHaveLength(50);
     // The limit counts every round of the tester today, so later tests must not inherit these.
     await secret.from("rounds").delete().eq("workspace_id", workspaceId);
   });
@@ -353,7 +353,7 @@ test.describe("rounds", () => {
     await insertRounds(
       uid,
       workspaceId,
-      Array.from({ length: 25 }, (_, index) => ({
+      Array.from({ length: 55 }, (_, index) => ({
         n: 1,
         attempt: index + 1,
         status: "failed",
@@ -365,11 +365,11 @@ test.describe("rounds", () => {
     await page.goto(`/w/${workspaceId}`);
     await tryAgain(page).click();
     await expect(
-      page.getByRole("heading", { name: "Round 1, attempt 26" }),
+      page.getByRole("heading", { name: "Round 1, attempt 56" }),
     ).toBeVisible();
     await expect(page.getByText(DAILY_LIMIT)).toHaveCount(0);
     await expect
-      .poll(async () => (await roundOf(workspaceId, 25))?.status, {
+      .poll(async () => (await roundOf(workspaceId, 55))?.status, {
         timeout: SCREEN_TIMEOUT,
       })
       .toBe("done");

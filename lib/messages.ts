@@ -38,7 +38,7 @@ export const messages = {
   cannot_generate: "Finish the items at the top before generating.",
   spend_cap:
     "Today's spend limit for the test has been reached. Try again tomorrow.",
-  daily_limit: "You've reached today's limit of 20 rounds. Try again tomorrow.",
+  daily_limit: "You've reached today's limit of 50 rounds. Try again tomorrow.",
   unrated_creatives: "Rate every creative before starting the next round.",
   round_failed: "Something went wrong making this round. Try again.",
   round_timed_out: "This is taking too long. You can retry in 5 minutes.",
