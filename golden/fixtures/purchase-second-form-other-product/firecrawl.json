@@ -1,0 +1,7 @@
+{
+  "https://shop.example/products/purchase-second-form-other-product": {
+    "status": 200,
+    "html": "bodies/e2d8c2e9606a4d4522b755bfb6dc685d78e3cd59203c27c3b466be3be81eda25",
+    "location": "US"
+  }
+}

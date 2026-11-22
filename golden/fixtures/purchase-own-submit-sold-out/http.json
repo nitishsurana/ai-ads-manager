@@ -1,0 +1,27 @@
+{
+  "GET https://shop.example/products/purchase-own-submit-sold-out": {
+    "status": 200,
+    "headers": {
+      "powered-by": "Shopify",
+      "content-type": "text/html; charset=utf-8"
+    },
+    "location": null,
+    "body": "bodies/75183be2e2f3ee87fa3e4381da8f5835dc2919d2d44c27ea6887ce10d1f84ccc"
+  },
+  "GET https://shop.example/products/purchase-own-submit-sold-out.json": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "location": null,
+    "body": "bodies/13038ae43a7e7613584e13460c602583675e83621efb5f9ee504845349cb5433"
+  },
+  "GET https://cdn.shopify.com/s/files/1/0001/mug-front.jpg": {
+    "status": 200,
+    "headers": {
+      "content-type": "image/png"
+    },
+    "location": null,
+    "body": "bodies/61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237"
+  }
+}

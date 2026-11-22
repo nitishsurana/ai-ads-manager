@@ -1,0 +1,14 @@
+{
+  "photo_check:711ecea9:61eba75c25d0b5d9e8cb026d93a906d284ecea0643abf915b994c0dfbec70237": {
+    "added_text": false,
+    "background": "plain",
+    "person": false,
+    "transparent": false,
+    "gift_set": false,
+    "has_product": true,
+    "product_count": 1,
+    "text_overlaps_product": false,
+    "product_cropped_by_frame": false,
+    "confidence": "high"
+  }
+}

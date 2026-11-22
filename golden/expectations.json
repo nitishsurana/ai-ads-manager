@@ -990,6 +990,132 @@
     "rating": null,
     "warnings": []
   },
+  "purchase-own-submit-hook-class": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "purchase-own-submit-sold-out": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-dawn-installment-form": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "purchase-dawn-installment-unlisted": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "purchase-clutter-control-in-form": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-clutter-container-in-form": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "purchase-second-form-sticky": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "purchase-second-form-in-section": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "purchasable",
+    "rating": null,
+    "warnings": []
+  },
+  "purchase-second-form-disabled": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-second-form-hidden": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-second-form-in-drawer": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-second-form-other-product": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-second-form-preorder": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
+  "purchase-same-product-card": {
+    "message": null,
+    "price": "$18.00",
+    "wasPrice": null,
+    "currency": "USD",
+    "purchase": "not_purchasable",
+    "rating": null,
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
+  },
   "subscription-one-time": {
     "message": null,
     "price": "$30.00",

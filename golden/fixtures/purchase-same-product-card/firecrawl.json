@@ -1,0 +1,7 @@
+{
+  "https://shop.example/products/purchase-same-product-card": {
+    "status": 200,
+    "html": "bodies/a153b976bd2f5902848271cf681406b13d9d916802930ba489bce0d9222ebe13",
+    "location": "US"
+  }
+}

@@ -34,12 +34,7 @@ export function readProductPage(input: {
   const { section, form } = mainSection($, product);
 
   const variants = variantAvailability($, section, product);
-  const purchase = readPurchase(
-    $,
-    section,
-    form,
-    product.variants.flatMap((v) => v.options),
-  );
+  const purchase = readPurchase($, section, form, product);
 
   const available = variants.filter((v) => v.availability === "buyable");
   let state: PurchaseState = purchase.state;

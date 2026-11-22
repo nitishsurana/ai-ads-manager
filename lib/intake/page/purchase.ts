@@ -1,5 +1,14 @@
 import type { CheerioAPI } from "cheerio";
-import type { Node, Scope } from "./section";
+import type { ShopifyProduct } from "../product";
+import { CONTROLS, formControls } from "./controls";
+import {
+  HIDDEN,
+  NOISE,
+  variantForms,
+  variantIdsOf,
+  type Node,
+  type Scope,
+} from "./section";
 import { normalise, textOf } from "./text";
 import type { PurchaseState } from "./types";
 
@@ -9,8 +18,6 @@ type Group =
   | "choose"
   | "buy";
 
-const CONTROLS =
-  'button, input[type="submit"], input[type="button"], a[role="button"], a[class*="btn" i], a[class*="button" i]';
 const PERSONALIZE_CONTROLS =
   'button, input[type="submit"], input[type="button"], [role="button"]:not(a)';
 const QUICK_CHECKOUT =
@@ -93,17 +100,6 @@ function quickCheckoutShows($: CheerioAPI, section: Scope) {
     });
 }
 
-// Buttons placed outside the form but attached to it with form="<id>" still belong to it.
-function formControls($: CheerioAPI, form: Scope) {
-  const formId = form.attr("id");
-  const attached = formId
-    ? $("button[form], input[form]")
-        .toArray()
-        .filter((el) => $(el).attr("form") === formId)
-    : [];
-  return [...form.find(CONTROLS).toArray(), ...attached];
-}
-
 // Personalize buttons often sit outside the cart form, so the whole section is searched. Links are left out: "Shop all personalized" is navigation. A disabled button still counts, because stores ship it disabled until their script runs.
 function hasPersonalizeButton(
   $: CheerioAPI,
@@ -120,33 +116,90 @@ function hasPersonalizeButton(
     });
 }
 
-// Submit buttons speak first, then other buttons, then links styled as buttons. With a cart form only its own controls count; without one, the whole section's do.
+function leadGroup(
+  $: CheerioAPI,
+  controls: Node[],
+  isPill: (el: Node) => boolean,
+) {
+  const buttons = controls.filter((el) => !$(el).is("a"));
+  return (
+    firstGroup(
+      $,
+      buttons.filter((el) => isSubmit($, el)),
+    ) ??
+    firstGroup(
+      $,
+      buttons.filter((el) => !isSubmit($, el) && !isPill(el)),
+    ) ??
+    firstGroup(
+      $,
+      controls.filter((el) => $(el).is("a")),
+    )
+  );
+}
+
+// Sticky bars and duplicate forms post this product's variant to the cart too. Product cards are skipped: their quick-add follows product data, which isn't the authority.
+function otherCartControls(
+  $: CheerioAPI,
+  section: Scope,
+  mainForm: Scope | null,
+  variantIds: Set<string>,
+  isPill: (el: Node) => boolean,
+) {
+  const root = section.get(0);
+  const isCard = (form: Node) => {
+    const card = $(form).closest('li, article, [class*="card" i]');
+    const cardNode = card.get(0);
+    return (
+      cardNode !== undefined &&
+      card.find('a[href*="/products/"]').length > 0 &&
+      !(root && $.contains(cardNode, root))
+    );
+  };
+  return variantForms($, variantIds)
+    .filter((form) => form !== mainForm?.get(0) && !isCard(form))
+    .flatMap((form) => formControls($, $(form)))
+    .filter(
+      (el) =>
+        isEnabled($, el) &&
+        !isPill(el) &&
+        !$(el).is(HIDDEN) &&
+        $(el).parents(`${NOISE}, header, footer, nav`).not("html, body")
+          .length === 0,
+    );
+}
+
+// Submit buttons speak first, then other buttons, then links styled as buttons. With a cart form only its own controls count; without one, the whole section's do. A page that reads as not purchasable gets a second look at this product's other cart forms.
 export function readPurchase(
   $: CheerioAPI,
   section: Scope,
   form: Scope | null,
-  optionValues: string[],
+  product: Pick<ShopifyProduct, "variants">,
 ): Purchase {
   const controls = form
     ? formControls($, form)
     : section.find(CONTROLS).toArray();
-  const links = controls.filter((el) => $(el).is("a"));
-  const buttons = controls.filter((el) => !$(el).is("a"));
-  const submits = buttons.filter((el) => isSubmit($, el));
   // Variant pills ("L - Sold out") describe one variant, not the product's purchase button.
-  const pills = new Set(optionValues.map(normalise));
+  const pills = new Set(
+    product.variants.flatMap((v) => v.options).map(normalise),
+  );
   const isPill = (el: Node) => {
     const text = normalise(textOf(el));
     return [...pills].some((v) => text === v || text.startsWith(`${v} `));
   };
   const personalize = hasPersonalizeButton($, section, isPill);
-  const group =
-    firstGroup($, submits) ??
-    firstGroup(
+  const group = leadGroup($, controls, isPill);
+
+  const notPurchasable = (): Purchase => {
+    const other = leadGroup(
       $,
-      buttons.filter((el) => !isSubmit($, el) && !isPill(el)),
-    ) ??
-    firstGroup($, links);
+      otherCartControls($, section, form, variantIdsOf(product), isPill),
+      isPill,
+    );
+    return other === "buy" || other === "choose"
+      ? { state: "purchasable", chooseOption: other === "choose", personalize }
+      : { state: "not_purchasable", chooseOption: false, personalize };
+  };
 
   if (
     group === "pre_order" ||
@@ -155,9 +208,7 @@ export function readPurchase(
   ) {
     return { state: group, chooseOption: false, personalize };
   }
-  if (group === "cant_buy") {
-    return { state: "not_purchasable", chooseOption: false, personalize };
-  }
+  if (group === "cant_buy") return notPurchasable();
   if (group === "choose" || group === "buy" || personalize) {
     return {
       state: "purchasable",
@@ -167,14 +218,11 @@ export function readPurchase(
   }
 
   // An unlisted label is judged by this product's cart form only.
-  const addButton = form ? submits[0] : undefined;
+  const addButton = form
+    ? controls.find((el) => !$(el).is("a") && isSubmit($, el))
+    : undefined;
   const enabled = addButton !== undefined && isEnabled($, addButton);
-  return {
-    state:
-      enabled || quickCheckoutShows($, section)
-        ? "purchasable"
-        : "not_purchasable",
-    chooseOption: false,
-    personalize,
-  };
+  return enabled || quickCheckoutShows($, section)
+    ? { state: "purchasable", chooseOption: false, personalize }
+    : notPurchasable();
 }
