@@ -55,7 +55,7 @@ export function Stepper({ step, confirmHref }: StepperProps) {
               {n === 1 && confirmHref ? (
                 <Link
                   href={confirmHref}
-                  className="flex items-center gap-1.5 text-inherit no-underline hover:underline"
+                  className="flex items-center gap-1.5 text-primary-text no-underline hover:underline"
                 >
                   {content}
                 </Link>

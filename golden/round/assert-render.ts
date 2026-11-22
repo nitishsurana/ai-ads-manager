@@ -117,7 +117,8 @@ export async function renderProblems(
     const exempt =
       layout.logo.decision === "badge" ||
       (layout.logo.decision === "panel" &&
-        inputs.logo?.colourClass === "multi_colour");
+        inputs.logo?.colourClass === "multi_colour" &&
+        layout.logoRule !== 2);
     check(exempt || layout.logo.contrast >= 3, "logo contrast is under 3:1");
   }
   check(

@@ -51,6 +51,9 @@ export const LOGO_LIMITS = {
   },
 } as const;
 
+// Which version of a placement rule a stored layout was planned with: creatives stored before a rule keep the earlier one on edit.
+export type RuleVersion = 1 | 2;
+
 export const insideLogoArea = (box: Box, geometry: LogoGeometry) =>
   insideSafe(box) || (geometry === 2 && inside(BOTTOM_LOGO_BOX, box));
 

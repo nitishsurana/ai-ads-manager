@@ -1,4 +1,4 @@
-import type { Box, LogoGeometry } from "@/lib/render/canvas";
+import type { Box, LogoGeometry, RuleVersion } from "@/lib/render/canvas";
 import { flatBackdrop, type Backdrop, type Rgb } from "@/lib/render/colour";
 import type { LogoLayout } from "@/lib/render/layout";
 import { placeLogo, type LogoSpec } from "@/lib/render/logo";
@@ -47,6 +47,15 @@ const drawn = (lines: string[], size: number) => ({
   size,
 });
 
+const NEAR_BLACK: Rgb = [17, 17, 17];
+// The stored Loopy logo's colours: grey text, green, red and the Santa hat's pale trim.
+const LOOPY: Rgb[] = [
+  [67, 73, 69],
+  [68, 213, 127],
+  [208, 12, 13],
+  [244, 244, 246],
+];
+
 const PANEL_BOX = { x: 745, y: 1710, w: 287, h: 114 };
 const INNER_BOX = { x: 759, y: 1724, w: 259, h: 86 };
 const TEAL: Rgb[] = [
@@ -59,12 +68,16 @@ type Row = {
   spec: LogoSpec;
   sample: (box: Box) => Backdrop;
   geometry?: LogoGeometry;
+  // Rows run under rule 1 unless they say otherwise; `both` runs a rule 1 row under rule 2 as well.
+  rule?: RuleVersion;
+  both?: true;
   expected: { logo: LogoLayout | null; reason: string | null };
 };
 
 const ROWS: Row[] = [
   {
     name: "geometry 2 draws a one-colour logo up to 259 x 132 px, 48 px from the side and 96 px from the bottom",
+    both: true,
     spec: spec(),
     sample: on([240, 240, 240]),
     expected: { logo: image({ contrast: 13.96 }), reason: null },
@@ -84,6 +97,7 @@ const ROWS: Row[] = [
   },
   {
     name: "a one-colour logo is recoloured light on a dark area",
+    both: true,
     spec: spec(),
     sample: on([20, 20, 40]),
     expected: {
@@ -93,6 +107,7 @@ const ROWS: Row[] = [
   },
   {
     name: "a currentColor logo is always drawn in a chosen ink",
+    both: true,
     spec: spec({ colourClass: "current_colour", colours: [] }),
     sample: on([240, 240, 240]),
     expected: {
@@ -102,6 +117,7 @@ const ROWS: Row[] = [
   },
   {
     name: "an area that is both dark and light puts a one-colour logo on a neutral panel, drawn in its best ink",
+    both: true,
     spec: spec(),
     sample: () => BUSY,
     expected: {
@@ -128,6 +144,7 @@ const ROWS: Row[] = [
   },
   {
     name: "a badge is drawn as it is in the home corner whatever is behind it",
+    both: true,
     spec: spec({ badge: true, colourClass: "multi_colour", colours: TEAL }),
     sample: () => BUSY,
     expected: {
@@ -137,6 +154,7 @@ const ROWS: Row[] = [
   },
   {
     name: "a badge whose field matches what is behind it goes on the neutral panel",
+    both: true,
     spec: spec({ badge: true, colourClass: "multi_colour", colours: TEAL }),
     sample: on([30, 140, 136]),
     expected: {
@@ -238,6 +256,95 @@ const ROWS: Row[] = [
     },
   },
   {
+    name: "rule 2: the Loopy logo with shares goes on its header panel, because its pale trim is under the accent share",
+    rule: 2,
+    spec: spec({
+      colourClass: "multi_colour",
+      colours: LOOPY,
+      shares: [0.7, 0.12, 0.12, 0.06],
+      headerBackground: [244, 244, 244],
+    }),
+    sample: on(NEAR_BLACK),
+    expected: {
+      logo: image({
+        box: INNER_BOX,
+        decision: "header_panel",
+        contrast: 8.38,
+        panel: { box: PANEL_BOX, colour: "#f4f4f4", radius: 14 },
+      }),
+      reason: null,
+    },
+  },
+  {
+    name: "rule 2: the same logo without shares reads its first colour as dominant and every other as an accent, so white wins on the grey",
+    rule: 2,
+    spec: spec({
+      colourClass: "multi_colour",
+      colours: LOOPY,
+      headerBackground: [244, 244, 244],
+    }),
+    sample: on(NEAR_BLACK),
+    expected: {
+      logo: image({
+        box: INNER_BOX,
+        decision: "panel",
+        contrast: 9.22,
+        panel: { box: PANEL_BOX, colour: "#ffffff", radius: 14 },
+      }),
+      reason: null,
+    },
+  },
+  {
+    name: "rule 2: shares that are all zero (svg fills no cluster matched) count as no shares",
+    rule: 2,
+    spec: spec({
+      colourClass: "multi_colour",
+      colours: LOOPY,
+      shares: [0, 0, 0, 0],
+      headerBackground: [244, 244, 244],
+    }),
+    sample: on(NEAR_BLACK),
+    expected: {
+      logo: image({
+        box: INNER_BOX,
+        decision: "panel",
+        contrast: 9.22,
+        panel: { box: PANEL_BOX, colour: "#ffffff", radius: 14 },
+      }),
+      reason: null,
+    },
+  },
+  {
+    name: "rule 2: the dominant colour is the largest share, not the first listed (an svg's fill order)",
+    rule: 2,
+    spec: spec({
+      colourClass: "multi_colour",
+      colours: [LOOPY[3] as Rgb, LOOPY[0] as Rgb, LOOPY[2] as Rgb],
+      shares: [0.05, 0.8, 0.15],
+    }),
+    sample: on([250, 250, 250]),
+    expected: { logo: image({ contrast: 8.83 }), reason: null },
+  },
+  {
+    name: "rule 1 keeps its worst-colour contrast: the same logo and shares go on the near-black panel as before",
+    spec: spec({
+      colourClass: "multi_colour",
+      colours: LOOPY,
+      shares: [0.7, 0.12, 0.12, 0.06],
+      headerBackground: [244, 244, 244],
+    }),
+    sample: on(NEAR_BLACK),
+    expected: {
+      logo: image({
+        box: INNER_BOX,
+        decision: "panel",
+        contrast: 2.05,
+        panel: { box: PANEL_BOX, colour: "#111111", radius: 14 },
+      }),
+      reason: null,
+    },
+  },
+  {
     name: "a wordmark that lacks contrast goes on a neutral panel",
     spec: wordmark("Acme"),
     sample: () => BUSY,
@@ -311,13 +418,21 @@ const ROWS: Row[] = [
   },
 ];
 
-export const LOGO_CASES: Case[] = ROWS.map(
-  ({ name, spec: logo, sample, geometry = 2, expected }) => ({
+const runs = ROWS.flatMap((row) => [
+  { ...row, rule: row.rule ?? 1 },
+  ...(row.both
+    ? [{ ...row, name: `${row.name} (rule 2)`, rule: 2 as const }]
+    : []),
+]);
+
+export const LOGO_CASES: Case[] = runs.map(
+  ({ name, spec: logo, sample, geometry = 2, rule, expected }) => ({
     name: `logo: ${name}`,
     run: () =>
       same(
         placeLogo(logo, {
           geometry,
+          rule,
           sample,
           avoid: [],
           measure,

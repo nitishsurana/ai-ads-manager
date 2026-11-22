@@ -233,6 +233,97 @@ const LAYOUT_CHECKS: Case[] = [
     },
   },
   {
+    name: "layer 1 logo: a multi-colour logo on a panel is exempt from 3:1 under logo rule 1 and held to it under rule 2",
+    run: () => {
+      const logo = {
+        kind: "image" as const,
+        box: { x: 759, y: 1724, w: 259, h: 86 },
+        decision: "panel" as const,
+        corner: "bottom_right" as const,
+        ink: null,
+        contrast: 2.05,
+        panel: {
+          box: { x: 745, y: 1710, w: 287, h: 114 },
+          colour: "#111111",
+          radius: 14,
+        },
+        wordmark: null,
+      };
+      const inputs = {
+        ...BASE_INPUTS,
+        logo: {
+          source: "header" as const,
+          pngPath: "x",
+          width: 260,
+          height: 90,
+          sourceUrl: null,
+          text: null,
+          textRead: null,
+          colourClass: "multi_colour" as const,
+          colours: ["#434945", "#d00c0d"],
+          transparent: true,
+          headerBackground: null,
+          iconOnly: false,
+          storeBrand: true,
+          badge: false,
+        },
+      };
+      const contrastProblems = (layout: Layout) =>
+        layoutProblems(layout, SUBJECT, inputs, () => []).filter((p) =>
+          p.startsWith("contrast"),
+        );
+      return same(
+        [
+          contrastProblems({ ...LAYOUT, logoGeometry: 2, logo }),
+          contrastProblems({ ...LAYOUT, logoGeometry: 2, logoRule: 2, logo }),
+        ],
+        [[], ["contrast: the logo's is 2.05, under 3"]],
+      );
+    },
+  },
+  {
+    name: "layer 1 badge: covering the product fails under badge rule 2 only",
+    run: () => {
+      const product = { x: 424, y: 883, w: 231, h: 577 };
+      const covered = {
+        ...LAYOUT,
+        product,
+        badge: BADGE("price", [row("$24.00")]),
+      };
+      const price = { supportingElement: "price" as const };
+      const problems = (layout: Layout) =>
+        problemsOf(layout, price).filter((p) => p.startsWith("badge"));
+      return same(
+        [
+          problems({
+            ...covered,
+            badge: {
+              ...covered.badge,
+              box: { x: 500, y: 900, w: 300, h: 160 },
+            },
+          }),
+          problems({
+            ...covered,
+            badgeRule: 2,
+            badge: {
+              ...covered.badge,
+              box: { x: 500, y: 900, w: 300, h: 160 },
+            },
+          }),
+          problems({
+            ...covered,
+            badgeRule: 2,
+            badge: {
+              ...covered.badge,
+              box: { x: 700, y: 690, w: 300, h: 160 },
+            },
+          }),
+        ],
+        [[], ["badge: covers the product"], []],
+      );
+    },
+  },
+  {
     name: "layer 1 logo: a wordmark-source logo must be drawn as a wordmark with that name, in glyphs a font has",
     run: () => {
       const source = {

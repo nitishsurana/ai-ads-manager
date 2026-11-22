@@ -106,6 +106,8 @@ export async function editCreative(
       label,
       keepClear: creative.layout.keepClear,
       logoGeometry: creative.layout.logoGeometry ?? 1,
+      badgeRule: creative.layout.badgeRule ?? 1,
+      logoRule: creative.layout.logoRule ?? 1,
       ctaPreferred: creative.layout.cta.background,
     });
 

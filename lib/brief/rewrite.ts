@@ -60,10 +60,9 @@ You are given the current rules, the creatives of the round just finished with t
 
 Also return the settings to use, which code applies to the next round. currentSettings are given; change one only when a tester note, tag, edit or chat message asks for it, in either direction, and otherwise return currentSettings unchanged.
 - productSize: "smaller" when the product looks too big or is cut off; "normal" when it looks too small or the tester wants it back to normal.
-- preferCutout: true for "use the product on its own", "cut it out", "not the store photo", or framing problems on a creative whose background is "photo"; false when the tester wants the store photo back.
 - backgroundStyle: "plain" for plain or flat backgrounds; "scene" for styled or creative scenes; "any" for "mix it up".
 - ctaColour: "brand" when the tester wants the brand's own colours on the button; "dark" or "light" when they ask for a darker or lighter button; "auto" (the button follows each background) for "match the background" or to undo one of those. A complaint about the button's colour with no direction keeps "auto".
-- productSize and preferCutout do not affect photos with a person in them. For framing feedback on those, write a rule instead.
+- productSize applies to every photo, including those with a person, which are cut out with the person.
 
 Also return notApplied: the tester's requests that no rule or setting can deliver because code decides them: the CTA's position or size, the font, the logo's size or position, where text sits. Say each in a few words. Leave out anything a rule or setting already covers. Return an empty list when there is nothing.
 

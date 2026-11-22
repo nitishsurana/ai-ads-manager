@@ -100,6 +100,18 @@ test.describe("round view", () => {
     );
   });
 
+  test("the round board links to the brand kit in edit mode, and Back to round returns", async () => {
+    const { page } = a;
+    await page.getByRole("link", { name: "Edit brand kit" }).click();
+    await expect(page).toHaveURL(`/w/${workspaceId}/confirm`);
+    await expect(
+      page.getByText("Changes apply from your next round."),
+    ).toHaveCount(2);
+    await page.getByRole("link", { name: "Back to round" }).click();
+    await expect(page).toHaveURL(`/w/${workspaceId}`);
+    await expect(page.getByRole("heading", { name: "Round 1" })).toBeVisible();
+  });
+
   test("a reject needs a tag or a note, and Next round waits for every rating", async ({
     browser,
   }) => {

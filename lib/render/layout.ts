@@ -54,6 +54,9 @@ export const layoutSchema = z.object({
   version: z.literal(1),
   // Set on layouts planned with the larger logo and its lower corners; without it an edit re-plans with the earlier logo box.
   logoGeometry: z.literal(2).optional(),
+  // Set on layouts planned with the badge kept off the product, and with the logo's accent colours judged by their share; without them an edit re-plans with the earlier rule.
+  badgeRule: z.literal(2).optional(),
+  logoRule: z.literal(2).optional(),
   offerFactId: z.string().nullable(),
   // Every font family drawn, with its Fontsource version, so a later pin bump can't change this creative.
   fonts: z.record(z.string(), z.string()),

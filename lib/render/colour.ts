@@ -1,3 +1,8 @@
+import {
+  ACCENT_MIN_CONTRAST,
+  ACCENT_SHARE,
+  LOGO_MIN_CONTRAST,
+} from "@/lib/config";
 import { contrast, fromHex, toHex, type Rgb } from "@/lib/intake";
 
 export { contrast, fromHex, toHex, type Rgb };
@@ -89,6 +94,26 @@ export function worstOf(colours: readonly Rgb[], backdrop: Backdrop) {
     Infinity,
     ...colours.map((colour) => worstContrast(colour, backdrop)),
   );
+}
+
+// Whether a logo's colours read on a backdrop: the dominant colour (the largest share, else the first) at LOGO_MIN_CONTRAST, every other colour with a real share at ACCENT_MIN_CONTRAST. `ratio` is the dominant colour's.
+export function logoLegibility(
+  colours: readonly Rgb[],
+  shares: readonly number[] | undefined,
+  backdrop: Backdrop,
+) {
+  const known =
+    shares?.length === colours.length && shares.some((share) => share > 0)
+      ? shares
+      : undefined;
+  const dominant = known ? known.indexOf(Math.max(...known)) : 0;
+  const ratios = colours.map((colour) => worstContrast(colour, backdrop));
+  const legible = ratios.every((ratio, i) =>
+    i === dominant
+      ? ratio >= LOGO_MIN_CONTRAST
+      : (known?.[i] ?? 1) < ACCENT_SHARE || ratio >= ACCENT_MIN_CONTRAST,
+  );
+  return { legible, ratio: ratios[dominant] ?? 0 };
 }
 
 // The candidate with the best worst-case contrast; ties keep the earlier one.

@@ -25,7 +25,6 @@ export const briefRuleSchema = z.object({
 // What the rewrite returns: no defaults, so the model can't leave a setting out and silently reset it.
 export const rewriteSettingsSchema = z.object({
   productSize: z.enum(["normal", "smaller"]),
-  preferCutout: z.boolean(),
   backgroundStyle: z.enum(["any", "plain", "scene"]),
   ctaColour: z.enum(CTA_MODES),
 });
@@ -37,7 +36,6 @@ export const briefSettingsSchema = rewriteSettingsSchema.extend({
 
 export const DEFAULT_SETTINGS = {
   productSize: "normal",
-  preferCutout: false,
   backgroundStyle: "any",
   ctaColour: "auto",
 } satisfies z.infer<typeof briefSettingsSchema>;
@@ -61,7 +59,6 @@ export type BriefSettings = z.infer<typeof briefSettingsSchema>;
 // The settings the art director's prompt sees; the button colour is applied by code and never reaches it.
 export const isDefaultPlannerSettings = (settings: BriefSettings) =>
   settings.productSize === DEFAULT_SETTINGS.productSize &&
-  settings.preferCutout === DEFAULT_SETTINGS.preferCutout &&
   settings.backgroundStyle === DEFAULT_SETTINGS.backgroundStyle;
 
 export type BriefRule = z.infer<typeof briefRuleSchema>;

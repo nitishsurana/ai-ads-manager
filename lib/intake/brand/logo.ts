@@ -137,6 +137,7 @@ export async function storeLogo(
     textRead: verdict.textRead.trim() || null,
     colourClass: cleaned.colourClass,
     colours: cleaned.colours,
+    shares: cleaned.shares,
     transparent: cleaned.transparent,
     headerBackground: headerBackgroundFor(input.headerBackground, cleaned),
     iconOnly: verdict.iconOnly,

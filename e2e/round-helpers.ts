@@ -82,7 +82,6 @@ const BRIEF_CONTENT = {
   approvedAngles: [],
   settings: {
     productSize: "normal",
-    preferCutout: false,
     backgroundStyle: "any",
     ctaColour: "auto",
   },

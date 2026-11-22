@@ -9,6 +9,7 @@ type PhotoView = {
   position: number;
   url: string | null;
   background: "plain" | "scene";
+  uncuttable: boolean;
 };
 
 type PhotosSectionProps = {
@@ -59,6 +60,7 @@ export function PhotosSection({ state, views, apply }: PhotosSectionProps) {
             photo={photo}
             url={byPosition.get(photo.position)?.url ?? null}
             background={byPosition.get(photo.position)?.background ?? "scene"}
+            uncuttable={byPosition.get(photo.position)?.uncuttable ?? false}
             onToggle={(on) =>
               apply(
                 on

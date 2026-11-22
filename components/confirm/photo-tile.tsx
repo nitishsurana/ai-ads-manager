@@ -15,6 +15,7 @@ type PhotoTileProps = {
   photo: ConfirmPhoto;
   url: string | null;
   background: "plain" | "scene";
+  uncuttable: boolean;
   onToggle: (selected: boolean) => void;
 };
 
@@ -22,6 +23,7 @@ export function PhotoTile({
   photo,
   url,
   background,
+  uncuttable,
   onToggle,
 }: PhotoTileProps) {
   const labels = [
@@ -79,6 +81,11 @@ export function PhotoTile({
           })}
         </span>
       </label>
+      {uncuttable && photo.selected && (
+        <p className="m-0 border-t border-border px-2 py-1.5 text-[11.5px] leading-snug text-muted-foreground">
+          {messages.photo_uncuttable}
+        </p>
+      )}
       {photo.warnings.map((code) => (
         <p
           key={code}

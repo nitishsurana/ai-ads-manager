@@ -42,6 +42,7 @@ export const logoSchema = z.object({
     .enum(["one_colour", "current_colour", "multi_colour"])
     .nullable(),
   colours: z.array(z.string()),
+  shares: z.array(z.number()).optional(),
   transparent: z.boolean(),
   headerBackground: z.string().nullable(),
   iconOnly: z.boolean(),

@@ -28,8 +28,15 @@ const count = <T>(items: T[], item: T) =>
 
 const TIERS = ["clean", "clean_low_res", "added_text"] as const;
 
-// Spec, confirm screen: a tier is used only when the tier above has no selected photo; when all have added text, the featured photo (first by position).
-export function allowedPhotoIds({ photos }: RoundInputs) {
+// Spec, confirm screen: a photo with a person, or a gift set on a backdrop that is not one colour, is used only when no other photo is selected. Then a tier is used only when the tier above has no selected photo; when all have added text, the featured photo (first by position).
+export function allowedPhotoIds(inputs: RoundInputs) {
+  const uncuttable = (photo: RoundInputs["photos"][number]) =>
+    photo.person ||
+    (photo.giftSet &&
+      photo.backdropUniform === false &&
+      photo.background === "plain");
+  const cuttable = inputs.photos.filter((photo) => !uncuttable(photo));
+  const photos = cuttable.length > 0 ? cuttable : inputs.photos;
   const tier = TIERS.find((name) => photos.some((p) => p.tier === name));
   const ofTier = photos
     .filter((photo) => photo.tier === tier)
@@ -107,23 +114,9 @@ function planProblems(
     } else if (candidate.offerFactId !== null) {
       problems.push(`${label}: offerFactId set without an offer badge`);
     }
-    const photo = inputs.photos.find((p) => p.id === candidate.photoId);
-    // A tester who prefers cut-outs gets one for every photo without a person.
-    const whole =
-      photo &&
-      (photo.background === "scene" || photo.person) &&
-      !(brief.settings.preferCutout && !photo.person);
     const { background } = candidate;
-    if (whole && background.method !== "photo") {
-      problems.push(
-        `${label}: a whole photo has background ${background.method}`,
-      );
-    }
-    if (whole && background.method === "photo" && background.placement !== 2) {
-      problems.push(`${label}: a whole photo is not placed`);
-    }
-    if (!whole && background.method === "photo") {
-      problems.push(`${label}: a cut-out photo has no generated background`);
+    if (background.method === "photo") {
+      problems.push(`${label}: a store photo is the background`);
     }
     if (
       background.method === "bria" &&

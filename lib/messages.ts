@@ -74,7 +74,6 @@ export const messages = {
   transparent:
     "This product looks see-through (glass, acrylic or clear plastic). Cut-outs of clear materials can keep the photo's own backdrop, so check each creative closely.",
   setting_smaller: "Product smaller",
-  setting_cutout: "Cut-out preferred",
   setting_plain: "Plain backgrounds",
   setting_scene: "Scene backgrounds",
   setting_cta_brand: "Brand-colored button",
@@ -83,6 +82,7 @@ export const messages = {
   not_applied_prefix: "Noted, not adjustable yet:",
   low_resolution: "This photo is low resolution and may look soft.",
   photo_text: "This photo has text on it; photos without text are used first.",
+  photo_uncuttable: "Used only when no product-only photo is selected.",
   photos_skipped:
     "{skipped} of {total} photos couldn't be read and were skipped.",
   photo_skipped: "1 of {total} photos couldn't be read and was skipped.",

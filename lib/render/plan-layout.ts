@@ -1,6 +1,11 @@
 import { TEXT_MIN_CONTRAST } from "@/lib/config";
 import { AD_NETWORK_COLOURS } from "./ad-network";
-import { planBadge, type BadgeSpec } from "./badge";
+import {
+  BADGE_GAP,
+  BADGE_MAX_HEIGHT,
+  planBadge,
+  type BadgeSpec,
+} from "./badge";
 import {
   BLOCK_GAP,
   bottom,
@@ -8,10 +13,12 @@ import {
   CTA_BOTTOM,
   DESIGN,
   overlaps,
+  insideSafe,
   right,
   SAFE_BOX,
   type Box,
   type LogoGeometry,
+  type RuleVersion,
 } from "./canvas";
 import { DARK_INK, hexOf, LIGHT_INK, type Backdrop, type Rgb } from "./colour";
 import { pickCtaColour, type CtaPreference } from "./cta-colour";
@@ -58,6 +65,10 @@ export type LayoutInput = {
   logo: LogoSpec | null;
   // Which logo box and corners to plan with: 2 for a new creative, 1 when an edit re-plans a creative stored before the larger logo.
   logoGeometry: LogoGeometry;
+  // 2 keeps the badge off the product; 1 is the earlier placement on its corner. A new creative plans with 2.
+  badgeRule: RuleVersion;
+  // 2 judges a multi-colour logo's accents by their share; 1 asks every colour for the same contrast.
+  logoRule: RuleVersion;
   cta: CtaPreference;
   // The pixels behind a box, with the scrim over them when one is given.
   sample: (box: Box, scrim: Scrim | null) => Backdrop;
@@ -253,35 +264,40 @@ export function planLayout(input: LayoutInput): Layout {
 
   let badge: Layout["badge"] = null;
   if (input.badge) {
-    const planned = planBadge(input.badge, body.measure);
+    const planned = planBadge(
+      input.badge,
+      body.measure,
+      input.badgeRule === 2 ? BADGE_MAX_HEIGHT : undefined,
+    );
     if (!planned.ok) {
       dropped.push({ element: "badge", reason: planned.reason });
     } else if (!input.product) {
       dropped.push({ element: "badge", reason: "no product box to sit on" });
     } else {
-      const placed = placeBadge(
-        planned.w,
-        planned.h,
-        input.product,
-        avoid,
-        cta.box.y,
-      );
-      badge = {
-        kind: input.badge.kind,
-        box: placed,
-        font: {
-          family: body.family,
-          weight: 700,
-          fallback: body.needsFallback(
-            planned.rows.map((r) => r.text).join(" "),
-          ),
-        },
-        background: cta.background,
-        colour: cta.colour,
-        radius: BADGE_RADIUS,
-        rows: planned.rows,
-      };
-      avoid.push(placed);
+      const placed =
+        input.badgeRule === 2
+          ? placeBadgeOff(planned.w, planned.h, input.product, avoid)
+          : placeBadge(planned.w, planned.h, input.product, avoid, cta.box.y);
+      if (placed) {
+        badge = {
+          kind: input.badge.kind,
+          box: placed,
+          font: {
+            family: body.family,
+            weight: 700,
+            fallback: body.needsFallback(
+              planned.rows.map((r) => r.text).join(" "),
+            ),
+          },
+          background: cta.background,
+          colour: cta.colour,
+          radius: BADGE_RADIUS,
+          rows: planned.rows,
+        };
+        avoid.push(placed);
+      } else {
+        dropped.push({ element: "badge", reason: "no room off the product" });
+      }
     }
   }
 
@@ -289,6 +305,7 @@ export function planLayout(input: LayoutInput): Layout {
   if (input.logo) {
     const placed = placeLogo(input.logo, {
       geometry: input.logoGeometry,
+      rule: input.logoRule,
       sample: (box) => sample(box, scrim),
       avoid,
       measure: heading.measure,
@@ -303,6 +320,8 @@ export function planLayout(input: LayoutInput): Layout {
   return {
     version: 1,
     ...(input.logoGeometry === 2 && { logoGeometry: 2 as const }),
+    ...(input.badgeRule === 2 && { badgeRule: 2 as const }),
+    ...(input.logoRule === 2 && { logoRule: 2 as const }),
     offerFactId: input.offerFactId,
     fonts: input.fonts,
     method: input.method,
@@ -318,7 +337,45 @@ export function planLayout(input: LayoutInput): Layout {
   };
 }
 
-// Top-right of the product, overhanging its corner, and moved down past any text it would cover.
+// Rule 2: above the product (right-aligned with it, then left-aligned), then beside it (right, then left); every spot inside the safe margins, BADGE_GAP from the product and clear of the text. Null when none fits.
+function placeBadgeOff(
+  w: number,
+  h: number,
+  product: Box,
+  avoid: Box[],
+): Box | null {
+  const above = product.y - BADGE_GAP - h;
+  const spots: Box[] = [
+    {
+      x: Math.min(
+        Math.max(right(product) - w, SAFE_BOX.x),
+        right(SAFE_BOX) - w,
+      ),
+      y: above,
+      w,
+      h,
+    },
+    { x: product.x, y: above, w, h },
+    { x: right(product) + BADGE_GAP, y: product.y, w, h },
+    { x: product.x - BADGE_GAP - w, y: product.y, w, h },
+  ];
+  const apart: Box = {
+    x: product.x - BADGE_GAP,
+    y: product.y - BADGE_GAP,
+    w: product.w + 2 * BADGE_GAP,
+    h: product.h + 2 * BADGE_GAP,
+  };
+  return (
+    spots.find(
+      (spot) =>
+        insideSafe(spot) &&
+        !overlaps(spot, apart) &&
+        !avoid.some((box) => overlaps(spot, box)),
+    ) ?? null
+  );
+}
+
+// Rule 1: top-right of the product, overhanging its corner, and moved down past any text it would cover.
 function placeBadge(
   w: number,
   h: number,

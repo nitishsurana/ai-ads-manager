@@ -1,18 +1,23 @@
 import { LOGO_MIN_CONTRAST } from "@/lib/config";
 import {
   bestInk,
-  contrast,
   DARK_INK,
   deltaE,
   flatBackdrop,
   LIGHT_INK,
+  logoLegibility,
   toHex,
   worstContrast,
   worstOf,
   type Backdrop,
   type Rgb,
 } from "./colour";
-import { overlaps, type Box, type LogoGeometry } from "./canvas";
+import {
+  overlaps,
+  type Box,
+  type LogoGeometry,
+  type RuleVersion,
+} from "./canvas";
 import type { LogoLayout } from "./layout";
 import {
   CORNERS,
@@ -33,6 +38,8 @@ export type LogoSpec = {
   aspect: number;
   colourClass: "one_colour" | "current_colour" | "multi_colour" | null;
   colours: Rgb[];
+  // Each colour's share of the logo's ink, in the same order; absent for a logo stored without them.
+  shares?: number[];
   headerBackground: Rgb | null;
   // A disc or sticker with its own field: drawn as it is, never recoloured or checked for contrast.
   badge: boolean;
@@ -44,6 +51,7 @@ export type LogoSpec = {
 
 export type LogoContext = {
   geometry: LogoGeometry;
+  rule: RuleVersion;
   sample: (box: Box) => Backdrop;
   // Boxes the logo must not cover when it moves to another corner.
   avoid: Box[];
@@ -83,13 +91,20 @@ function multiColour(spec: LogoSpec, context: LogoContext): LogoLayout | null {
   const { geometry } = context;
   const { w, h } = imageSize(spec.aspect, geometry);
   const colours = spec.colours.length > 0 ? spec.colours : [DARK_INK];
+  const read = (backdrop: Backdrop) => {
+    if (context.rule === 2) {
+      return logoLegibility(colours, spec.shares, backdrop);
+    }
+    const ratio = worstOf(colours, backdrop);
+    return { legible: ratio >= LOGO_MIN_CONTRAST, ratio };
+  };
   const place = (corner: Corner) => {
     const box = cornerBox(corner, w, h, geometry);
-    return { corner, box, ratio: worstOf(colours, context.sample(box)) };
+    return { corner, box, ...read(context.sample(box)) };
   };
   const base = (
     decision: LogoLayout["decision"],
-    p: ReturnType<typeof place>,
+    p: Pick<ReturnType<typeof place>, "corner" | "box" | "ratio">,
   ) => ({
     kind: "image" as const,
     box: p.box,
@@ -102,30 +117,26 @@ function multiColour(spec: LogoSpec, context: LogoContext): LogoLayout | null {
   });
 
   const home = place("bottom_right");
-  if (home.ratio >= LOGO_MIN_CONTRAST) return base("as_is", home);
+  if (home.legible) return base("as_is", home);
 
   const calmer = CORNERS.slice(1)
     .map(place)
     .filter(
-      (p) =>
-        p.ratio >= LOGO_MIN_CONTRAST &&
-        !context.avoid.some((box) => overlaps(box, p.box)),
+      (p) => p.legible && !context.avoid.some((box) => overlaps(box, p.box)),
     )
     .map((p) => ({ p, busy: context.sample(p.box).busy }))
     .sort((a, b) => a.busy - b.busy)[0];
   if (calmer) return base("calmer_corner", calmer.p);
 
   const panelColour = spec.headerBackground;
-  if (
-    panelColour &&
-    worstOf(colours, flatBackdrop(panelColour)) >= LOGO_MIN_CONTRAST
-  ) {
+  const onPanel = panelColour && read(flatBackdrop(panelColour));
+  if (panelColour && onPanel?.legible) {
     const { panel, inner } = panelAround(w, h, geometry);
     return {
       ...base("header_panel", {
         corner: "bottom_right",
         box: inner,
-        ratio: Math.min(...colours.map((c) => contrast(c, panelColour))),
+        ratio: onPanel.ratio,
       }),
       panel: { box: panel, colour: toHex(panelColour), radius: PANEL_RADIUS },
     };
@@ -166,7 +177,13 @@ function neutral(spec: LogoSpec, context: LogoContext): LogoLayout {
     w,
     h,
     geometry,
-    multi ? (spec.colours.length > 0 ? spec.colours : [DARK_INK]) : null,
+    multi
+      ? {
+          colours: spec.colours.length > 0 ? spec.colours : [DARK_INK],
+          shares: spec.shares,
+          rule: context.rule,
+        }
+      : null,
   );
   return {
     kind: "image",

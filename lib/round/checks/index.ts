@@ -12,6 +12,7 @@ import {
 } from "@/lib/render";
 import {
   cropPhoto,
+  finishProduct,
   photoPlacement,
   productCutout,
   isCutOff,
@@ -33,7 +34,13 @@ import {
 import { readbackProblems } from "./readback";
 
 export { normalise, readbackProblems } from "./readback";
-export { COVERS_PRODUCT, layoutProblems } from "./layout";
+export {
+  BADGE_COVERS_PRODUCT,
+  BADGE_DROPPED,
+  COVERS_PRODUCT,
+  isMissingBadge,
+  layoutProblems,
+} from "./layout";
 
 export const CUT_OFF = "product: cut off by the canvas edge";
 
@@ -52,7 +59,7 @@ const pixelsOf = (image: Buffer, from: Box) =>
     .raw()
     .toBuffer();
 
-// The product's pixels and box as the plan puts them. A product in a placed photo is pasted back untouched, so its pixels come from the scaled photo.
+// The product's pixels and box as the plan puts them. A product in a placed photo is pasted back untouched, so its pixels come from the scaled photo; one in a Bria scene is pasted as finished (graded, edge ramped) when the scene was made with a grade.
 async function expectedProduct(
   candidate: Candidate,
   photo: PreparedPhoto,
@@ -75,12 +82,15 @@ async function expectedProduct(
     const { bytes, product } = await cropPhoto(photo.work, photo.bbox);
     return { rgba: await pixelsOf(bytes, product), box: product };
   }
-  const { png, box } = await productCutout(
+  const { png, rgba, box } = await productCutout(
     photo,
     background.size,
     background.cutout,
+    background.room,
   );
-  return { rgba: await sharp(png).ensureAlpha().raw().toBuffer(), box };
+  if (background.method !== "bria" || !background.grade) return { rgba, box };
+  const finished = await finishProduct(png, background.grade);
+  return { rgba: await sharp(finished).ensureAlpha().raw().toBuffer(), box };
 }
 
 const sameBox = (a: Expected["box"], b: Expected["box"] | null) =>

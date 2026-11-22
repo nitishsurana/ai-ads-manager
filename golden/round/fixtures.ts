@@ -381,7 +381,7 @@ const FIXTURES: Fixture[] = [
     },
   },
   {
-    name: "round-whole-photo",
+    name: "round-person-skipped",
     inputs: {
       ...BASE,
       photos: [
@@ -393,15 +393,38 @@ const FIXTURES: Fixture[] = [
     plan: plan([
       ["benefit", "p1", "none", undefined, bria("A pale oak shelf")],
       ["social_proof", "p2", "rating", undefined, bria("A sunlit table")],
-      ["price", "p3", "price", undefined, bria("A kitchen counter")],
+      ["price", "p1", "price", undefined, bria("A kitchen counter")],
       ["lifestyle", "p1", "price", undefined, bria("A window sill")],
       ["feature_close_up", "p2", "rating", undefined, bria("A grey stone")],
-      ["benefit", "p3", "none", undefined, bria("A linen cloth")],
+      ["benefit", "p2", "none", undefined, bria("A linen cloth")],
     ]),
     copy: { candidates: GOOD },
     expect: {
-      note: "a scene photo and a photo with a person are used whole, so their candidates get the photo background whatever the model asked for",
-      photoIds: ["p1", "p2", "p3"],
+      note: "a photo with a person is skipped while a product-only photo is selected, and a scene photo is cut out and given a new background",
+      photoIds: ["p1", "p2"],
+    },
+  },
+  {
+    name: "round-person-only",
+    inputs: {
+      ...BASE,
+      photos: [
+        { ...photo("p1", 1, "clean"), person: true },
+        { ...photo("p2", 2, "clean", "scene"), person: true },
+      ],
+    },
+    plan: plan([
+      ["benefit", "p1", "none", undefined, bria("A pale oak shelf")],
+      ["social_proof", "p2", "rating", undefined, bria("A sunlit table")],
+      ["price", "p1", "price", undefined, bria("A kitchen counter")],
+      ["lifestyle", "p2", "price", undefined, bria("A window sill")],
+      ["feature_close_up", "p1", "rating", undefined, bria("A grey stone")],
+      ["benefit", "p2", "none", undefined, bria("A linen cloth")],
+    ]),
+    copy: { candidates: GOOD },
+    expect: {
+      note: "when every selected photo has a person they are all used, cut out with the person and given a new background",
+      photoIds: ["p1", "p2"],
     },
   },
 ];

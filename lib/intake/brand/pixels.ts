@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { toHex, type Rgb } from "./colour";
+import { fromHex, toHex, type Rgb } from "./colour";
 
 export type Rgba = { data: Buffer; width: number; height: number };
 
@@ -274,6 +274,26 @@ export function dominantColours(
     .sort((a, b) => b.share - a.share);
   const kept = ranked.filter((c) => c.share >= MIN_COLOUR_SHARE);
   return kept.length > 0 ? kept : ranked.slice(0, 1);
+}
+
+// The share of the artwork each listed colour holds: every cluster of the picture goes to the nearest listed colour within MERGE_DISTANCE, and a colour no cluster is near gets 0.
+export function colourShares(
+  listed: readonly Rgb[],
+  image: Rgba,
+  options: { ignoreNearWhite?: boolean } = {},
+) {
+  const shares = listed.map(() => 0);
+  for (const { hex, share } of dominantColours(image, options)) {
+    const rgb = fromHex(hex);
+    let nearest = -1;
+    let reach = MERGE_DISTANCE;
+    listed.forEach((colour, i) => {
+      const gap = distance(colour, rgb);
+      if (gap < reach) [nearest, reach] = [i, gap];
+    });
+    if (nearest >= 0) shares[nearest] = (shares[nearest] ?? 0) + share;
+  }
+  return shares;
 }
 
 // The share of the image that is solid and not near-white. A badge (a disc or sticker with its own field) fills most of its trimmed box; a wordmark fills a third or less.

@@ -41,23 +41,34 @@
         "position": 1,
         "tier": "clean",
         "background": "plain",
-        "person": false
+        "person": false,
+        "giftSet": false,
+        "backdropUniform": null
       },
       {
         "id": "p2",
         "position": 2,
         "tier": "clean_low_res",
         "background": "plain",
-        "person": false
+        "person": false,
+        "giftSet": false,
+        "backdropUniform": null
       }
     ],
     "facts": [],
-    "campaign": {}
+    "campaign": {},
+    "orderFlow": "direct"
   },
   "brief": {
     "rules": [],
     "research": [],
     "approvedAngles": [],
+    "settings": {
+      "productSize": "normal",
+      "backgroundStyle": "any",
+      "ctaColour": "auto"
+    },
+    "notApplied": [],
     "campaign": {},
     "values": {
       "price": "$18.00",

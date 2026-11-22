@@ -16,12 +16,15 @@ const backgroundJson = z.discriminatedUnion("method", [
     reason: z.string(),
     size: z.literal("smaller").optional(),
     cutout: z.literal(1).optional(),
+    room: z.literal(1).optional(),
+    grade: z.tuple([z.number(), z.number(), z.number()]).optional(),
   }),
   z.object({
     method: z.enum(["solid", "tonal"]),
     reason: z.string(),
     size: z.literal("smaller").optional(),
     cutout: z.literal(1).optional(),
+    room: z.literal(1).optional(),
   }),
   z.object({
     method: z.literal("photo"),

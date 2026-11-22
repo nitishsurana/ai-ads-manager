@@ -9,8 +9,13 @@ import type { BriefSettings } from "@/lib/brief/schema";
 import { placeProduct, productLimit } from "@/lib/round/background/placement";
 import { parseCreative } from "@/lib/round/creative";
 import type { RoundCreative } from "@/lib/db/queries";
-import { planRequest, validatePlan, type RawPlan } from "@/lib/round/plan";
-import type { RoundInputs } from "@/lib/round/inputs";
+import {
+  allowedPhotos,
+  planRequest,
+  validatePlan,
+  type RawPlan,
+} from "@/lib/round/plan";
+import type { FrozenPhoto, RoundInputs } from "@/lib/round/inputs";
 import { same, type Case } from "./cases";
 import { briefOf } from "./inputs";
 import { LAYOUT } from "./layout-fixture";
@@ -137,6 +142,28 @@ export const PLAN_CASES: Case[] = [
       ),
   },
   {
+    name: "product placement: with room the zone starts below the badge's room and the product sits on its bottom; without it the product is centred",
+    run: () =>
+      same(
+        [
+          placeProduct(400, 1000, undefined, 1),
+          placeProduct(1000, 500, undefined, 1),
+          placeProduct(1000, 1000, undefined, 1),
+          placeProduct(1000, 1000, "smaller", 1),
+          placeProduct(400, 1000),
+          placeProduct(1000, 500),
+        ],
+        [
+          { x: 424, y: 883, w: 231, h: 577 },
+          { x: 200, y: 1120, w: 680, h: 340 },
+          { x: 251, y: 883, w: 577, h: 577 },
+          { x: 285, y: 950, w: 510, h: 510 },
+          { x: 386, y: 690, w: 308, h: 770 },
+          { x: 200, y: 905, w: 680, h: 340 },
+        ],
+      ),
+  },
+  {
     name: "plan: background style plain turns scenes into tonal and scene fills the gaps, each recorded as a repair",
     run: () => {
       const [first] = planned("plain", SCENE, {
@@ -182,15 +209,15 @@ export const PLAN_CASES: Case[] = [
     },
   },
   {
-    name: "plan: smaller sets the size on cut-outs only, and prefer-cut-out skips photos with a person",
+    name: "plan: every candidate gets a generated background with a cut-out, whatever the photo, and smaller sets the size",
     run: () =>
       same(
         [
           planned("plain", SCENE, { productSize: "smaller" }).backgrounds[0],
           planned("scene", TONAL, {}).backgrounds[0],
           planned("scene", TONAL, { productSize: "smaller" }).backgrounds[0],
-          planned("scene", TONAL, { preferCutout: true }).backgrounds[0],
-          planned("person", TONAL, { preferCutout: true }).backgrounds[0],
+          planned("person", TONAL, {}).backgrounds[0],
+          planned("set-unmeasured", TONAL, {}, GIFTS).backgrounds[0],
         ],
         [
           {
@@ -200,44 +227,53 @@ export const PLAN_CASES: Case[] = [
             size: "smaller",
             cutout: 1,
           },
-          { method: "photo", placement: 2 },
-          { method: "photo", placement: 2 },
           { method: "tonal", reason: "flat", cutout: 1 },
-          { method: "photo", placement: 2 },
+          { method: "tonal", reason: "flat", size: "smaller", cutout: 1 },
+          { method: "tonal", reason: "flat", cutout: 1 },
+          { method: "tonal", reason: "flat", cutout: 1 },
         ],
       ),
   },
   {
-    name: "plan: a gift set on a backdrop that is not one colour is placed whole whatever the tester prefers; on a uniform or unmeasured one it is cut out",
+    name: "plan: photos with a person or a whole gift set are used only when nothing else is selected, before the tier rule",
     run: () => {
-      const backgrounds = [
-        planned("gift-gradient", TONAL, {}, GIFTS),
-        planned("gift-gradient", TONAL, { preferCutout: true }, GIFTS),
-        planned("gift-white", TONAL, { preferCutout: true }, GIFTS),
-        planned("set-unmeasured", TONAL, {}, GIFTS),
-      ].map(({ backgrounds }) => backgrounds[0]);
-      const treatments = JSON.parse(
-        planRequest(
-          GIFTS,
-          briefOf(GIFTS, { settings: settings({ preferCutout: true }) }),
-        ).prompt,
-      ).photos.map((photo: { treatment: string }) => photo.treatment);
+      const [base] = BASE_INPUTS.photos as [FrozenPhoto];
+      const photo = (id: string, over: Partial<FrozenPhoto>): FrozenPhoto => ({
+        ...base,
+        id,
+        ...over,
+      });
+      const person = photo("person", { person: true });
+      const gradient = photo("gradient", {
+        giftSet: true,
+        backdropUniform: false,
+      });
+      const ids = (photos: FrozenPhoto[]) =>
+        allowedPhotos(photos).map((p) => p.id);
       return same(
-        [backgrounds, treatments],
         [
-          [
-            { method: "photo", placement: 2, whole: true },
-            { method: "photo", placement: 2, whole: true },
-            { method: "tonal", reason: "flat", cutout: 1 },
-            { method: "tonal", reason: "flat", cutout: 1 },
-          ],
-          ["whole_photo", "cut_out", "cut_out"],
+          ids([person, photo("product", {})]),
+          ids([person, photo("other-person", { person: true })]),
+          ids([gradient, photo("product", {})]),
+          ids([gradient, person]),
+          ids([gradient]),
+          ids([person, photo("text", { tier: "added_text" })]),
+          ids([photo("white", { giftSet: true, backdropUniform: true })]),
+        ],
+        [
+          ["product"],
+          ["person", "other-person"],
+          ["product"],
+          ["gradient", "person"],
+          ["gradient"],
+          ["text"],
+          ["white"],
         ],
       );
     },
   },
   {
-    name: "plan prompt: settings, their sentence and the cut-out treatment appear only when settings differ from the defaults",
+    name: "plan prompt: settings and their sentence appear only when settings differ from the defaults, and photos carry only their id",
     run: () => {
       const ask = (over: Partial<BriefSettings>) => {
         const request = planRequest(
@@ -246,30 +282,29 @@ export const PLAN_CASES: Case[] = [
         );
         const sent = JSON.parse(request.prompt) as {
           settings?: BriefSettings;
-          photos: { id: string; treatment: string }[];
+          photos: { id: string }[];
         };
         return {
           settings: sent.settings ?? null,
           note: request.system.includes("The tester's settings are given"),
-          treatments: sent.photos.map((photo) => photo.treatment),
+          photos: sent.photos,
         };
       };
       return same(
-        [ask({}), ask({ preferCutout: true })],
+        [ask({}), ask({ productSize: "smaller" })],
         [
           {
             settings: null,
             note: false,
-            treatments: ["cut_out", "whole_photo", "whole_photo"],
+            photos: [{ id: "plain" }, { id: "scene" }],
           },
           {
             settings: {
-              productSize: "normal",
-              preferCutout: true,
+              productSize: "smaller",
               backgroundStyle: "any",
             },
             note: true,
-            treatments: ["cut_out", "cut_out", "whole_photo"],
+            photos: [{ id: "plain" }, { id: "scene" }],
           },
         ],
       );

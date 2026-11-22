@@ -2,6 +2,7 @@ import "server-only";
 import { getWorkspace, listFacts, listWorkspacePhotos } from "@/lib/db/queries";
 import { parseCampaign } from "@/lib/chat/campaign";
 import { spendCapReached } from "@/lib/limits";
+import { isUncuttable } from "@/lib/round/plan/rules";
 import { isLocked } from "./rounds";
 import { buildConfirmState } from "./state";
 import { signUrls } from "./urls";
@@ -41,6 +42,7 @@ export async function loadConfirmScreen(userId: string, id: string) {
       position: photo.position,
       url: thumbs.get(photo.thumbPath) ?? null,
       background: photo.background,
+      uncuttable: isUncuttable(photo),
     })),
     variantTitles: Object.fromEntries(variants.map((v) => [v.id, v.title])),
     logoUrl: state.logo?.pngPath

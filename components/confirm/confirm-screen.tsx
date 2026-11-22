@@ -1,4 +1,5 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { Stepper } from "@/components/layout/stepper";
 import type { ConfirmScreenData } from "@/lib/workspace";
 import { ConfirmForm } from "./confirm-form";
@@ -34,15 +35,26 @@ export function ConfirmScreen({ screen, mode }: ConfirmScreenProps) {
                   : "Check and edit anything below. Nothing is made until you press Generate creatives."}
               </p>
             </div>
-            <a
-              href={screen.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 font-mono text-xs whitespace-nowrap text-primary-text hover:underline"
-            >
-              {shortUrl(screen.sourceUrl)}
-              <ArrowUpRight className="size-3" aria-hidden="true" />
-            </a>
+            <div className="flex items-center gap-4">
+              {mode === "edit" && (
+                <Link
+                  href={`/w/${screen.id}`}
+                  className="inline-flex items-center gap-1 text-xs whitespace-nowrap text-primary-text hover:underline"
+                >
+                  <ArrowLeft className="size-3" aria-hidden="true" />
+                  Back to round
+                </Link>
+              )}
+              <a
+                href={screen.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 font-mono text-xs whitespace-nowrap text-primary-text hover:underline"
+              >
+                {shortUrl(screen.sourceUrl)}
+                <ArrowUpRight className="size-3" aria-hidden="true" />
+              </a>
+            </div>
           </div>
         </div>
       }

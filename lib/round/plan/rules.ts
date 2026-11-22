@@ -1,4 +1,3 @@
-import type { BriefSettings } from "@/lib/brief/schema";
 import type { FrozenPhoto, RoundInputs } from "../inputs";
 import { ANGLES, type Angle, type SupportingElement } from "../types";
 
@@ -39,8 +38,21 @@ export function usableAngles(inputs: RoundInputs): Angle[] {
   });
 }
 
-// A tier is used only when the tier above has no selected photo; when every photo has added text, every creative uses the featured one (the first remaining).
-export function allowedPhotos(photos: FrozenPhoto[]): FrozenPhoto[] {
+// A gift set on a plain backdrop that is not one colour (a studio gradient): no mask keeps the box and card.
+export const isWholeSet = (photo: FrozenPhoto) =>
+  photo.giftSet &&
+  photo.backdropUniform === false &&
+  photo.background === "plain" &&
+  !photo.person;
+
+// A person or a gift set on a non-uniform backdrop has no clean cut-out, so it is the last resort.
+export const isUncuttable = (photo: FrozenPhoto) =>
+  photo.person || isWholeSet(photo);
+
+// Uncuttable photos are used only when no other photo is selected. A tier is used only when the tier above has no selected photo; when every photo has added text, every creative uses the featured one (the first remaining).
+export function allowedPhotos(all: FrozenPhoto[]): FrozenPhoto[] {
+  const cuttable = all.filter((photo) => !isUncuttable(photo));
+  const photos = cuttable.length > 0 ? cuttable : all;
   const tier = TIERS.find((name) => photos.some((p) => p.tier === name));
   const ofTier = photos.filter((photo) => photo.tier === tier);
   if (tier !== "added_text") return ofTier;
@@ -51,21 +63,3 @@ export function allowedPhotos(photos: FrozenPhoto[]): FrozenPhoto[] {
   );
   return featured ? [featured] : [];
 }
-
-export const isWholePhoto = (photo: FrozenPhoto) =>
-  photo.background === "scene" || photo.person;
-
-// A gift set on a plain backdrop that is not one colour (a studio gradient): no mask keeps the box and card, so the whole photo is the product. Scene and person photos keep their own placement.
-export const isWholeSet = (photo: FrozenPhoto) =>
-  photo.giftSet &&
-  photo.backdropUniform === false &&
-  photo.background === "plain" &&
-  !photo.person;
-
-// A tester who prefers cut-outs gets one for every photo without a person: people are never cut out.
-export const usesWholePhoto = (
-  photo: FrozenPhoto,
-  settings: Pick<BriefSettings, "preferCutout">,
-) =>
-  isWholeSet(photo) ||
-  (isWholePhoto(photo) && !(settings.preferCutout && !photo.person));

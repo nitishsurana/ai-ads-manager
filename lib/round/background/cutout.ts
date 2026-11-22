@@ -194,12 +194,14 @@ export async function preparePhoto(
   };
 }
 
-// The product alone: trimmed to its box, scaled into the product zone, small gaps in its outline filled.
+// The product alone: trimmed to its box, scaled into the product zone, small gaps in its outline filled. `rgba` is the same picture raw.
 export async function productCutout(
   photo: PreparedPhoto,
   size?: BriefSettings["productSize"],
   // The recipe version a candidate was planned with; absent means the model mask.
   recipe?: 1,
+  // Whether the badge's room is kept above the product.
+  room?: 1,
 ) {
   const { mask, bbox } = recipe ? await photo.backdrop() : photo;
   const cutout = sharp(await makeCutout(photo.work, mask));
@@ -213,7 +215,7 @@ export async function productCutout(
     width: Math.min(width - left, Math.ceil(bbox.w * width)),
     height: Math.min(height - top, Math.ceil(bbox.h * height)),
   };
-  const box = placeProduct(crop.width, crop.height, size);
+  const box = placeProduct(crop.width, crop.height, size, room);
   const resized = await cutout
     .extract(crop)
     .resize(box.w, box.h, { kernel: "lanczos3" })
@@ -230,5 +232,5 @@ export async function productCutout(
   })
     .png()
     .toBuffer();
-  return { png, box };
+  return { png, rgba: resized, box };
 }

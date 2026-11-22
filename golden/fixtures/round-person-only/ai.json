@@ -1,5 +1,5 @@
 {
-  "art_direction:2407841d:0d1b44e9bcc7e5e8612e1b1a672f98ac01317bf32e7f38600decacae8f5daadb": {
+  "art_direction:4c129f82:9a01be7d2748143c402debe78d35761f6f15170dd609e5a9747269eba8f4e436": {
     "candidates": [
       {
         "angle": "benefit",
@@ -25,7 +25,7 @@
       },
       {
         "angle": "price",
-        "photoId": "p3",
+        "photoId": "p1",
         "element": "price",
         "offerFactId": null,
         "background": {
@@ -36,7 +36,7 @@
       },
       {
         "angle": "lifestyle",
-        "photoId": "p1",
+        "photoId": "p2",
         "element": "price",
         "offerFactId": null,
         "background": {
@@ -47,7 +47,7 @@
       },
       {
         "angle": "feature_close_up",
-        "photoId": "p2",
+        "photoId": "p1",
         "element": "rating",
         "offerFactId": null,
         "background": {
@@ -58,7 +58,7 @@
       },
       {
         "angle": "benefit",
-        "photoId": "p3",
+        "photoId": "p2",
         "element": "none",
         "offerFactId": null,
         "background": {

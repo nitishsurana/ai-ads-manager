@@ -1,8 +1,16 @@
 import type { Box } from "@/lib/render";
 import type { RoundInputs } from "../inputs";
 import type { StageDeps } from "../stages/types";
-import type { Candidate } from "../types";
-import { briaInstruction, editInputs, editKey, pasteProduct } from "./bria";
+import type { Candidate, Grade } from "../types";
+import {
+  briaInstruction,
+  editInputs,
+  editKey,
+  pasteProduct,
+  sceneGrade,
+} from "./bria";
+import { finishProduct } from "./finish";
+import { lightDirection } from "./light";
 import { briaSeed } from "./seed";
 import { productCutout, type PreparedPhoto } from "./cutout";
 import { fillBackground, fillColour } from "./fills";
@@ -10,6 +18,7 @@ import { cropPhoto } from "./photo-crop";
 import { photoPlacement, wholePhotoBackground } from "./whole-photo";
 
 export { preparePhoto, productCutout, type PreparedPhoto } from "./cutout";
+export { finishProduct } from "./finish";
 export { cropPhoto, isCutOff, type PhotoPlacement } from "./photo-crop";
 export { photoPlacement, scaledPhoto } from "./whole-photo";
 
@@ -28,8 +37,11 @@ export async function makeBackground(
   product: Box;
   isolated?: boolean;
   gaps?: boolean;
+  grade?: Grade;
 }> {
   const { background } = candidate;
+  const person =
+    inputs.photos.find((p) => p.id === candidate.photoId)?.person ?? false;
   if (background.method === "photo") {
     if (background.placement !== 2) return cropPhoto(photo.work, photo.bbox);
     const placement = await photoPlacement(photo, background.whole);
@@ -43,9 +55,7 @@ export async function makeBackground(
           variation.attempt,
           variation.regeneration,
         ),
-        person:
-          inputs.photos.find((p) => p.id === candidate.photoId)?.person ??
-          false,
+        person,
       },
     );
     return {
@@ -56,13 +66,17 @@ export async function makeBackground(
     };
   }
 
-  const { png, box } = await productCutout(
+  const { png, rgba, box } = await productCutout(
     photo,
     background.size,
     background.cutout,
+    background.room,
   );
   if (background.method === "bria") {
-    const instruction = briaInstruction(background.prompt);
+    const instruction = briaInstruction(background.prompt, {
+      person,
+      light: person ? null : lightDirection(rgba, box.w, box.h),
+    });
     const seed = briaSeed(
       candidate.index,
       variation.attempt,
@@ -81,7 +95,12 @@ export async function makeBackground(
       mask,
       seed,
     });
-    return { bytes: await pasteProduct(edited, png, box), product: box };
+    const grade = await sceneGrade(edited, { rgba, box });
+    return {
+      bytes: await pasteProduct(edited, await finishProduct(png, grade), box),
+      product: box,
+      grade,
+    };
   }
 
   const bytes = await fillBackground(

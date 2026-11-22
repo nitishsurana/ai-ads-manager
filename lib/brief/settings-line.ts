@@ -5,7 +5,6 @@ import type { BriefSettings } from "./schema";
 export function settingsText(settings: BriefSettings) {
   return [
     settings.productSize === "smaller" && messages.setting_smaller,
-    settings.preferCutout && messages.setting_cutout,
     settings.backgroundStyle === "plain" && messages.setting_plain,
     settings.backgroundStyle === "scene" && messages.setting_scene,
     settings.ctaColour === "brand" && messages.setting_cta_brand,

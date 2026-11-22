@@ -1,7 +1,8 @@
-import { fromHex } from "./colour";
+import { fromHex, parseColour, toHex } from "./colour";
 import type { LoadedLogo } from "./load";
 import {
   badgeShare,
+  colourShares,
   dominantColours,
   featherEdge,
   hasNearWhiteBox,
@@ -23,6 +24,8 @@ export type CleanedLogo = {
   transparent: boolean;
   colourClass: LogoColourClass;
   colours: string[];
+  // Each colour's share of the artwork, in the same order.
+  shares: number[];
   // A disc or sticker with its own field: drawn as it is, white inside included.
   badge: boolean;
 };
@@ -45,13 +48,15 @@ export async function cleanLogo(
       png: await toPng(rgba),
       transparent: loaded.transparentSource || boxed,
       colourClass: "multi_colour",
-      colours: badgeColours.slice(0, MAX_COLOURS),
+      ...split(badgeColours),
       badge: true,
     };
   }
 
-  const { colourClass, colours } =
-    loaded.svgClass ?? classifyRaster(unboxed, boxed);
+  const { colourClass, ranked } = loaded.svgClass
+    ? classifySvg(loaded.svgClass, unboxed, boxed)
+    : classifyRaster(unboxed, boxed);
+  const { colours, shares } = split(ranked);
   // One ink on a removed box: fade the edges and open the counters. Light ink would leave too little contrast to measure against.
   const ink = colours[0] ? fromHex(colours[0]) : null;
   const inked =
@@ -65,7 +70,8 @@ export async function cleanLogo(
     png: await toPng(rgba),
     transparent: loaded.transparentSource || boxed,
     colourClass,
-    colours: colours.slice(0, MAX_COLOURS),
+    colours,
+    shares,
     badge: false,
   };
 }
@@ -76,16 +82,40 @@ function badgeColoursOf(whole: Rgba, loaded: LoadedLogo) {
     return null;
   }
   if (badgeShare(whole) < BADGE_SHARE) return null;
-  const colours = dominantColours(whole).map((c) => c.hex);
-  return colours.length >= 2 ? colours : null;
+  const ranked = dominantColours(whole);
+  return ranked.length >= 2 ? ranked : null;
+}
+
+type Ranked = { hex: string; share: number }[];
+
+const split = (ranked: Ranked) => ({
+  colours: ranked.slice(0, MAX_COLOURS).map((c) => c.hex),
+  shares: ranked.slice(0, MAX_COLOURS).map((c) => c.share),
+});
+
+// The fills of an svg that can be read as colours, each with the share of the rendered picture it holds, the dominant first.
+function classifySvg(
+  svg: NonNullable<LoadedLogo["svgClass"]>,
+  rendered: Rgba,
+  boxRemoved: boolean,
+) {
+  const listed = svg.colours.flatMap((value) => {
+    const rgb = parseColour(value);
+    return rgb ? [rgb] : [];
+  });
+  const shares = colourShares(listed, rendered, {
+    ignoreNearWhite: boxRemoved,
+  });
+  const ranked: Ranked = listed
+    .map((rgb, i) => ({ hex: toHex(rgb), share: shares[i] ?? 0 }))
+    .sort((a, b) => b.share - a.share);
+  return { colourClass: svg.colourClass, ranked };
 }
 
 // After a box is removed, the white left inside letters and rings is page, not ink.
 function classifyRaster(rgba: Rgba, boxRemoved: boolean) {
-  const colours = dominantColours(rgba, { ignoreNearWhite: boxRemoved }).map(
-    (c) => c.hex,
-  );
+  const ranked = dominantColours(rgba, { ignoreNearWhite: boxRemoved });
   const colourClass: LogoColourClass =
-    colours.length >= 2 ? "multi_colour" : "one_colour";
-  return { colourClass, colours };
+    ranked.length >= 2 ? "multi_colour" : "one_colour";
+  return { colourClass, ranked };
 }

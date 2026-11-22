@@ -1,5 +1,5 @@
 export { AD_NETWORK_COLOURS } from "./ad-network";
-export { planBadge, withSymbol, type BadgeSpec } from "./badge";
+export { BADGE_ROOM, planBadge, withSymbol, type BadgeSpec } from "./badge";
 export {
   CANVAS,
   PHOTO_PRODUCT_ZONE,
@@ -11,6 +11,7 @@ export {
   LOGO_LIMITS,
   type Box,
   type LogoGeometry,
+  type RuleVersion,
 } from "./canvas";
 export { pickCtaColour } from "./cta-colour";
 export { fitText, sizeRange, wrapWords } from "./fit";

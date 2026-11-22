@@ -40,6 +40,16 @@ const row = (
 
 const rowHeight = (size: number) => Math.ceil(size * ROW_LINE_HEIGHT);
 
+export const BADGE_GAP = 24;
+// The tallest badge at full size (a price over its was price), and with the gap above the product the room a cut-out leaves for it.
+export const BADGE_MAX_HEIGHT = Math.ceil(
+  rowHeight(Math.round(DESIGN.badgePrice)) +
+    ROW_GAP +
+    rowHeight(Math.round(DESIGN.badgeSub)) +
+    2 * DESIGN.badgePadY,
+);
+export const BADGE_ROOM = BADGE_MAX_HEIGHT + BADGE_GAP;
+
 // Rows are laid out at the design's sizes and scaled down together until the widest fits.
 function scaled(
   build: (scale: number) => { rows: Row[]; width: number },
@@ -56,7 +66,12 @@ export type PlannedBadge =
   | { ok: true; w: number; h: number; rows: Row[] }
   | { ok: false; reason: string };
 
-export function planBadge(spec: BadgeSpec, measure: Measure): PlannedBadge {
+// `maxHeight` caps an offer badge: it takes the largest size whose wrap fits that height.
+export function planBadge(
+  spec: BadgeSpec,
+  measure: Measure,
+  maxHeight = Infinity,
+): PlannedBadge {
   const padX = DESIGN.badgePadX;
   const padY = DESIGN.badgePadY;
   const frame = (rows: Row[], inner: number) => ({
@@ -77,17 +92,23 @@ export function planBadge(spec: BadgeSpec, measure: Measure): PlannedBadge {
         reason: `offer is over ${OFFER_MAX_CHARS} characters`,
       };
     }
-    const fit = fitText(spec.text, measure, {
-      maxWidth: MAX_INNER,
-      maxLines: 4,
-      sizes: sizeRange(DESIGN.badgePrice * 0.7, 24, 2),
-      weight: 700,
-    });
-    const rows = fit.lines.map((line) => row(line, fit.size, 700));
-    const inner = Math.max(
-      ...fit.lines.map((line) => measure(line, fit.size, 700)),
-    );
-    return frame(rows, inner);
+    let last: ReturnType<typeof frame> | undefined;
+    for (const size of sizeRange(DESIGN.badgePrice * 0.7, 24, 2)) {
+      const fit = fitText(spec.text, measure, {
+        maxWidth: MAX_INNER,
+        maxLines: 4,
+        sizes: [size],
+        weight: 700,
+      });
+      last = frame(
+        fit.lines.map((line) => row(line, fit.size, 700)),
+        Math.max(...fit.lines.map((line) => measure(line, fit.size, 700))),
+      );
+      if (fit.fits && last.h <= maxHeight) return last;
+    }
+    return maxHeight === Infinity && last
+      ? last
+      : { ok: false, reason: `offer does not fit in ${maxHeight} px` };
   }
 
   if (spec.kind === "price") {

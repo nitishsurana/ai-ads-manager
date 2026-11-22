@@ -44,7 +44,9 @@
         "position": 1,
         "tier": "clean",
         "background": "plain",
-        "person": false
+        "person": false,
+        "giftSet": false,
+        "backdropUniform": null
       }
     ],
     "facts": [
@@ -61,7 +63,8 @@
     ],
     "campaign": {
       "occasion": "Spring refresh"
-    }
+    },
+    "orderFlow": "direct"
   },
   "brief": {
     "rules": [
@@ -75,6 +78,12 @@
     ],
     "research": [],
     "approvedAngles": ["benefit", "lifestyle"],
+    "settings": {
+      "productSize": "normal",
+      "backgroundStyle": "any",
+      "ctaColour": "auto"
+    },
+    "notApplied": [],
     "campaign": {
       "occasion": "Spring refresh"
     },

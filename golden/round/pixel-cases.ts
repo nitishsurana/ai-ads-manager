@@ -1,5 +1,6 @@
 import sharp from "sharp";
 import { borderProblems, productProblems } from "@/lib/round/checks/pixels";
+import { finishProduct } from "@/lib/round/background/finish";
 import {
   normalise,
   readbackProblems,
@@ -248,6 +249,49 @@ const PRODUCT_CASES: Case[] = [
   },
 ];
 
+// A bright 40 x 40 product with a transparent rim, graded and edge-ramped as it is pasted, against the scene it was pasted into.
+async function graded(paste: (finished: Buffer, raw: Buffer) => Buffer) {
+  const rgba = Buffer.alloc(40 * 40 * 4);
+  for (let i = 0; i < 40 * 40; i++) {
+    const [x, y] = [i % 40, Math.floor(i / 40)];
+    const rim = x < 3 || y < 3 || x >= 37 || y >= 37;
+    rgba.set([240, 200, 160, rim ? 0 : 255], i * 4);
+  }
+  const raw = await sharp(rgba, { raw: { width: 40, height: 40, channels: 4 } })
+    .png()
+    .toBuffer();
+  const finished = await finishProduct(raw, [1.06, 1, 0.94]);
+  const base = await sharp(solid(400, 400, 100, 3), {
+    raw: { width: 400, height: 400, channels: 3 },
+  })
+    .png()
+    .toBuffer();
+  const seen = await sharp(base)
+    .composite([{ input: paste(finished, raw), left: 100, top: 100 }])
+    .png()
+    .toBuffer();
+  const expected = await sharp(finished).ensureAlpha().raw().toBuffer();
+  return productProblems(
+    seen,
+    { rgba: expected, box: { x: 100, y: 100, w: 40, h: 40 } },
+    [],
+  );
+}
+
+const GRADED_CASES: Case[] = [
+  {
+    name: "layer 1 product: a graded, edge-ramped product passes against its finished cut-out, and the same scene with the product pasted ungraded fails",
+    run: async () =>
+      same(
+        [
+          await graded((finished) => finished),
+          (await graded((_finished, raw) => raw)).length,
+        ],
+        [[], 1],
+      ),
+  },
+];
+
 const NAME_CASES: Case[] = [
   {
     name: "file name: store, product, round and creative, with the currency only when a price shows",
@@ -309,6 +353,7 @@ const WORDMARK_CASES: Case[] = [
           },
           {
             geometry: 2,
+            rule: 2,
             sample: () => flatBackdrop([20, 20, 20]),
             avoid: [],
             measure: createMeasure(fonts, "Poppins"),
@@ -335,5 +380,6 @@ export const PIXEL_CASES: Case[] = [
   ...READBACK_CASES,
   ...BORDER_CASES,
   ...PRODUCT_CASES,
+  ...GRADED_CASES,
   ...NAME_CASES,
 ];

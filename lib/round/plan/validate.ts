@@ -1,5 +1,5 @@
 import type { BriefSettings } from "@/lib/brief/schema";
-import type { FrozenPhoto, RoundInputs } from "../inputs";
+import type { RoundInputs } from "../inputs";
 import type { Angle, Background, Candidate, SupportingElement } from "../types";
 import { SCENE_PROMPT_MAX_CHARS } from "./prompt";
 import {
@@ -8,10 +8,8 @@ import {
   badgeOffers,
   CANDIDATES,
   elementsOn,
-  isWholeSet,
   MIN_PER_ELEMENT,
   usableAngles,
-  usesWholePhoto,
 } from "./rules";
 import type { RawPlan } from "./schema";
 
@@ -145,19 +143,8 @@ const DEFAULT_SCENES = [
 function background(
   candidate: Proposed | undefined,
   index: number,
-  photo: FrozenPhoto,
   settings: BriefSettings,
 ): { background: Background; repaired: boolean } {
-  if (usesWholePhoto(photo, settings)) {
-    return {
-      background: {
-        method: "photo",
-        placement: 2,
-        ...(isWholeSet(photo) && { whole: true as const }),
-      },
-      repaired: false,
-    };
-  }
   const marks = {
     ...(settings.productSize === "smaller" && { size: "smaller" as const }),
     cutout: 1 as const,
@@ -239,7 +226,7 @@ export function validatePlan(
     }
     if (photo.id !== candidate.photoId)
       repairs.push(`candidate ${index}: photo`);
-    const styled = background(candidate, index, photo, settings);
+    const styled = background(candidate, index, settings);
     if (styled.repaired) repairs.push(`candidate ${index}: background`);
     return {
       index,

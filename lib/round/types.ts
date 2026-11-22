@@ -25,7 +25,9 @@ export type SupportingElement = "price" | "rating" | "offer";
 
 export type Copy = { eyebrow: string | null; headline: string; cta: string };
 
-// A whole photo (a scene, or a person) has no method for the model to choose. `placement` 2 is the fit-to-width placement; rows without it use the older cover crop. `size` is absent for a normal-size product. `cutout` 1 is the recipe version of the mask choice (backdrop or model mask); rows without it use the model mask. `whole` is a gift set placed whole: no cover, no cut-out.
+export type Grade = [number, number, number];
+
+// A whole photo (a scene, or a person) has no method for the model to choose. `placement` 2 is the fit-to-width placement; rows without it use the older cover crop. `size` is absent for a normal-size product. `cutout` 1 is the recipe version of the mask choice (backdrop or model mask); rows without it use the model mask. `room` 1 leaves the badge's room above the product; rows without it centre the product in its zone. `grade` is the colour gain the product was pasted with, written for every new Bria scene; rows without it paste the product as cut. `whole` is a gift set placed whole: no cover, no cut-out.
 export type Background =
   | {
       method: "bria";
@@ -33,8 +35,16 @@ export type Background =
       reason: string;
       size?: "smaller";
       cutout?: 1;
+      room?: 1;
+      grade?: Grade;
     }
-  | { method: "solid" | "tonal"; reason: string; size?: "smaller"; cutout?: 1 }
+  | {
+      method: "solid" | "tonal";
+      reason: string;
+      size?: "smaller";
+      cutout?: 1;
+      room?: 1;
+    }
   | {
       method: "photo";
       placement?: 2;

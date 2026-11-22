@@ -14,6 +14,7 @@ import {
   type Layout,
   type LayoutInput,
   type LogoGeometry,
+  type RuleVersion,
 } from "@/lib/render";
 import { fromHex, parseColour } from "@/lib/intake";
 import type { RoundInputs } from "../inputs";
@@ -23,7 +24,7 @@ import {
   brandButton,
   brandColours,
   brandInk,
-  parseColours,
+  logoColours,
   wordmarkName,
 } from "./inputs";
 
@@ -50,7 +51,7 @@ function logoSpec(inputs: RoundInputs, logo: Logo | null): LayoutInput["logo"] {
     kind: logo ? "image" : "wordmark",
     aspect: logo?.aspect ?? 1,
     colourClass: source.colourClass,
-    colours: parseColours(source.colours),
+    ...logoColours(source),
     headerBackground: header,
     badge: source.badge,
     wordmark,
@@ -67,9 +68,11 @@ export async function planCreative(
     fonts: FontSet;
     logo: Logo | null;
     label: string;
-    // An edit keeps the stored creative's settings; a new candidate keeps the text clear wherever the product's box can be trusted, takes the larger logo and picks its button colour afresh.
+    // An edit keeps the stored creative's settings; a new candidate keeps the text clear wherever the product's box can be trusted, takes the larger logo, the current badge and logo rules (a photo background keeps the earlier badge placement) and picks its button colour afresh.
     keepClear?: boolean;
     logoGeometry?: LogoGeometry;
+    badgeRule?: RuleVersion;
+    logoRule?: RuleVersion;
     ctaPreferred?: string;
   },
 ): Promise<Layout> {
@@ -101,6 +104,8 @@ export async function planCreative(
     ...brandColours(inputs),
     logo: logoSpec(inputs, logo),
     logoGeometry: context.logoGeometry ?? 2,
+    badgeRule: context.badgeRule ?? (scene.method === "photo" ? 1 : 2),
+    logoRule: context.logoRule ?? 2,
     cta: {
       mode: candidate.ctaColour ?? "auto",
       ...brandButton(inputs),

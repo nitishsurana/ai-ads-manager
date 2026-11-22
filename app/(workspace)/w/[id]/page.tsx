@@ -1,5 +1,7 @@
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 import { ConfirmScreen } from "@/components/confirm/confirm-screen";
 import { Stepper } from "@/components/layout/stepper";
 import { BriefPanel } from "@/components/rounds/brief-panel";
@@ -10,6 +12,7 @@ import { requireTester } from "@/lib/auth";
 import { loadBriefPanel } from "@/lib/brief";
 import { loadRoundScreen } from "@/lib/round";
 import { loadConfirmScreen } from "@/lib/workspace";
+import { cn } from "@/lib/utils";
 
 export default async function Page({ params }: PageProps<"/w/[id]">) {
   const { id } = await params;
@@ -55,6 +58,16 @@ export default async function Page({ params }: PageProps<"/w/[id]">) {
             <h1 className="m-0 text-2xl font-semibold tracking-tight">
               Round {view.n}
             </h1>
+            <Link
+              href={`/w/${id}/confirm`}
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "self-center no-underline",
+              )}
+            >
+              <Pencil className="size-3.5" aria-hidden="true" />
+              Edit brand kit
+            </Link>
             <span className="text-xs text-muted-foreground">
               {count} {count === 1 ? "creative" : "creatives"}
               {view.madeInS !== null &&

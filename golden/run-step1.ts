@@ -10,6 +10,7 @@ import { runConfirm } from "./confirm-check";
 import { loadExpectations, type Expectation } from "./expectations";
 import type { Outcome } from "./observe";
 import { fullResult, hasBrandPages, snapshotDirOf } from "./replay";
+import { BRAND_CASES } from "./brand-cases";
 import { PHOTOS_CASES } from "./photos-cases";
 import { probeLogo, storedLogoFiles } from "./probe";
 
@@ -109,7 +110,7 @@ async function main() {
       console.log(`  SKIP photo fields not pinned: ${unpinned.join(", ")}`);
     }
   }
-  for (const { name, run } of PHOTOS_CASES) {
+  for (const { name, run } of [...PHOTOS_CASES, ...BRAND_CASES]) {
     let problem: string | null;
     try {
       problem = await run();

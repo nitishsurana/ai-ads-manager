@@ -13,6 +13,7 @@ import { CHECK_CASES } from "./round/check-cases";
 import { COPY_CASES } from "./round/copy-cases";
 import { CTA_CASES } from "./round/cta-cases";
 import { EDIT_CASES } from "./round/edit-cases";
+import { FINISH_CASES } from "./round/finish-cases";
 import { JUDGE_TABLES } from "./round/judge-cases";
 import { LOGO_CASES } from "./round/logo-cases";
 import { PIXEL_CASES } from "./round/pixel-cases";
@@ -40,14 +41,18 @@ async function runCase(
     expect: z.infer<typeof expectSchema>;
   }>,
 ) {
-  const { inputs, brief, dir, expect } = await load();
-  const result = await runStages(
-    name,
-    inputs,
-    brief,
-    createAi({ snapshotDir: dir }),
-  );
-  return roundProblems(inputs, brief, expect, result);
+  try {
+    const { inputs, brief, dir, expect } = await load();
+    const result = await runStages(
+      name,
+      inputs,
+      brief,
+      createAi({ snapshotDir: dir }),
+    );
+    return roundProblems(inputs, brief, expect, result);
+  } catch (error) {
+    return [`threw: ${error instanceof Error ? error.message : error}`];
+  }
 }
 
 async function main() {
@@ -98,6 +103,7 @@ async function main() {
     ...COPY_CASES,
     ...CTA_CASES,
     ...EDIT_CASES,
+    ...FINISH_CASES,
     ...LOGO_CASES,
     ...PIXEL_CASES,
     ...PLAN_CASES,

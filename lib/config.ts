@@ -22,6 +22,9 @@ export const LOGO_MAX_WIDTH_SHARE = 0.24;
 // Logo geometry 1, which creatives stored before the 24% cap keep when they are edited.
 export const LEGACY_LOGO_MAX_WIDTH_SHARE = 0.18;
 export const LOGO_MIN_CONTRAST = 3;
+// Logo rule 2: a colour with at least ACCENT_SHARE of the logo's ink must reach ACCENT_MIN_CONTRAST against what it sits on; the dominant colour reaches LOGO_MIN_CONTRAST.
+export const ACCENT_SHARE = 0.1;
+export const ACCENT_MIN_CONTRAST = 1.5;
 export const TEXT_MIN_CONTRAST = 4.5;
 export const CTA_MIN_CONTRAST = 4.5;
 export const CTA_MIN_DELTA_E = 20;
@@ -38,10 +41,14 @@ export const JUDGE_FAIL_MEDIAN = 1;
 export const JUDGE_DISAGREEMENT = 2;
 export const JUDGE_MAX_SHOWN = 3;
 
-// Layer 1: the product's pixels in the final creative may differ from the re-derived cut-out by this much (mean absolute channel difference, and the share of pixels differing by more than PRODUCT_PIXEL_DELTA), because backgrounds are stored as JPEG.
+// How far a Bria scene's colour cast pulls the pasted product's colours (0 leaves them, 1 matches the scene), and the most any channel gain moves.
+export const GRADE_STRENGTH = 0.5;
+export const GRADE_MAX = 0.06;
+
+// Layer 1: the product's pixels in the final creative may differ from the finished (graded) cut-out by this much (mean absolute channel difference, and the share of pixels differing by more than PRODUCT_PIXEL_DELTA), because backgrounds are stored as JPEG.
 export const PRODUCT_MEAN_TOLERANCE = 4;
 export const PRODUCT_PIXEL_DELTA = 24;
-export const PRODUCT_BAD_SHARE = 0.02;
+export const PRODUCT_BAD_SHARE = 0.03;
 export const PNG_MAX_BYTES = 10 * 1024 * 1024;
 
 // A failing candidate is redone this many times, and only while this share of the round's deadline is still left, which is what a Bria call, the checks and the judge panel need (about 60 of 180 s).

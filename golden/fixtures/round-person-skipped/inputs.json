@@ -1,0 +1,97 @@
+{
+  "inputs": {
+    "productTitle": "Blue Mug",
+    "sourceUrl": "https://shop.example/products/blue-mug",
+    "values": {
+      "price": "$18.00",
+      "wasPrice": null,
+      "currency": "USD",
+      "rating": {
+        "value": 4.7,
+        "count": 212
+      },
+      "brandName": "Blue Mug Co"
+    },
+    "brandKit": {
+      "palette": {
+        "primary": "#1f4e79",
+        "secondary": "#f4b942",
+        "background": "#ffffff",
+        "text": "#222222",
+        "themeColour": null
+      },
+      "fonts": {
+        "heading": {
+          "declared": null,
+          "family": "Inter",
+          "exact": false
+        },
+        "body": {
+          "declared": null,
+          "family": "Inter",
+          "exact": false
+        }
+      },
+      "tone": ["warm", "simple"],
+      "audience": "Home cooks",
+      "valuePropositions": ["Hand glazed stoneware", "Dishwasher safe"],
+      "proofPoints": ["Made in small batches"]
+    },
+    "logo": null,
+    "photos": [
+      {
+        "id": "p1",
+        "position": 1,
+        "tier": "clean",
+        "background": "plain",
+        "person": false,
+        "giftSet": false,
+        "backdropUniform": null
+      },
+      {
+        "id": "p2",
+        "position": 2,
+        "tier": "clean",
+        "background": "scene",
+        "person": false,
+        "giftSet": false,
+        "backdropUniform": null
+      },
+      {
+        "id": "p3",
+        "position": 3,
+        "tier": "clean",
+        "background": "plain",
+        "person": true,
+        "giftSet": false,
+        "backdropUniform": null
+      }
+    ],
+    "facts": [],
+    "campaign": {},
+    "orderFlow": "direct"
+  },
+  "brief": {
+    "rules": [],
+    "research": [],
+    "approvedAngles": [],
+    "settings": {
+      "productSize": "normal",
+      "backgroundStyle": "any",
+      "ctaColour": "auto"
+    },
+    "notApplied": [],
+    "campaign": {},
+    "values": {
+      "price": "$18.00",
+      "wasPrice": null,
+      "currency": "USD",
+      "rating": {
+        "value": 4.7,
+        "count": 212
+      },
+      "brandName": "Blue Mug Co"
+    },
+    "exemplarCreativeIds": []
+  }
+}

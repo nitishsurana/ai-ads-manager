@@ -1,9 +1,12 @@
 import { JUDGE_MAX_SHOWN, MAX_REGENERATIONS } from "@/lib/config";
 import { mapLimit } from "@/lib/intake";
 import {
+  BADGE_COVERS_PRODUCT,
+  BADGE_DROPPED,
   checkCandidate,
   COVERS_PRODUCT,
   CUT_OFF,
+  isMissingBadge,
   type CheckContext,
 } from "../checks";
 import { judgePanel } from "../judge";
@@ -15,7 +18,16 @@ import { isFatal } from "./errors";
 import type { StageDeps } from "./types";
 
 const CONCURRENCY = 3;
-const DETERMINISTIC = [COVERS_PRODUCT, CUT_OFF];
+
+// Placement is deterministic: a paid redo can't fix a covered or cut-off product, or a badge with no room off the product (dropped, so its element is missing, or covering it).
+const DETERMINISTIC = [
+  COVERS_PRODUCT,
+  CUT_OFF,
+  BADGE_DROPPED,
+  BADGE_COVERS_PRODUCT,
+];
+const isDeterministic = (problem: string) =>
+  DETERMINISTIC.includes(problem) || isMissingBadge(problem);
 
 const contender = ({ index, angle, supportingElement, judge }: Candidate) =>
   ({
@@ -98,14 +110,14 @@ export async function checkAndSelect(
       console.warn(
         `round ${roundId}: candidate ${candidate.index} failed Layer 1 (regeneration ${regeneration}): ${problems.join("; ")}`,
       );
-      // Only a generated image changes with the seed (a Bria scene, a placed photo's bands), and placement is deterministic, so a paid redo can't fix a product that is covered or cut off.
+      // Only a generated image changes with the seed (a Bria scene, a placed photo's bands), so a paid redo only helps with a problem that isn't deterministic.
       const { background } = current;
       const generated =
         background.method === "bria" ||
         (background.method === "photo" && background.gaps === true);
       const redoable =
         !current.previewPath ||
-        (generated && problems.some((p) => !DETERMINISTIC.includes(p)));
+        (generated && problems.some((p) => !isDeterministic(p)));
       if (regeneration >= MAX_REGENERATIONS || !timeLeft() || !redoable) {
         return null;
       }
@@ -186,7 +198,7 @@ export async function checkAndSelect(
         }
       }),
     );
-    if (changed.size === 0) return null;
+    if (![...changed.values()].some((next) => next !== null)) return null;
     return judge(
       judged.flatMap((c) => {
         if (!changed.has(c.index)) return [c];

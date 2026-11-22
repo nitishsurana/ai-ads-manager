@@ -43,6 +43,8 @@ export type Logo = {
   colourClass: LogoColourClass | null;
   // Solid ink colours only: the currentColor part of an svg is not listed, so the renderer recolours it per creative.
   colours: string[];
+  // Each colour's share of the logo's ink, in the same order; absent on a logo stored before.
+  shares?: number[];
   // False when a flat box that isn't near-white stays behind the artwork.
   transparent: boolean;
   headerBackground: string | null;

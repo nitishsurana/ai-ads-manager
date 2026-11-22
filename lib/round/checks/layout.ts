@@ -192,7 +192,9 @@ function logoProblems(layout: Layout, inputs: RoundInputs) {
   }
   const exempt =
     logo.decision === "badge" ||
-    (logo.decision === "panel" && inputs.logo?.colourClass === "multi_colour");
+    (logo.decision === "panel" &&
+      inputs.logo?.colourClass === "multi_colour" &&
+      layout.logoRule !== 2);
   if (!exempt && logo.contrast < LOGO_MIN_CONTRAST) {
     problems.push(
       `contrast: the logo's is ${logo.contrast.toFixed(2)}, under ${LOGO_MIN_CONTRAST}`,
@@ -200,6 +202,11 @@ function logoProblems(layout: Layout, inputs: RoundInputs) {
   }
   return problems;
 }
+
+export const BADGE_DROPPED = "element: the badge was dropped";
+const NO_BADGE = { before: "element: no ", after: " badge is drawn" };
+export const isMissingBadge = (problem: string) =>
+  problem.startsWith(NO_BADGE.before) && problem.endsWith(NO_BADGE.after);
 
 // The badge shows what step 1 confirmed, for the element the plan gave this candidate.
 function elementProblems(
@@ -214,12 +221,13 @@ function elementProblems(
   if (layout.offerFactId !== subject.offerFactId)
     problems.push("element: the layout lost the offer fact id");
   if (layout.dropped.some((d) => d.element === "badge"))
-    problems.push("element: the badge was dropped");
+    problems.push(BADGE_DROPPED);
   if (!element)
     return badge
       ? [...problems, "element: a badge without a supporting element"]
       : problems;
-  if (!badge) return [...problems, `element: no ${element} badge is drawn`];
+  if (!badge)
+    return [...problems, `${NO_BADGE.before}${element}${NO_BADGE.after}`];
   if (badge.kind !== element)
     return [
       ...problems,
@@ -275,6 +283,18 @@ function coverProblems(layout: Layout) {
     : [];
 }
 
+export const BADGE_COVERS_PRODUCT = "badge: covers the product";
+
+function badgeProblems(layout: Layout) {
+  const { badge, product } = layout;
+  return layout.badgeRule === 2 &&
+    badge &&
+    product &&
+    overlaps(badge.box, product)
+    ? [BADGE_COVERS_PRODUCT]
+    : [];
+}
+
 // Everything Layer 1 can say from the candidate and its stored layout alone.
 export function layoutProblems(
   layout: Layout,
@@ -290,6 +310,7 @@ export function layoutProblems(
     ...glyphProblems(layout, missingGlyphs),
     ...marginProblems(layout),
     ...coverProblems(layout),
+    ...badgeProblems(layout),
     ...colourProblems(layout, inputs),
     ...logoProblems(layout, inputs),
     ...elementProblems(layout, subject, inputs),

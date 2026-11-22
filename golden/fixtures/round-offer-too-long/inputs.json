@@ -44,7 +44,9 @@
         "position": 1,
         "tier": "clean",
         "background": "plain",
-        "person": false
+        "person": false,
+        "giftSet": false,
+        "backdropUniform": null
       }
     ],
     "facts": [
@@ -54,12 +56,19 @@
         "kind": "offer"
       }
     ],
-    "campaign": {}
+    "campaign": {},
+    "orderFlow": "direct"
   },
   "brief": {
     "rules": [],
     "research": [],
     "approvedAngles": [],
+    "settings": {
+      "productSize": "normal",
+      "backgroundStyle": "any",
+      "ctaColour": "auto"
+    },
+    "notApplied": [],
     "campaign": {},
     "values": {
       "price": "$18.00",

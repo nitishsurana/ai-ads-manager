@@ -1,6 +1,6 @@
 const SOLID = 10;
 
-const neighbours = (i: number, width: number, height: number) => {
+export const neighbours = (i: number, width: number, height: number) => {
   const x = i % width;
   const out: number[] = [];
   if (x > 0) out.push(i - 1);

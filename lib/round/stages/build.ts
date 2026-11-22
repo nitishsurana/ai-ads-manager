@@ -18,6 +18,12 @@ async function required(
   return bytes;
 }
 
+// Every new cut-out keeps room above the product for a badge, so a candidate that takes one later (covering) still has a spot and products match across the round; the marker is stored so a later check or edit finds the product where it was put.
+const withRoom = (candidate: Candidate): Candidate =>
+  candidate.background.method !== "photo"
+    ? { ...candidate, background: { ...candidate.background, room: 1 } }
+    : candidate;
+
 // The two steps that make one candidate's creative, shared by the stages that run them for the whole round and by the checks, which redo a failing candidate. Photos, fonts and the logo are read once, on first use.
 export function createBuilder(
   input: RoundContext,
@@ -67,8 +73,9 @@ export function createBuilder(
       candidate: Candidate,
       regeneration = 0,
     ): Promise<Candidate> {
-      const { bytes, product, isolated, gaps } = await makeBackground(
-        candidate,
+      const marked = withRoom(candidate);
+      const { bytes, product, isolated, gaps, grade } = await makeBackground(
+        marked,
         await prepared(candidate.photoId),
         inputs,
         deps,
@@ -76,12 +83,15 @@ export function createBuilder(
       );
       const path = `${input.roundId}/c${candidate.index}.jpg`;
       await deps.storage.put("backgrounds", path, bytes, "image/jpeg");
+      const { background } = marked;
       return {
-        ...candidate,
+        ...marked,
         background:
-          candidate.background.method === "photo" && gaps !== undefined
-            ? { ...candidate.background, isolated, gaps }
-            : candidate.background,
+          background.method === "photo" && gaps !== undefined
+            ? { ...background, isolated, gaps }
+            : background.method === "bria" && grade
+              ? { ...background, grade }
+              : background,
         backgroundPath: path,
         product,
       };

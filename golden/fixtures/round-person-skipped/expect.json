@@ -1,0 +1,4 @@
+{
+  "note": "a photo with a person is skipped while a product-only photo is selected, and a scene photo is cut out and given a new background",
+  "photoIds": ["p1", "p2"]
+}

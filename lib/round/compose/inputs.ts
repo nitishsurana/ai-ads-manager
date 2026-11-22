@@ -37,6 +37,18 @@ export function badgeSpec(
   }
 }
 
+// The logo's colours with their shares, zipped before unreadable colours are dropped so the two stay aligned.
+export function logoColours(logo: NonNullable<RoundInputs["logo"]>) {
+  const entries = logo.colours.flatMap((value, i) => {
+    const colour = parsed(value);
+    return colour ? [{ colour, share: logo.shares?.[i] ?? 0 }] : [];
+  });
+  return {
+    colours: entries.map((entry) => entry.colour),
+    ...(logo.shares && { shares: entries.map((entry) => entry.share) }),
+  };
+}
+
 export function brandColours(inputs: RoundInputs): {
   brandColours: Rgb[];
   brandInks: Rgb[];
