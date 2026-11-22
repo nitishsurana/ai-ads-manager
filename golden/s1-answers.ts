@@ -122,8 +122,12 @@ export function parseS1(s1: S1, deselectPositions: number[]): ParsedS1 {
       : (match(s1.currency, new RegExp(`^([A-Z]{3})${NOTE}$`), "currency")[1] ??
         null),
   };
-  const proceed = yesNo(s1.continue, "continue if flagged");
-  if (proceed !== undefined) parsed.answers.continuePastFlag = proceed;
+  // "Available" is the tester overriding the flag: the product can be bought after all.
+  if (s1.continue.trim() === "Available") parsed.answers.markedAvailable = true;
+  else {
+    const proceed = yesNo(s1.continue, "continue if flagged");
+    if (proceed !== undefined) parsed.answers.continuePastFlag = proceed;
+  }
   if (s1.deselect.trim() !== "none") {
     if (deselectPositions.length === 0) {
       throw new Error(

@@ -272,9 +272,7 @@
     "currency": "USD",
     "purchase": "not_purchasable",
     "rating": null,
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ],
+    "warnings": ["Warning: Shoppers can't buy this online right now."],
     "lowResWarning": true,
     "textWarning": false,
     "uniquePhotos": 9,
@@ -298,7 +296,7 @@
       },
       "confirm": {
         "messages": [
-          "Warning: Shoppers can't buy this online right now. Continue anyway?",
+          "Warning: Shoppers can't buy this online right now.",
           "Warning: This photo is low resolution and may look soft."
         ],
         "canGenerate": true,
@@ -317,10 +315,26 @@
         },
         "confirm": {
           "messages": [
-            "Warning: Shoppers can't buy this online right now. Continue anyway?",
+            "Warning: Shoppers can't buy this online right now.",
             "Warning: This photo is low resolution and may look soft."
           ],
           "canGenerate": false,
+          "price": "$398",
+          "wasPrice": null,
+          "showRating": false,
+          "logoSource": "header"
+        }
+      },
+      "marked-available": {
+        "s1": {
+          "continue": "Available"
+        },
+        "confirm": {
+          "messages": [
+            "Warning: Shoppers can't buy this online right now.",
+            "Warning: This photo is low resolution and may look soft."
+          ],
+          "canGenerate": true,
           "price": "$398",
           "wasPrice": null,
           "showRating": false,
@@ -331,7 +345,7 @@
         "s1": {},
         "confirm": {
           "messages": [
-            "Warning: Shoppers can't buy this online right now. Continue anyway?",
+            "Warning: Shoppers can't buy this online right now.",
             "Warning: This photo is low resolution and may look soft."
           ],
           "canGenerate": false,
@@ -450,9 +464,7 @@
       "count": 3,
       "show": false
     },
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ],
+    "warnings": ["Warning: Shoppers can't buy this online right now."],
     "lowResWarning": false,
     "textWarning": false,
     "uniquePhotos": 14,
@@ -480,9 +492,7 @@
         "brandKit": "none"
       },
       "confirm": {
-        "messages": [
-          "Warning: Shoppers can't buy this online right now. Continue anyway?"
-        ],
+        "messages": ["Warning: Shoppers can't buy this online right now."],
         "canGenerate": true,
         "price": "$89",
         "wasPrice": null,
@@ -499,9 +509,7 @@
           "rating": "Yes (override: default off)"
         },
         "confirm": {
-          "messages": [
-            "Warning: Shoppers can't buy this online right now. Continue anyway?"
-          ],
+          "messages": ["Warning: Shoppers can't buy this online right now."],
           "canGenerate": true,
           "price": "$89",
           "wasPrice": null,
@@ -943,9 +951,7 @@
     "currency": "USD",
     "purchase": "not_purchasable",
     "rating": null,
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ]
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
   },
   "rating-4-0-20": {
     "message": null,
@@ -1087,9 +1093,7 @@
     "currency": "USD",
     "purchase": "not_purchasable",
     "rating": null,
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ]
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
   },
   "quick-checkout-disabled": {
     "message": null,
@@ -1098,9 +1102,7 @@
     "currency": "USD",
     "purchase": "not_purchasable",
     "rating": null,
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ]
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
   },
   "quick-checkout-enabled": {
     "message": null,
@@ -1236,9 +1238,7 @@
     "currency": "USD",
     "purchase": "not_purchasable",
     "rating": null,
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ]
+    "warnings": ["Warning: Shoppers can't buy this online right now."]
   },
   "G01": {
     "message": null,
@@ -2653,9 +2653,7 @@
     "wasPrice": null,
     "currency": "USD",
     "rating": null,
-    "warnings": [
-      "Warning: Shoppers can't buy this online right now. Continue anyway?"
-    ],
+    "warnings": ["Warning: Shoppers can't buy this online right now."],
     "purchase": "not_purchasable",
     "orderFlow": "direct"
   },

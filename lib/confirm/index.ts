@@ -1,7 +1,11 @@
 export { applyAnswers } from "./apply";
 export type { Answers } from "./answers";
 export { currencyChoices } from "./currency";
-export { canGenerate, variantNeedsConfirmation } from "./gate";
+export {
+  canGenerate,
+  purchaseAnswered,
+  variantNeedsConfirmation,
+} from "./gate";
 export { initialConfirm, type ConfirmSource } from "./initial";
 export {
   confirmedBrandName,

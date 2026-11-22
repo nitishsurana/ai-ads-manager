@@ -53,7 +53,21 @@ export function FlagsSection({
         {count} {plural(count, "thing", "things")} to check
       </h2>
       {purchase &&
-        (state.continuePastFlag === true ? (
+        (state.markedAvailable ? (
+          <Alert
+            tone="success"
+            message="Marked as available: shoppers can buy this online."
+            action={
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => apply({ markedAvailable: false })}
+              >
+                Undo
+              </Button>
+            }
+          />
+        ) : state.continuePastFlag === true ? (
           <Alert
             tone="success"
             message="Continuing anyway: this product can’t be bought online right now."
@@ -72,13 +86,22 @@ export function FlagsSection({
             tone="warning"
             message={purchase.text}
             action={
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => apply({ continuePastFlag: true })}
-              >
-                Continue anyway
-              </Button>
+              <div className="flex shrink-0 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => apply({ markedAvailable: true })}
+                >
+                  It’s available
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => apply({ continuePastFlag: true })}
+                >
+                  Continue anyway
+                </Button>
+              </div>
             }
           />
         ))}

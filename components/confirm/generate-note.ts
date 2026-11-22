@@ -1,4 +1,8 @@
-import { variantNeedsConfirmation, type ConfirmState } from "@/lib/confirm";
+import {
+  purchaseAnswered,
+  variantNeedsConfirmation,
+  type ConfirmState,
+} from "@/lib/confirm";
 import { messages } from "@/lib/messages";
 import { plural } from "@/lib/utils";
 
@@ -18,7 +22,7 @@ export function generateNote(
   if (!state.photos.some((photo) => photo.selected)) {
     return { tone: "error", text: "Select at least one photo to continue." };
   }
-  if (state.notPurchasable && state.continuePastFlag !== true) {
+  if (!purchaseAnswered(state)) {
     return {
       tone: "error",
       text: "Answer the purchase flag at the top to continue.",

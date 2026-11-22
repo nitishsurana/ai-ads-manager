@@ -34,6 +34,7 @@ const line = (max: number) => z.string().trim().min(1).max(max);
 // The confirm screen's submit shape; server actions parse it with this schema. Kept out of the barrel so client code that only needs the types doesn't pull in zod.
 export const answersSchema = z.strictObject({
   continuePastFlag: z.boolean().optional(),
+  markedAvailable: z.boolean().optional(),
   select: z.array(z.number().int()).optional(),
   deselect: z.array(z.number().int()).optional(),
   variantId: z.number().int().optional(),

@@ -68,7 +68,7 @@ export const messages = {
     "No finished rounds yet. Make a round and it will show up here.",
   library_no_match: "No creatives match this filter.",
 
-  not_purchasable: "Shoppers can't buy this online right now. Continue anyway?",
+  not_purchasable: "Shoppers can't buy this online right now.",
   personalize:
     "Shoppers personalize this product before ordering, so every button will invite them to personalize it.",
   transparent:

@@ -42,9 +42,7 @@ test.describe("confirm states", () => {
     });
     await page.goto(`/w/${seeded.workspaceId}`);
     await expect(
-      page.getByText(
-        "Shoppers can't buy this online right now. Continue anyway?",
-      ),
+      page.getByText("Shoppers can't buy this online right now."),
     ).toBeVisible();
     await expect(generate(page)).toBeDisabled();
     await expect(
@@ -56,6 +54,37 @@ test.describe("confirm states", () => {
     await expect(page.getByText("Continuing anyway")).toBeVisible();
     await page.getByRole("button", { name: "Undo" }).click();
     await expect(generate(page)).toBeDisabled();
+  });
+
+  test("a product wrongly flagged as not purchasable can be marked available, and it sticks", async () => {
+    const { page, uid } = a;
+    const seeded = await seedWorkspace({
+      userId: uid,
+      fixture: "quick-checkout-disabled",
+    });
+    await page.goto(`/w/${seeded.workspaceId}`);
+    await page.getByRole("button", { name: "It’s available" }).click();
+    const marked = page.getByText(
+      "Marked as available: shoppers can buy this online.",
+    );
+    await expect(marked).toBeVisible();
+    await expect(generate(page)).toBeEnabled();
+    await expect
+      .poll(async () => {
+        const row = await workspaceRow(seeded.workspaceId);
+        return (row?.confirmed as { markedAvailable?: boolean } | null)
+          ?.markedAvailable;
+      })
+      .toBe(true);
+
+    await page.reload();
+    await expect(marked).toBeVisible();
+    await expect(generate(page)).toBeEnabled();
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect(generate(page)).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "It’s available" }),
+    ).toBeVisible();
   });
 
   test("a variant choice blocks Generate until a variant is chosen and confirmed", async () => {

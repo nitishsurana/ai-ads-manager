@@ -336,9 +336,7 @@ test.describe("confirm", () => {
       ),
     ).toBeVisible();
     await expect(
-      page.getByText(
-        "Shoppers can't buy this online right now. Continue anyway?",
-      ),
+      page.getByText("Shoppers can't buy this online right now."),
     ).toHaveCount(0);
     await expect(generate(page)).toBeEnabled();
   });

@@ -28,6 +28,8 @@ export type ConfirmState = {
   orderFlow: OrderFlow;
   // null until the tester answers the not-purchasable flag.
   continuePastFlag: boolean | null;
+  // The tester says the product can be bought after all. A stopgap for stores whose add-to-cart sits where the purchase check doesn't look (Glossier keeps it in a sticky bar outside the product section).
+  markedAvailable: boolean;
   needsVariantChoice: boolean;
   variants: ConfirmVariant[];
   variantId: number | null;

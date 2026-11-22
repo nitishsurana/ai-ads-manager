@@ -15,8 +15,14 @@ export function applyAnswers(
 ): ConfirmState {
   const next = structuredClone(state);
 
+  // The two answers to the purchase flag exclude each other.
   if (answers.continuePastFlag !== undefined) {
     next.continuePastFlag = answers.continuePastFlag;
+    if (answers.continuePastFlag) next.markedAvailable = false;
+  }
+  if (answers.markedAvailable !== undefined) {
+    next.markedAvailable = answers.markedAvailable;
+    if (answers.markedAvailable) next.continuePastFlag = null;
   }
 
   const selected = new Set(answers.select);

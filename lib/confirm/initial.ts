@@ -40,6 +40,7 @@ export function initialConfirm(result: ConfirmSource): ConfirmState {
     photosSkipped,
     orderFlow: page.orderFlow,
     continuePastFlag: null,
+    markedAvailable: false,
     needsVariantChoice: page.needsVariantChoice,
     variants: page.variants.map((variant) => {
       const own = variantsById.get(variant.id);

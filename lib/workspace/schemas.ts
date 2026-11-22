@@ -99,6 +99,7 @@ export const productJsonSchema = z.object({
 // The tester's answers that have no column of their own: photo selection lives on the photos, the edited brand kit on brand_kit and the campaign on campaign.
 export const storedConfirmSchema = z.object({
   continuePastFlag: z.boolean().nullable(),
+  markedAvailable: z.boolean().default(false),
   variantId: z.number().nullable(),
   variantConfirmed: z.boolean(),
   pricingEdited: z.boolean(),

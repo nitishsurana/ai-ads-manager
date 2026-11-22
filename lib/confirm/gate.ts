@@ -6,6 +6,14 @@ export function variantNeedsConfirmation(state: ConfirmState) {
   return state.needsVariantChoice && chosen?.availability !== "buyable";
 }
 
+export function purchaseAnswered(state: ConfirmState) {
+  return (
+    !state.notPurchasable ||
+    state.continuePastFlag === true ||
+    state.markedAvailable
+  );
+}
+
 export function canGenerate(state: ConfirmState) {
   const variantReady =
     !state.needsVariantChoice ||
@@ -16,7 +24,7 @@ export function canGenerate(state: ConfirmState) {
   return (
     priceReady &&
     state.photos.some((photo) => photo.selected) &&
-    (!state.notPurchasable || state.continuePastFlag === true) &&
+    purchaseAnswered(state) &&
     variantReady
   );
 }

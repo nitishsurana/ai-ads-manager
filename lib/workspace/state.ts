@@ -13,6 +13,7 @@ import {
 export function toStored(state: ConfirmState): StoredConfirm {
   return {
     continuePastFlag: state.continuePastFlag,
+    markedAvailable: state.markedAvailable,
     variantId: state.variantId,
     variantConfirmed: state.variantConfirmed,
     pricingEdited: state.pricingEdited,
