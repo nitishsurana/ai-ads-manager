@@ -85,8 +85,14 @@ function gradient(
         x + 1 < within.x1 ? pair(here, cells[y * width + x + 1]) : null;
       const down =
         y + 1 < within.y1 ? pair(here, cells[(y + 1) * width + x]) : null;
-      if (across !== null) [sum.x, n.x] = [sum.x + across, n.x + 1];
-      if (down !== null) [sum.y, n.y] = [sum.y + down, n.y + 1];
+      if (across !== null) {
+        sum.x += across;
+        n.x++;
+      }
+      if (down !== null) {
+        sum.y += down;
+        n.y++;
+      }
     }
   }
   return {
