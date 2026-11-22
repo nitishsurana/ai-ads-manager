@@ -20,7 +20,7 @@ export function TopBar({ tester, admin = false }: TopBarProps) {
         >
           <span className="h-3.5 w-2 rounded-xs border-2 border-primary-foreground" />
         </span>
-        <span className="font-semibold tracking-tight">Ad Studio</span>
+        <span className="font-semibold tracking-tight">AI Ads Manager</span>
         <span className="inline-flex h-5 items-center rounded bg-muted px-1.5 text-[11px] font-semibold tracking-wide text-muted-foreground">
           {admin ? "ADMIN" : "POC"}
         </span>

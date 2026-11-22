@@ -17,7 +17,7 @@ export function AuthShell({ children, footer }: AuthShellProps) {
             <span className="h-[17px] w-2.5 rounded-xs border-2 border-primary-foreground" />
           </span>
           <span className="text-lg font-semibold tracking-tight">
-            Ad Studio
+            AI Ads Manager
           </span>
           <span className="inline-flex h-5 items-center rounded bg-muted px-1.5 text-[11px] font-semibold tracking-wide text-muted-foreground">
             POC

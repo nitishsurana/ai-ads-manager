@@ -19,7 +19,7 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Ad Studio",
+  title: "AI Ads Manager",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

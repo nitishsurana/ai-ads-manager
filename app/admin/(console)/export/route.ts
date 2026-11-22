@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   return new Response(toCsv(rounds), {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="ad-studio-rounds.csv"',
+      "Content-Disposition": 'attachment; filename="ai-ads-manager-rounds.csv"',
       "Cache-Control": "no-store",
     },
   });
